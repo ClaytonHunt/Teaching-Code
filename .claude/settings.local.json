@@ -16,7 +16,10 @@
       "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" repo create Teaching-Code --public --clone)",
       "Bash(git init:*)",
       "Bash(git remote add:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git checkout:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
