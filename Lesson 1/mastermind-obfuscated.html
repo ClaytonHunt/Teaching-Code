@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html><head><title>Game</title>
+<style>body{font-family:Arial;margin:50px;background:#ddd}#g{background:#fff;padding:20px;border-radius:10px}button{margin:5px;padding:10px;font-size:14px;cursor:pointer}#s{margin:20px 0;padding:15px;background:#f0f0f0;border-radius:5px}#c{display:flex;gap:10px;margin:15px 0}#r{margin:10px 0;padding:10px;background:#e8e8e8}#h{max-height:200px;overflow-y:auto}</style>
+</head><body><div id="g"></div>
+<script>var a,b=0,c=[],d=!1,e={1:'🔴',2:'🔵',3:'🟢',4:'🟡',5:'🟣',6:'🟠'};
+function f(){a=[];for(var i=0;i<4;i++)a.push(Math.floor(Math.random()*6)+1);b=0;c=[];d=!1;g()}
+function g(){document.getElementById('g').innerHTML='<h2>🎯 Mastermind</h2><p>Crack the 4-color code! Colors 1-6. You have 10 tries.</p><div id="c">'+h()+'</div><div id="s">Current guess: <span id="curr"></span></div><button onclick="k()">Submit Guess</button> <button onclick="l()">Clear</button><div id="r">Attempts: '+b+'/10</div><div id="h">'+m()+'</div>';
+if(d)document.getElementById('g').innerHTML+='<h3>'+(n()?'🎉 You Won!':'💀 Game Over!')+'</h3><button onclick="f()">Play Again</button>'}
+function h(){var s='';for(var i=1;i<=6;i++)s+='<button onclick="j('+i+')">'+e[i]+'</button>';
+return s}var o=[];function j(x){if(d||o.length>=4)return;o.push(x);
+document.getElementById('curr').innerHTML=o.map(function(c){return e[c]}).join(' ')}
+function k(){if(d||o.length!==4)return;c.push({g:[...o],f:p(o,a)});b++;if(p(o,a).x===4||b>=10)d=!0;
+o=[];g()}function l(){o=[];document.getElementById('curr').innerHTML=''}function p(g,s){
+var x=0,y=0,gt=[...g],st=[...s];for(var i=0;i<4;i++)if(gt[i]===st[i]){x++;gt[i]=st[i]=null}
+for(var i=0;i<4;i++){if(gt[i]===null)continue;for(var j=0;j<4;j++){if(st[j]===null||gt[i]!==st[j])
+continue;y++;gt[i]=st[j]=null;break}}return{x:x,y:y}}function m(){var s='';
+for(var i=0;i<c.length;i++){var h=c[i];s+='<div>Guess '+(i+1)+': '+h.g.map(
+function(c){return e[c]}).join('')+' | ';for(var j=0;j<h.f.x;j++)s+='🟢';for(var j=0;j<h.f.y;j++)
+s+='🟡';for(var j=0;j<4-h.f.x-h.f.y;j++)s+='⚪';s+='</div>'}return s}
+function n(){return c.length>0&&c[c.length-1].f.x===4}f()</script></body></html>

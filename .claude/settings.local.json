@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.maizure.org)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(gh:*)",
+      "Bash(winget:*)",
+      "Bash(msiexec:*)",
+      "Bash(start gh.msi)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" --version)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" auth login)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" repo create Teaching-Code --public --clone)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
