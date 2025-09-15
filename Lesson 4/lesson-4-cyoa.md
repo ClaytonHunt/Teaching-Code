@@ -1,3 +1,0 @@
-# Lesson 4: CYOA — Decisions and Conditions
-
-Full content here...
