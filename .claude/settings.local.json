@@ -20,7 +20,8 @@
       "Read(//c/Users/Clayton/Pictures/Screenshots/**)",
       "Bash(git push:*)",
       "Bash(git fetch:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
