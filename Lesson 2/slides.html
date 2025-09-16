@@ -360,36 +360,35 @@
             border-color: #667eea;
         }
 
-        .demo-stats {
+
+        .demo-status-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 12px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center;
-            border: none;
-        }
-
-        .demo-stats strong {
-            color: #ffff44;
-            font-size: 1.1rem;
-        }
-
-        .gold-counter {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: white;
-            color: #333;
-            padding: 0.6rem 1.2rem;
             border-radius: 8px;
-            font-weight: bold;
-            box-shadow: none;
-            border: none;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .gold-counter::before {
-            content: "🪙";
-            font-size: 1.2rem;
+        .demo-stat-card {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .demo-stat-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .demo-stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
         }
     </style>
 </head>
@@ -530,15 +529,20 @@
             <div class="slide-content">
                 <h2>Live Demo: Interactive Story</h2>
                 <div class="demo-area">
+                    <div class="demo-status-panel">
+                        <div class="demo-stat-card">
+                            <div class="demo-stat-label">Health</div>
+                            <div class="demo-stat-value" id="demo-health">100</div>
+                        </div>
+                        <div class="demo-stat-card">
+                            <div class="demo-stat-label">Gold</div>
+                            <div class="demo-stat-value" id="demo-gold">0</div>
+                        </div>
+                    </div>
                     <div class="demo-story" id="demo-story">You stand before a mysterious door...</div>
                     <div class="demo-choices" id="demo-choices">
                         <button onclick="demoOpenDoor()">Open the door</button>
                         <button onclick="demoWalkAway()">Walk away</button>
-                    </div>
-                    <div class="demo-stats">
-                        <div class="gold-counter">
-                            Player Gold: <span id="demo-gold">0</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -730,6 +734,7 @@
         function demoRestart() {
             demoGold = 0;
             document.getElementById('demo-gold').textContent = demoGold;
+            document.getElementById('demo-health').textContent = "100";
             document.getElementById('demo-story').innerHTML =
                 "You stand before a mysterious door...";
             document.getElementById('demo-choices').innerHTML =

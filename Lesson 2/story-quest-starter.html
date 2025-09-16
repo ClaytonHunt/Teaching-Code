@@ -27,6 +27,36 @@
             margin-bottom: 20px;
         }
 
+        .status-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
         .story-text {
             background: #f8f9fa;
             border-radius: 10px;
@@ -68,7 +98,18 @@
 <body>
     <div class="story-container">
         <h1>The Mysterious Door</h1>
-        
+
+        <div class="status-panel">
+            <div class="stat-card">
+                <div class="stat-label">Health</div>
+                <div class="stat-value" id="health">100</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Gold</div>
+                <div class="stat-value" id="gold">0</div>
+            </div>
+        </div>
+
         <div id="story" class="story-text">
             You find yourself standing in front of an ancient wooden door...
         </div>
@@ -99,10 +140,13 @@
         }
         
         function openChest() {
-            document.getElementById('story').innerHTML = 
-                "You found the legendary Golden Keyboard! You win!";
-            
-            document.getElementById('choices').innerHTML = 
+            document.getElementById('story').innerHTML =
+                "You found the legendary Golden Keyboard and 50 gold coins! You win!";
+
+            // Update the gold counter
+            document.getElementById('gold').innerHTML = "50";
+
+            document.getElementById('choices').innerHTML =
                 '<button onclick="startOver()">Play Again</button>';
         }
         
@@ -131,10 +175,14 @@
         }
         
         function startOver() {
-            document.getElementById('story').innerHTML = 
+            document.getElementById('story').innerHTML =
                 "You find yourself standing in front of an ancient wooden door...";
-            
-            document.getElementById('choices').innerHTML = 
+
+            // Reset stats
+            document.getElementById('health').innerHTML = "100";
+            document.getElementById('gold').innerHTML = "0";
+
+            document.getElementById('choices').innerHTML =
                 '<button onclick="openDoor()">Open the door</button>' +
                 '<button onclick="walkAway()">Walk away</button>';
         }
