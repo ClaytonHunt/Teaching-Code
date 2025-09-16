@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Function-Powered Adventure</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            min-height: 100vh;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .status-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .story-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .story-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #2c3e50;
+        }
+
+        .location-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .choices-section {
+            margin: 20px 0;
+        }
+
+        .choice-button {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin: 10px 0;
+            font-size: 16px;
+            background: white;
+            color: #333;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .choice-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .choice-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #ccc;
+        }
+
+        .choice-button.disabled:hover {
+            background: white;
+            color: #999;
+            transform: none;
+        }
+
+        .inventory-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .inventory-item {
+            background: white;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+
+        .function-demo {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+        }
+
+        .function-demo h4 {
+            color: #1976D2;
+            margin: 0 0 10px 0;
+        }
+
+        .function-demo code {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🔧 The Function-Powered Adventure 🔧</h1>
+
+        <div class="function-demo">
+            <h4>🎯 Learning Goal</h4>
+            <p>This game demonstrates <code>functions</code> working with <code>conditionals</code> from Lesson 3!<br>
+            Watch how functions make code reusable and smart.</p>
+        </div>
+
+        <div class="status-panel">
+            <div class="stat-card">
+                <div class="stat-label">Health</div>
+                <div class="stat-value" id="health">100</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Gold</div>
+                <div class="stat-value" id="gold">50</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Reputation</div>
+                <div class="stat-value" id="reputation">0</div>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="location-tag" id="location">Academy Entrance</div>
+            <div class="story-text" id="story">
+                Welcome to the Coding Academy! You're here to learn the power of functions.
+                This magical academy teaches adventurers how to write smart, reusable code.
+                Your journey will demonstrate how functions work with conditionals to create amazing games!
+            </div>
+        </div>
+
+        <div class="choices-section" id="choices">
+            <button class="choice-button" onclick="enterLibrary()">
+                📚 Enter the Function Library
+            </button>
+            <button class="choice-button" onclick="visitShop()">
+                🛍️ Visit the Smart Shop
+            </button>
+            <button class="choice-button" onclick="enterTrainingGrounds()">
+                ⚔️ Enter Training Grounds
+            </button>
+        </div>
+
+        <div class="inventory-section">
+            <strong>Inventory:</strong>
+            <div class="inventory-grid" id="inventory">
+                <div class="inventory-item">Beginner's Guide</div>
+            </div>
+        </div>
+
+        <div class="function-demo">
+            <h4>🔍 Function Tracker</h4>
+            <div id="function-tracker">No functions called yet...</div>
+        </div>
+    </div>
+
+    <script>
+        // Game Variables
+        let playerHealth = 100;
+        let playerGold = 50;
+        let playerLevel = 1;
+        let playerReputation = 0;
+        let currentLocation = "Academy Entrance";
+        let inventory = ["Beginner's Guide"];
+        let functionCallLog = [];
+
+        // Quest Flags
+        let knowsAboutFunctions = false;
+        let learnedParameters = false;
+        let learnedReturns = false;
+        let masterQuest = false;
+
+        // LESSON 4 DEMONSTRATION: Helper Functions with Parameters
+        function updateStory(text) {
+            logFunctionCall("updateStory", [text]);
+            document.getElementById('story').innerHTML = text;
+        }
+
+        function updateLocation(newLocation) {
+            logFunctionCall("updateLocation", [newLocation]);
+            currentLocation = newLocation;
+            document.getElementById('location').innerHTML = currentLocation;
+        }
+
+        function changeHealth(amount) {
+            logFunctionCall("changeHealth", [amount]);
+            playerHealth += amount;
+
+            // Using conditionals from Lesson 3!
+            if (playerHealth > 100) playerHealth = 100;
+            if (playerHealth < 0) playerHealth = 0;
+
+            updateDisplay();
+
+            if (playerHealth <= 0) {
+                updateStory("Your health reached zero! The academy healers revive you.");
+                playerHealth = 25;
+                updateDisplay();
+            }
+        }
+
+        function changeGold(amount) {
+            logFunctionCall("changeGold", [amount]);
+            playerGold += amount;
+            if (playerGold < 0) playerGold = 0;
+            updateDisplay();
+        }
+
+        function changeReputation(amount) {
+            logFunctionCall("changeReputation", [amount]);
+            playerReputation += amount;
+            updateDisplay();
+        }
+
+        function hasItem(itemName) {
+            logFunctionCall("hasItem", [itemName]);
+            return inventory.includes(itemName);
+        }
+
+        function addItem(itemName) {
+            logFunctionCall("addItem", [itemName]);
+            if (!hasItem(itemName)) {
+                inventory.push(itemName);
+                updateDisplay();
+                return true;
+            }
+            return false;
+        }
+
+        function removeItem(itemName) {
+            logFunctionCall("removeItem", [itemName]);
+            inventory = inventory.filter(item => item !== itemName);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('health').innerHTML = playerHealth;
+            document.getElementById('gold').innerHTML = playerGold;
+            document.getElementById('level').innerHTML = playerLevel;
+            document.getElementById('reputation').innerHTML = playerReputation;
+
+            // Update inventory
+            let inventoryHTML = "";
+            for (let i = 0; i < inventory.length; i++) {
+                inventoryHTML += '<div class="inventory-item">' + inventory[i] + '</div>';
+            }
+            if (inventoryHTML === "") {
+                inventoryHTML = '<div class="inventory-item">Empty</div>';
+            }
+            document.getElementById('inventory').innerHTML = inventoryHTML;
+        }
+
+        function logFunctionCall(functionName, parameters) {
+            let paramString = parameters ? parameters.join(", ") : "";
+            let callString = functionName + "(" + paramString + ")";
+            functionCallLog.push(callString);
+
+            // Show last 3 function calls
+            let recentCalls = functionCallLog.slice(-3);
+            document.getElementById('function-tracker').innerHTML =
+                "Recent function calls:<br>" + recentCalls.join("<br>");
+        }
+
+        // LESSON 4: Functions that use conditionals for smart behavior
+        function canAfford(price) {
+            logFunctionCall("canAfford", [price]);
+            if (playerGold >= price) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function buyItem(itemName, price, description) {
+            logFunctionCall("buyItem", [itemName, price, description]);
+
+            if (canAfford(price)) {
+                changeGold(-price);
+                addItem(itemName);
+                changeReputation(1);
+                updateStory("You bought " + itemName + "! " + description);
+                return true;
+            } else {
+                let goldNeeded = price - playerGold;
+                updateStory("You need " + goldNeeded + " more gold to buy " + itemName + ".");
+                return false;
+            }
+        }
+
+        function checkRequirements(requiredLevel, requiredItems) {
+            logFunctionCall("checkRequirements", [requiredLevel, requiredItems]);
+
+            // Check level first
+            if (playerLevel < requiredLevel) {
+                return "Need level " + requiredLevel;
+            }
+
+            // Check each required item
+            for (let i = 0; i < requiredItems.length; i++) {
+                if (!hasItem(requiredItems[i])) {
+                    return "Need " + requiredItems[i];
+                }
+            }
+
+            return "requirements_met";
+        }
+
+        function giveReward(goldAmount, itemName, reputationAmount) {
+            logFunctionCall("giveReward", [goldAmount, itemName, reputationAmount]);
+
+            changeGold(goldAmount);
+            if (itemName) addItem(itemName);
+            changeReputation(reputationAmount);
+
+            let message = "Reward received! ";
+            if (goldAmount > 0) message += "+" + goldAmount + " gold ";
+            if (itemName) message += "+ " + itemName + " ";
+            if (reputationAmount > 0) message += "+" + reputationAmount + " reputation";
+
+            updateStory(message);
+        }
+
+        // Location Functions
+        function enterLibrary() {
+            updateLocation("Function Library");
+
+            let storyText = "You enter a vast library filled with code scrolls. ";
+
+            if (!knowsAboutFunctions) {
+                storyText += "A wise librarian approaches: 'Welcome! Let me teach you about functions - reusable packages of code!'";
+                knowsAboutFunctions = true;
+                changeReputation(2);
+            } else if (playerReputation >= 10) {
+                storyText += "The librarian smiles warmly at you - a respected student!";
+                changeGold(5);
+            } else {
+                storyText += "Scholars quietly study advanced function techniques.";
+            }
+
+            updateStory(storyText);
+
+            let choices = "";
+
+            if (!learnedParameters) {
+                choices += '<button class="choice-button" onclick="learnParameters()">📖 Learn About Parameters (Free)</button>';
+            }
+
+            if (learnedParameters && !learnedReturns) {
+                choices += '<button class="choice-button" onclick="learnReturns()">📤 Learn About Return Values (Free)</button>';
+            }
+
+            if (canAfford(20) && !hasItem("Advanced Function Guide")) {
+                choices += '<button class="choice-button" onclick="buyAdvancedGuide()">📜 Buy Advanced Function Guide (20 gold)</button>';
+            } else if (!hasItem("Advanced Function Guide")) {
+                choices += '<button class="choice-button disabled">📜 Buy Advanced Function Guide (Need 20 gold)</button>';
+            }
+
+            choices += '<button class="choice-button" onclick="returnToEntrance()">🚪 Return to Entrance</button>';
+
+            document.getElementById('choices').innerHTML = choices;
+        }
+
+        function visitShop() {
+            updateLocation("Smart Shop");
+
+            let storyText = "You enter a shop run entirely by smart functions! ";
+
+            // Shop behavior depends on reputation (conditionals from Lesson 3!)
+            if (playerReputation >= 15) {
+                storyText += "The shop functions recognize you as a master coder! You get VIP pricing.";
+            } else if (playerReputation >= 5) {
+                storyText += "The shop functions appreciate your growing skills.";
+            } else {
+                storyText += "The shop functions treat you as a beginning student.";
+            }
+
+            updateStory(storyText);
+
+            let choices = "";
+
+            // Dynamic pricing based on reputation
+            let swordPrice = playerReputation >= 15 ? 25 : 35;
+            let shieldPrice = playerReputation >= 15 ? 20 : 30;
+            let potionPrice = playerReputation >= 5 ? 8 : 12;
+
+            if (!hasItem("Code Sword")) {
+                if (canAfford(swordPrice)) {
+                    choices += '<button class="choice-button" onclick="buyCodeSword(' + swordPrice + ')">⚔️ Buy Code Sword (' + swordPrice + ' gold)</button>';
+                } else {
+                    choices += '<button class="choice-button disabled">⚔️ Buy Code Sword (Need ' + swordPrice + ' gold)</button>';
+                }
+            }
+
+            if (!hasItem("Logic Shield")) {
+                if (canAfford(shieldPrice)) {
+                    choices += '<button class="choice-button" onclick="buyLogicShield(' + shieldPrice + ')">🛡️ Buy Logic Shield (' + shieldPrice + ' gold)</button>';
+                } else {
+                    choices += '<button class="choice-button disabled">🛡️ Buy Logic Shield (Need ' + shieldPrice + ' gold)</button>';
+                }
+            }
+
+            if (canAfford(potionPrice)) {
+                choices += '<button class="choice-button" onclick="buyHealthPotion(' + potionPrice + ')">🧪 Buy Health Potion (' + potionPrice + ' gold)</button>';
+            } else {
+                choices += '<button class="choice-button disabled">🧪 Buy Health Potion (Need ' + potionPrice + ' gold)</button>';
+            }
+
+            choices += '<button class="choice-button" onclick="returnToEntrance()">🚪 Return to Entrance</button>';
+
+            document.getElementById('choices').innerHTML = choices;
+        }
+
+        function enterTrainingGrounds() {
+            updateLocation("Training Grounds");
+
+            let storyText = "You arrive at the training grounds where functions and conditionals work together! ";
+
+            // Check if player is ready for different challenges
+            if (hasItem("Code Sword") && hasItem("Logic Shield")) {
+                storyText += "Fully equipped, you're ready for any challenge!";
+            } else if (playerLevel >= 2) {
+                storyText += "Your experience shows, but better equipment would help.";
+            } else {
+                storyText += "This looks challenging. You might want to prepare more.";
+            }
+
+            updateStory(storyText);
+
+            let choices = "";
+
+            // Basic training - always available
+            choices += '<button class="choice-button" onclick="basicTraining()">🥋 Basic Function Training</button>';
+
+            // Intermediate training - need level 2
+            if (playerLevel >= 2) {
+                choices += '<button class="choice-button" onclick="intermediateTraining()">⚡ Intermediate Challenge</button>';
+            } else {
+                choices += '<button class="choice-button disabled">⚡ Intermediate Challenge (Need Level 2)</button>';
+            }
+
+            // Master quest - need equipment and knowledge
+            let masterRequirements = checkRequirements(3, ["Code Sword", "Logic Shield", "Advanced Function Guide"]);
+            if (masterRequirements === "requirements_met" && !masterQuest) {
+                choices += '<button class="choice-button" onclick="masterChallenge()">👑 Master\'s Challenge</button>';
+            } else if (!masterQuest) {
+                choices += '<button class="choice-button disabled">👑 Master\'s Challenge (' + masterRequirements + ')</button>';
+            }
+
+            choices += '<button class="choice-button" onclick="returnToEntrance()">🚪 Return to Entrance</button>';
+
+            document.getElementById('choices').innerHTML = choices;
+        }
+
+        // Action Functions
+        function learnParameters() {
+            learnedParameters = true;
+            changeReputation(3);
+            updateStory("You learned about parameters! Functions can now accept inputs to make them flexible. This is like giving a recipe different ingredients!");
+            enterLibrary();
+        }
+
+        function learnReturns() {
+            learnedReturns = true;
+            changeReputation(3);
+            playerLevel = 2;
+            updateStory("You learned about return values! Functions can give back information. Level up! You're now Level 2!");
+            enterLibrary();
+        }
+
+        function buyAdvancedGuide() {
+            if (buyItem("Advanced Function Guide", 20, "This will help you master complex function techniques!")) {
+                playerLevel = 3;
+                updateStory(document.getElementById('story').innerHTML + " Level up! You're now Level 3!");
+            }
+            enterLibrary();
+        }
+
+        function buyCodeSword(price) {
+            buyItem("Code Sword", price, "A weapon that channels the power of well-written functions!");
+            visitShop();
+        }
+
+        function buyLogicShield(price) {
+            buyItem("Logic Shield", price, "Protection powered by conditional logic from Lesson 3!");
+            visitShop();
+        }
+
+        function buyHealthPotion(price) {
+            if (buyItem("Health Potion", price, "Restores 30 health points!")) {
+                // Immediately use the potion
+                removeItem("Health Potion");
+                changeHealth(30);
+                updateStory(document.getElementById('story').innerHTML + " You immediately drink it and feel refreshed!");
+            }
+            visitShop();
+        }
+
+        function basicTraining() {
+            changeHealth(-5);
+            changeReputation(2);
+            giveReward(15, null, 0);
+            updateStory("You complete basic function training! You practiced writing helper functions and earned 15 gold. Functions make code so much cleaner!");
+            enterTrainingGrounds();
+        }
+
+        function intermediateTraining() {
+            if (hasItem("Code Sword")) {
+                changeHealth(-10);
+                giveReward(25, "Certificate of Competence", 5);
+                updateStory("With your Code Sword, you excel at the intermediate challenge! You demonstrated functions with parameters and return values.");
+            } else {
+                changeHealth(-20);
+                giveReward(10, null, 2);
+                updateStory("Without proper equipment, the challenge is tough, but you learn from the experience.");
+            }
+            enterTrainingGrounds();
+        }
+
+        function masterChallenge() {
+            masterQuest = true;
+            changeHealth(-15);
+            giveReward(100, "Master Function Certificate", 25);
+            updateStory("Incredible! You completed the Master's Challenge! You demonstrated mastery of functions, parameters, return values, and how they work with conditionals. You are now a Function Master!");
+            enterTrainingGrounds();
+        }
+
+        function returnToEntrance() {
+            updateLocation("Academy Entrance");
+
+            let storyText = "You return to the academy entrance. ";
+
+            if (masterQuest) {
+                storyText += "Everyone recognizes you as a Function Master! Your journey in learning functions is complete.";
+            } else if (playerLevel >= 3) {
+                storyText += "Fellow students look up to you as an advanced function programmer.";
+            } else if (playerReputation >= 10) {
+                storyText += "Other students nod respectfully - you're making good progress!";
+            } else {
+                storyText += "You're learning the basics of functions. Keep practicing!";
+            }
+
+            updateStory(storyText);
+
+            document.getElementById('choices').innerHTML =
+                '<button class="choice-button" onclick="enterLibrary()">📚 Enter the Function Library</button>' +
+                '<button class="choice-button" onclick="visitShop()">🛍️ Visit the Smart Shop</button>' +
+                '<button class="choice-button" onclick="enterTrainingGrounds()">⚔️ Enter Training Grounds</button>' +
+                '<button class="choice-button" onclick="restart()">🔄 Start New Game</button>';
+        }
+
+        function restart() {
+            // Reset all variables
+            playerHealth = 100;
+            playerGold = 50;
+            playerLevel = 1;
+            playerReputation = 0;
+            currentLocation = "Academy Entrance";
+            inventory = ["Beginner's Guide"];
+            functionCallLog = [];
+
+            knowsAboutFunctions = false;
+            learnedParameters = false;
+            learnedReturns = false;
+            masterQuest = false;
+
+            updateStory("Welcome to the Coding Academy! You're here to learn the power of functions. This magical academy teaches adventurers how to write smart, reusable code. Your journey will demonstrate how functions work with conditionals to create amazing games!");
+            returnToEntrance();
+        }
+
+        // Initialize the game
+        updateDisplay();
+    </script>
+</body>
+</html>
