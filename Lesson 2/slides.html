@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Variables and State - Interactive Programming</title>
+    <title>Variables and Interactivity - Interactive Programming</title>
     <style>
         * {
             margin: 0;
@@ -24,7 +24,7 @@
 
         .slide-container {
             display: flex;
-            width: 1300vw;
+            width: 1400vw;
             height: 100vh;
             transition: transform 0.5s ease-in-out;
             pointer-events: none;
@@ -398,10 +398,9 @@
         <div class="slide">
             <div class="slide-content">
                 <div class="big-emoji">🎮</div>
-                <h1>Variables and State</h1>
+                <h1>Variables and Interactivity</h1>
                 <h3>Building Your First Interactive Story</h3>
                 <p>Learn to create dynamic web experiences with JavaScript</p>
-                <p style="margin-top: 2rem; font-size: 1.2rem; opacity: 0.8;">30-minute Meetup Presentation</p>
             </div>
         </div>
 
@@ -463,6 +462,7 @@
                             <pre><span class="keyword">let</span> <span class="property">storyText</span> = <span class="string">"Once upon a time..."</span>;
 <span class="keyword">let</span> <span class="property">characterName</span> = <span class="string">"Brave Knight"</span>;</pre>
                         </div>
+                        <p>Always use quotes for text!</p>
                     </div>
                     <div>
                         <h3>Numbers</h3>
@@ -470,6 +470,7 @@
                             <pre><span class="keyword">let</span> <span class="property">goldCoins</span> = <span class="number">50</span>;
 <span class="keyword">let</span> <span class="property">playerLevel</span> = <span class="number">1</span>;</pre>
                         </div>
+                        <p>No quotes needed for numbers</p>
                     </div>
                 </div>
                 <div style="margin-top: 2rem;">
@@ -478,6 +479,7 @@
                         <pre><span class="keyword">let</span> <span class="property">hasKey</span> = <span class="keyword">false</span>;
 <span class="keyword">let</span> <span class="property">doorIsOpen</span> = <span class="keyword">true</span>;</pre>
                     </div>
+                    <p>Only two values: true or false</p>
                 </div>
             </div>
         </div>
@@ -500,6 +502,28 @@
             </div>
         </div>
 
+        <!-- NEW Slide 6.5: What Are Functions? -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Functions: Packages of Instructions</h2>
+                <div class="analogy-box">
+                    <div class="big-emoji">📦</div>
+                    <h3>Think of Functions as Recipe Cards</h3>
+                    <ul>
+                        <li><strong>📝 Name</strong> = What the recipe makes</li>
+                        <li><strong>📋 Instructions</strong> = Steps to follow</li>
+                        <li><strong>🍽️ Execute</strong> = Follow the recipe to make food</li>
+                    </ul>
+                </div>
+                <div class="code-box">
+                    <pre><span class="keyword">function</span> <span class="function">openDoor</span>() {
+    <span class="comment">// Package of instructions for opening door</span>
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"Door opens!"</span>;
+}</pre>
+                </div>
+            </div>
+        </div>
+
         <!-- Slide 7: Live Demo -->
         <div class="slide">
             <div class="slide-content">
@@ -519,7 +543,24 @@
             </div>
         </div>
 
-        <!-- Slide 8: The Magic of getElementById -->
+        <!-- Slide 8: How Buttons Call Functions -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Connecting Buttons to Functions</h2>
+                <div class="code-box">
+                    <pre><span class="comment">// When button is clicked, run the function</span>
+<span class="keyword">&lt;button</span> <span class="property">onclick</span>=<span class="string">"openDoor()"</span><span class="keyword">&gt;</span>Open door<span class="keyword">&lt;/button&gt;</span>
+
+<span class="comment">// This calls (runs) our function:</span>
+<span class="keyword">function</span> <span class="function">openDoor</span>() {
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"Door creaks open!"</span>;
+}</pre>
+                </div>
+                <p>onclick = "Run this function when clicked"</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: The Magic of getElementById -->
         <div class="slide">
             <div class="slide-content">
                 <h2>Changing Web Pages with Code</h2>
@@ -537,30 +578,6 @@
             </div>
         </div>
 
-        <!-- Slide 9: State Tracking -->
-        <div class="slide">
-            <div class="slide-content">
-                <h2>Making Choices Matter</h2>
-                <div class="code-box">
-                    <pre><span class="comment">// Game state variables</span>
-<span class="keyword">let</span> <span class="property">hasVisitedCave</span> = <span class="keyword">false</span>;
-<span class="keyword">let</span> <span class="property">hasSword</span> = <span class="keyword">false</span>;
-
-<span class="keyword">function</span> <span class="function">enterCave</span>() {
-    <span class="property">hasVisitedCave</span> = <span class="keyword">true</span>;  <span class="comment">// Remember we've been here</span>
-
-    <span class="keyword">if</span> (<span class="property">hasSword</span>) {
-        <span class="comment">// Show different story based on what player has</span>
-        <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> =
-            <span class="string">"With your sword gleaming, you enter the cave."</span>;
-    } <span class="keyword">else</span> {
-        <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> =
-            <span class="string">"You enter the dark cave with only your wits."</span>;
-    }
-}</pre>
-                </div>
-            </div>
-        </div>
 
         <!-- Slide 10: Your Turn -->
         <div class="slide">
@@ -617,7 +634,7 @@
                         </div>
                     </div>
                     <div>
-                        <h3>Functions & HTML</h3>
+                        <h3>Functions & Buttons</h3>
                         <div class="code-box">
                             <pre><span class="comment">// Function</span>
 <span class="keyword">function</span> <span class="function">doSomething</span>() {
@@ -631,6 +648,20 @@
                         </div>
                     </div>
                 </div>
+                <div style="margin-top: 2rem;">
+                    <h3>DOM Interactions</h3>
+                    <div class="code-box">
+                        <pre><span class="comment">// Get element</span>
+<span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>)
+
+<span class="comment">// Change content</span>
+<span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"New text!"</span>;
+
+<span class="comment">// Store in variable</span>
+<span class="keyword">let</span> <span class="property">element</span> = <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>);
+<span class="property">element</span>.<span class="property">innerHTML</span> = <span class="string">"Updated!"</span>;</pre>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -641,7 +672,7 @@
                 <h1>Thank You!</h1>
                 <h3>Questions?</h3>
                 <p style="margin-top: 2rem;">Now go build something amazing!</p>
-                <p style="margin-top: 1rem; opacity: 0.8;">Start with cyoa-starter.html and create your adventure</p>
+                <p style="margin-top: 1rem; opacity: 0.8;">Start with story-quest-starter.html and create your adventure</p>
             </div>
         </div>
     </div>
@@ -659,7 +690,7 @@
 
     <script>
         let currentSlide = 0;
-        const totalSlides = 13;
+        const totalSlides = 14;
 
         // Demo variables for slide 7
         let demoGold = 0;
