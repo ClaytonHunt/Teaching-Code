@@ -1,3 +1,10 @@
+/*
+ * QBasic Gorilla Game - JavaScript Port
+ * Original QBasic game by Microsoft
+ * JavaScript port ©2017 Kyle Miller (https://www.kylem.net/stuff/gorilla.html)
+ * Used for educational purposes
+ */
+
 "use strict";
 
 var scr, play, keys;
