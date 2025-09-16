@@ -17,8 +17,10 @@
       "Bash(git init:*)",
       "Bash(git remote add:*)",
       "Bash(git add:*)",
-      "Bash(git checkout:*)",
-      "Bash(git rm:*)",
+      "Read(//c/Users/Clayton/Pictures/Screenshots/**)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(git merge:*)",
       "Bash(git commit:*)"
     ],
     "deny": [],
