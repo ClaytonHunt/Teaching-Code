@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Functions and Reusability - Interactive Programming</title>
+    <title>Conditionals and Game Logic - Interactive Programming</title>
     <style>
         * {
             margin: 0;
@@ -24,7 +24,7 @@
 
         .slide-container {
             display: flex;
-            width: 1300vw;
+            width: 1400vw;
             height: 100vh;
             transition: transform 0.5s ease-in-out;
             pointer-events: none;
@@ -232,7 +232,7 @@
             margin-bottom: 2rem;
         }
 
-        .function-demo {
+        .demo-box {
             background: rgba(0, 0, 0, 0.6);
             border-radius: 12px;
             padding: 1.5rem;
@@ -260,17 +260,17 @@
 </head>
 <body>
     <div class="slide-counter">
-        <span id="current-slide">1</span> / <span id="total-slides">13</span>
+        <span id="current-slide">1</span> / <span id="total-slides">14</span>
     </div>
 
     <div class="slide-container" id="slides">
         <!-- Slide 1: Title -->
         <div class="slide">
             <div class="slide-content">
-                <div class="big-emoji">🔄</div>
-                <h1>Functions and Reusability</h1>
-                <p class="subtitle">Don't Repeat Yourself (DRY Programming)</p>
-                <p>Writing code once and using it everywhere</p>
+                <div class="big-emoji">🚪</div>
+                <h1>Conditionals and Game Logic</h1>
+                <p class="subtitle">Making Smart Decisions in Code</p>
+                <p>Teaching your games to think and react intelligently</p>
             </div>
         </div>
 
@@ -279,256 +279,305 @@
             <div class="slide-content">
                 <h2>What We'll Learn Today</h2>
                 <ul>
-                    <li>🔄 <strong>DRY Principle:</strong> Don't Repeat Yourself</li>
-                    <li>📦 <strong>Function Packages:</strong> Reusable blocks of code</li>
-                    <li>🎛️ <strong>Parameters:</strong> Making functions flexible</li>
-                    <li>📤 <strong>Return Values:</strong> Getting information back</li>
-                    <li>🎮 <strong>Game Functions:</strong> Building better interactive stories</li>
+                    <li>🚪 <strong>If Statements:</strong> Digital bouncers that check conditions</li>
+                    <li>🔀 <strong>Branching Logic:</strong> Multiple paths through your story</li>
+                    <li>⚖️ <strong>Comparison Operators:</strong> Greater than, less than, equals</li>
+                    <li>🔗 <strong>Logical Operators:</strong> AND, OR, NOT combinations</li>
+                    <li>🎮 <strong>Smart Games:</strong> Stories that react to player choices</li>
                 </ul>
             </div>
         </div>
 
-        <!-- Slide 3: The Problem with Repetition -->
+        <!-- Slide 3: The Problem Without Conditionals -->
         <div class="slide">
             <div class="slide-content">
-                <h2>The Copy-Paste Trap</h2>
-                <div class="big-emoji">😵</div>
-                <p><strong>Look at this repetitive code:</strong></p>
+                <h2>Games Without Brains</h2>
+                <div class="big-emoji">🤖</div>
+                <p><strong>Without conditionals, games are boring:</strong></p>
                 <div class="code-block">
-                    <pre><span class="comment">// BAD: Lots of repetition!</span>
-<span class="keyword">function</span> <span class="function">findGoldInForest</span>() {
-    playerGold = playerGold + <span class="number">10</span>;
-    <span class="function">updateDisplay</span>();
-    <span class="function">showMessage</span>(<span class="string">"You found 10 gold!"</span>);
-}
+                    <pre><span class="comment">// Always the same outcome</span>
+<span class="keyword">let</span> playerGold = <span class="number">50</span>;
 
-<span class="keyword">function</span> <span class="function">findGoldInCave</span>() {
-    playerGold = playerGold + <span class="number">15</span>;
-    <span class="function">updateDisplay</span>();
-    <span class="function">showMessage</span>(<span class="string">"You found 15 gold!"</span>);
+<span class="comment">// No conditional check - always the same result</span>
+playerGold = playerGold + <span class="number">10</span>;
+document.getElementById(<span class="string">'story'</span>).innerHTML =
+    <span class="string">"You enter the dungeon and find treasure!"</span>;</pre>
+                </div>
+                <p><strong>Problem:</strong> No intelligence, no choices matter!</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Smart Games with Conditionals -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Games with Brains</h2>
+                <div class="big-emoji">🧠</div>
+                <p><strong>With conditionals, games become intelligent:</strong></p>
+                <div class="code-block">
+                    <pre><span class="comment">// Smart game responses using conditionals</span>
+<span class="keyword">let</span> hasTorch = <span class="keyword">true</span>;
+<span class="keyword">let</span> playerHealth = <span class="number">100</span>;
+
+<span class="keyword">if</span> (hasTorch) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML =
+        <span class="string">"Your torch lights the way. You find ancient treasure!"</span>;
+} <span class="keyword">else</span> {
+    document.getElementById(<span class="string">'story'</span>).innerHTML =
+        <span class="string">"It's too dark! You stumble and fall."</span>;
+    playerHealth = playerHealth - <span class="number">10</span>;
 }</pre>
                 </div>
-                <p><strong>Problem:</strong> Same code, different numbers!</p>
+                <p><strong>Result:</strong> Player choices and items matter!</p>
             </div>
         </div>
 
-        <!-- Slide 4: The DRY Solution -->
+        <!-- Slide 5: Basic If Statement -->
         <div class="slide">
             <div class="slide-content">
-                <h2>The DRY Solution</h2>
-                <div class="big-emoji">✨</div>
-                <p><strong>One flexible function handles everything:</strong></p>
-                <div class="code-block">
-                    <pre><span class="comment">// GOOD: One function, many uses!</span>
-<span class="keyword">function</span> <span class="function">findGold</span>(amount, location) {
-    playerGold = playerGold + amount;
-    <span class="function">updateDisplay</span>();
-    <span class="function">showMessage</span>(<span class="string">"You found "</span> + amount + <span class="string">" gold in the "</span> + location + <span class="string">"!"</span>);
-}
-
-<span class="comment">// Now we can use it anywhere:</span>
-<span class="function">findGold</span>(<span class="number">10</span>, <span class="string">"forest"</span>);
-<span class="function">findGold</span>(<span class="number">15</span>, <span class="string">"cave"</span>);
-<span class="function">findGold</span>(<span class="number">20</span>, <span class="string">"castle"</span>);</pre>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 5: What Are Parameters? -->
-        <div class="slide">
-            <div class="slide-content">
-                <h2>Parameters: Information Mail Slots</h2>
-                <div class="function-demo">
-                    <h3>📮 Parameters are like mail slots</h3>
-                    <p>You pass information <em>into</em> the function</p>
+                <h2>The Digital Bouncer</h2>
+                <div class="demo-box">
+                    <h3>🚪 If statements are like bouncers at a club</h3>
+                    <p>They check if you meet the requirements before letting you in</p>
                 </div>
                 <div class="code-block">
-                    <pre><span class="keyword">function</span> <span class="function">greetPlayer</span>(name) {  <span class="comment">// 'name' is a parameter</span>
-    <span class="keyword">return</span> <span class="string">"Hello, "</span> + name + <span class="string">"!"</span>;
+                    <pre><span class="comment">// Basic if statement structure</span>
+<span class="keyword">let</span> playerHealth = <span class="number">75</span>;
+
+<span class="keyword">if</span> (playerHealth > <span class="number">0</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're still alive!"</span>;
 }
 
-<span class="comment">// Using the function with different values:</span>
-<span class="function">greetPlayer</span>(<span class="string">"Alex"</span>);    <span class="comment">// Returns: "Hello, Alex!"</span>
-<span class="function">greetPlayer</span>(<span class="string">"Jordan"</span>);  <span class="comment">// Returns: "Hello, Jordan!"</span></pre>
+<span class="comment">// If-else for two outcomes</span>
+<span class="keyword">let</span> playerGold = <span class="number">30</span>;
+
+<span class="keyword">if</span> (playerGold >= <span class="number">50</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You can afford the magic sword!"</span>;
+} <span class="keyword">else</span> {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You need more gold."</span>;
+}</pre>
                 </div>
-                <p><strong>Same function, different results!</strong></p>
             </div>
         </div>
 
-        <!-- Slide 6: Multiple Parameters -->
+        <!-- Slide 6: Multiple Conditions -->
         <div class="slide">
             <div class="slide-content">
-                <h2>Multiple Parameters</h2>
-                <p>Functions can accept multiple pieces of information:</p>
+                <h2>Multiple Paths (If-Else Chain)</h2>
+                <p>When you need more than two outcomes:</p>
                 <div class="code-block">
-                    <pre><span class="keyword">function</span> <span class="function">calculateDamage</span>(attackPower, defense) {
-    <span class="keyword">let</span> damage = attackPower - defense;
-    <span class="keyword">if</span> (damage &lt; <span class="number">0</span>) damage = <span class="number">0</span>;  <span class="comment">// Can't do negative damage</span>
-    <span class="keyword">return</span> damage;
-}
+                    <pre><span class="keyword">let</span> playerLevel = <span class="number">7</span>;
 
-<span class="comment">// Using it:</span>
-<span class="keyword">let</span> damageDealt = <span class="function">calculateDamage</span>(<span class="number">50</span>, <span class="number">20</span>);  <span class="comment">// Returns: 30</span></pre>
+<span class="keyword">if</span> (playerLevel >= <span class="number">10</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're a master adventurer!"</span>;
+} <span class="keyword">else if</span> (playerLevel >= <span class="number">5</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're an experienced explorer!"</span>;
+} <span class="keyword">else if</span> (playerLevel >= <span class="number">1</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're a brave beginner!"</span>;
+} <span class="keyword">else</span> {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"Your journey starts now!"</span>;
+}</pre>
                 </div>
-                <div class="function-demo">
-                    <p><strong>💡 Pro Tip:</strong> Parameters make functions flexible and reusable!</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 7: Functions That Change Things -->
-        <div class="slide">
-            <div class="slide-content">
-                <h2>Functions That Modify Game State</h2>
-                <div class="code-block">
-                    <pre><span class="keyword">let</span> playerHealth = <span class="number">100</span>;
-
-<span class="keyword">function</span> <span class="function">changeHealth</span>(amount) {
-    playerHealth = playerHealth + amount;
-
-    <span class="comment">// Keep health between 0 and 100</span>
-    <span class="keyword">if</span> (playerHealth &gt; <span class="number">100</span>) playerHealth = <span class="number">100</span>;
-    <span class="keyword">if</span> (playerHealth &lt; <span class="number">0</span>) playerHealth = <span class="number">0</span>;
-
-    <span class="comment">// Update the display</span>
-    document.getElementById(<span class="string">'health'</span>).innerHTML = playerHealth;
-}
-
-<span class="comment">// Use positive numbers to heal:</span>
-<span class="function">changeHealth</span>(<span class="number">20</span>);   <span class="comment">// Heal 20 points</span>
-
-<span class="comment">// Use negative numbers for damage:</span>
-<span class="function">changeHealth</span>(-<span class="number">30</span>);  <span class="comment">// Take 30 damage</span></pre>
+                <div class="demo-box">
+                    <p><strong>💡 Pro Tip:</strong> Check conditions in order from highest to lowest!</p>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 8: Essential Game Helper Functions -->
+        <!-- Slide 7: Comparison Operators -->
         <div class="slide">
             <div class="slide-content">
-                <h2>Essential Game Helper Functions</h2>
+                <h2>Comparison Operators</h2>
                 <div style="text-align: left; max-width: 900px;">
                     <div class="code-block">
-                        <pre><span class="comment">// 1. Update story text</span>
-<span class="keyword">function</span> <span class="function">updateStory</span>(text) {
-    document.getElementById(<span class="string">'story'</span>).innerHTML = text;
+                        <pre><span class="comment">// The comparison toolbox</span>
+=== <span class="comment">// Exactly equals (ALWAYS use this!)</span>
+!== <span class="comment">// Not exactly equals</span>
+>   <span class="comment">// Greater than</span>
+<   <span class="comment">// Less than</span>
+>=  <span class="comment">// Greater than or equal</span>
+<=  <span class="comment">// Less than or equal</span>
+
+<span class="comment">// Examples</span>
+<span class="keyword">let</span> gold = <span class="number">50</span>;
+<span class="keyword">let</span> swordPrice = <span class="number">30</span>;
+
+<span class="keyword">if</span> (gold >= swordPrice) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You can afford the sword!"</span>;
 }
 
-<span class="comment">// 2. Manage inventory</span>
-<span class="keyword">function</span> <span class="function">hasItem</span>(itemName) {
-    <span class="keyword">return</span> inventory.includes(itemName);
-}
+<span class="keyword">let</span> userInput = <span class="string">"secret123"</span>;
+<span class="keyword">let</span> password = <span class="string">"secret123"</span>;
 
-<span class="keyword">function</span> <span class="function">addItem</span>(itemName) {
-    <span class="keyword">if</span> (!<span class="function">hasItem</span>(itemName)) {
-        inventory.push(itemName);
-        <span class="keyword">return</span> <span class="keyword">true</span>;  <span class="comment">// Successfully added</span>
-    }
-    <span class="keyword">return</span> <span class="keyword">false</span>;  <span class="comment">// Already had it</span>
+<span class="keyword">if</span> (userInput === password) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"Access granted!"</span>;
 }</pre>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 9: Return Values -->
+        <!-- Slide 8: Dangerous == vs Safe === -->
         <div class="slide">
             <div class="slide-content">
-                <h2>Return Values: Getting Information Back</h2>
-                <div class="function-demo">
-                    <h3>📤 Functions can give back information</h3>
+                <h2>⚠️ Avoid == (Use === Instead!)</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-box bad-code">
+                        <h3>❌ Dangerous ==</h3>
+                        <div class="code-block">
+                            <pre><span class="comment">// Confusing behavior!</span>
+<span class="number">5</span> == <span class="string">"5"</span>     <span class="comment">// true (converts types)</span>
+<span class="number">0</span> == <span class="keyword">false</span>   <span class="comment">// true (confusing!)</span>
+<span class="string">""</span> == <span class="keyword">false</span>  <span class="comment">// true (what?!)</span></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-box good-code">
+                        <h3>✅ Safe ===</h3>
+                        <div class="code-block">
+                            <pre><span class="comment">// Predictable behavior!</span>
+<span class="number">5</span> === <span class="string">"5"</span>     <span class="comment">// false (different types)</span>
+<span class="number">0</span> === <span class="keyword">false</span>   <span class="comment">// false (different types)</span>
+<span class="string">""</span> === <span class="keyword">false</span>  <span class="comment">// false (different types)</span></pre>
+                        </div>
+                    </div>
                 </div>
-                <div class="code-block">
-                    <pre><span class="comment">// This function RETURNS a value</span>
-<span class="keyword">function</span> <span class="function">rollDice</span>() {
-    <span class="keyword">return</span> Math.floor(Math.random() * <span class="number">6</span>) + <span class="number">1</span>;
-}
-
-<span class="comment">// We can use the returned value:</span>
-<span class="keyword">let</span> myRoll = <span class="function">rollDice</span>();
-<span class="keyword">if</span> (myRoll &gt;= <span class="number">5</span>) {
-    <span class="function">updateStory</span>(<span class="string">"Critical hit!"</span>);
-}
-
-<span class="comment">// Functions that answer questions</span>
-<span class="keyword">function</span> <span class="function">canAfford</span>(cost) {
-    <span class="keyword">return</span> playerGold &gt;= cost;
-}</pre>
-                </div>
+                <p><strong>Rule:</strong> <span class="emphasis">Always use === and !==</span></p>
             </div>
         </div>
 
-        <!-- Slide 10: Combat System Example -->
+        <!-- Slide 9: AND Operator -->
         <div class="slide">
             <div class="slide-content">
-                <h2>Building a Combat System</h2>
+                <h2>AND Operator (&&)</h2>
+                <div class="demo-box">
+                    <h3>🔗 Both conditions must be true</h3>
+                </div>
                 <div class="code-block">
-                    <pre><span class="keyword">function</span> <span class="function">combat</span>(enemyName, enemyHealth, enemyAttack) {
-    <span class="keyword">let</span> playerWins = <span class="keyword">false</span>;
+                    <pre><span class="comment">// Need both sword AND shield</span>
+<span class="keyword">let</span> hasSword = <span class="keyword">true</span>;
+<span class="keyword">let</span> hasShield = <span class="keyword">true</span>;
 
-    <span class="keyword">if</span> (playerAttack &gt; enemyHealth) {
-        playerWins = <span class="keyword">true</span>;
-        <span class="function">updateStory</span>(<span class="string">"You defeated the "</span> + enemyName + <span class="string">"!"</span>);
-        <span class="function">addItem</span>(<span class="string">"Victory Trophy"</span>);
+<span class="keyword">if</span> (hasSword && hasShield) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're fully equipped for battle!"</span>;
+}
+
+<span class="comment">// Multiple health and level checks</span>
+<span class="keyword">let</span> playerHealth = <span class="number">100</span>;
+<span class="keyword">let</span> playerLevel = <span class="number">7</span>;
+<span class="keyword">let</span> hasKey = <span class="keyword">true</span>;
+
+<span class="keyword">if</span> (playerHealth > <span class="number">0</span> && playerLevel >= <span class="number">5</span> && hasKey) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You can enter the dragon's lair!"</span>;
+}</pre>
+                </div>
+                <p><strong>Think:</strong> "I need this <em>AND</em> this <em>AND</em> this"</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: OR Operator -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>OR Operator (||)</h2>
+                <div class="demo-box">
+                    <h3>⚡ At least one condition must be true</h3>
+                </div>
+                <div class="code-block">
+                    <pre><span class="comment">// Either magic key OR lockpicks work</span>
+<span class="keyword">let</span> hasMagicKey = <span class="keyword">false</span>;
+<span class="keyword">let</span> hasLockpicks = <span class="keyword">true</span>;
+
+<span class="keyword">if</span> (hasMagicKey || hasLockpicks) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You can open the chest!"</span>;
+}
+
+<span class="comment">// Class-based abilities</span>
+<span class="keyword">let</span> playerClass = <span class="string">"Wizard"</span>;
+
+<span class="keyword">if</span> (playerClass === <span class="string">"Wizard"</span> || playerClass === <span class="string">"Sorcerer"</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You can cast spells!"</span>;
+}</pre>
+                </div>
+                <p><strong>Think:</strong> "I need this <em>OR</em> this (or both!)"</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: NOT Operator -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>NOT Operator (!)</h2>
+                <div class="demo-box">
+                    <h3>🔄 Reverses true/false</h3>
+                </div>
+                <div class="code-block">
+                    <pre><span class="comment">// Check if something is missing</span>
+<span class="keyword">let</span> hasTorch = <span class="keyword">false</span>;
+
+<span class="keyword">if</span> (!hasTorch) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"It's too dark to see!"</span>;
+}
+
+<span class="comment">// Reverse boolean values</span>
+<span class="keyword">let</span> isDaytime = <span class="keyword">false</span>;
+
+<span class="keyword">if</span> (!isDaytime) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"Monsters come out at night!"</span>;
+}</pre>
+                </div>
+                <p><strong>Think:</strong> "If I <em>don't</em> have this..." or "If this is <em>not</em> true..."</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Complex Game Logic -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Building Smart Game Systems</h2>
+                <div class="code-block">
+                    <pre><span class="comment">// Check if ready to fight dragon</span>
+<span class="keyword">let</span> hasSword = <span class="keyword">true</span>;
+<span class="keyword">let</span> hasMagicStaff = <span class="keyword">false</span>;
+<span class="keyword">let</span> hasShield = <span class="keyword">true</span>;
+<span class="keyword">let</span> playerHealth = <span class="number">60</span>;
+
+<span class="comment">// Need weapon AND shield AND enough health</span>
+<span class="keyword">if</span> ((hasSword || hasMagicStaff) && hasShield && playerHealth >= <span class="number">50</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're ready to fight the dragon!"</span>;
+} <span class="keyword">else</span> {
+    <span class="comment">// Give specific feedback about what's missing</span>
+    <span class="keyword">if</span> (playerHealth < <span class="number">50</span>) {
+        document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"Your health is too low for this battle!"</span>;
+    } <span class="keyword">else if</span> (!hasShield) {
+        document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You need a shield to protect yourself!"</span>;
     } <span class="keyword">else</span> {
-        <span class="function">changeHealth</span>(-enemyAttack);
-        <span class="function">updateStory</span>(<span class="string">"The "</span> + enemyName + <span class="string">" hurt you!"</span>);
+        document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You need a weapon to fight!"</span>;
     }
-
-    <span class="keyword">return</span> playerWins;
-}
-
-<span class="comment">// Usage</span>
-<span class="keyword">let</span> victory = <span class="function">combat</span>(<span class="string">"Dragon"</span>, <span class="number">50</span>, <span class="number">20</span>);
-<span class="keyword">if</span> (victory) {
-    <span class="function">changeGold</span>(<span class="number">100</span>);
 }</pre>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 11: Function Benefits -->
+        <!-- Slide 13: Your Assignment -->
         <div class="slide">
             <div class="slide-content">
-                <h2>Why Functions Are Amazing</h2>
-                <ul style="font-size: 1.8rem;">
-                    <li>🔄 <strong>DRY Principle:</strong> Write once, use everywhere</li>
-                    <li>🐛 <strong>Easier Debugging:</strong> Fix code in one place</li>
-                    <li>📚 <strong>Better Organization:</strong> Code tells a story</li>
-                    <li>🔧 <strong>Easy Updates:</strong> Change behavior in one function</li>
-                    <li>🤝 <strong>Team Collaboration:</strong> Clear, reusable components</li>
-                </ul>
-                <div class="function-demo" style="margin-top: 2rem;">
-                    <p><strong>Professional programmers love functions because they make code:</strong><br>
-                    <span class="emphasis">Cleaner • Faster • More Reliable</span></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 12: Your Assignment -->
-        <div class="slide">
-            <div class="slide-content">
-                <h2>Your Mission: Function Makeover</h2>
-                <div class="big-emoji">🚀</div>
-                <h3>Refactor Your Story Quest</h3>
+                <h2>Your Mission: Smart Story Quest</h2>
+                <div class="big-emoji">🧠</div>
+                <h3>Build an Intelligent Adventure</h3>
                 <ul>
-                    <li>🔄 <strong>Eliminate repetition</strong> - No copy-paste code!</li>
-                    <li>📦 <strong>Create helper functions</strong> - updateStory, changeHealth, etc.</li>
-                    <li>🎛️ <strong>Use parameters</strong> - Make functions flexible</li>
-                    <li>⚔️ <strong>Add combat system</strong> - Function-based battles</li>
-                    <li>🛍️ <strong>Build a shop</strong> - Buy/sell with functions</li>
+                    <li>🚪 <strong>Use all conditionals</strong> - if, else if, else</li>
+                    <li>⚖️ <strong>Master comparisons</strong> - ===, >, <, >=, <=, !==</li>
+                    <li>🔗 <strong>Combine conditions</strong> - &&, ||, !</li>
+                    <li>🎮 <strong>React to everything</strong> - inventory, stats, choices</li>
+                    <li>🔀 <strong>Multiple endings</strong> - consequences matter</li>
                 </ul>
-                <p style="margin-top: 2rem;"><strong>Goal:</strong> Transform your story into a function-powered adventure!</p>
+                <p style="margin-top: 2rem;"><strong>Goal:</strong> Create a story that feels alive and intelligent!</p>
             </div>
         </div>
 
-        <!-- Slide 13: Thank You -->
+        <!-- Slide 14: Thank You -->
         <div class="slide">
             <div class="slide-content">
                 <div class="big-emoji">🎉</div>
                 <h1>Thank You!</h1>
                 <h3>Questions?</h3>
-                <p style="margin-top: 2rem;">Start with story-quest-functions.html and build something amazing!</p>
+                <p style="margin-top: 2rem;">Start with story-quest-conditionals.html and build an intelligent adventure!</p>
             </div>
         </div>
     </div>
