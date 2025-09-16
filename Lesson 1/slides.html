@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Code - Interactive Programming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .slide-container {
+            display: flex;
+            width: 1200vw;
+            height: 100vh;
+            transition: transform 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .slide-content {
+            transform-origin: center center;
+            width: 1200px;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        h3 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            color: #f0f0f0;
+        }
+
+        p, li {
+            font-size: 1.6rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            max-width: 900px;
+        }
+
+        ul {
+            text-align: left;
+            max-width: 800px;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+            padding-left: 1rem;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #444;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            text-align: left;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .number { color: #b5cea8; }
+        .operator { color: #d4d4d4; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1000px;
+            margin: 1rem 0;
+        }
+
+        .comparison-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #666;
+        }
+
+        .bad-code {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .good-code {
+            border-color: #51cf66;
+            background: rgba(81, 207, 102, 0.1);
+        }
+
+        .big-emoji {
+            font-size: 8rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-30px); }
+            60% { transform: translateY(-15px); }
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            z-index: 1000;
+        }
+
+        .slide-dots {
+            position: fixed;
+            bottom: 6rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .game-preview {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            max-width: 700px;
+        }
+
+        .emphasis {
+            color: #ffd93d;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1440px) {
+            .navigation {
+                bottom: 2rem !important;
+                z-index: 1000 !important;
+            }
+
+            .nav-btn {
+                padding: 0.8rem 1.5rem !important;
+                font-size: 1rem !important;
+            }
+
+            .slide-dots {
+                bottom: 6rem !important;
+                z-index: 1000 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">12</span>
+    </div>
+
+    <div class="slide-container" id="slides">
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-emoji">🧹</div>
+                <h1>Clean Code</h1>
+                <p class="subtitle">The Art of Writing Code for Humans</p>
+                <p>Programming isn't just about making computers work—it's about communicating with other humans</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Learning Objectives -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What We'll Learn Today</h2>
+                <ul>
+                    <li>🔍 Experience the difference between messy and clean code</li>
+                    <li>🗣️ Understand that programming is communication</li>
+                    <li>🎮 Explore a complete working program (Mastermind)</li>
+                    <li>🎯 Identify basic programming structures</li>
+                    <li>🕹️ Play classic games ported from the 1990s!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: The Mystery Code -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Code Detective Challenge</h2>
+                <div class="big-emoji">🕵️</div>
+                <p>Open <span class="emphasis">mastermind-obfuscated.html</span> in your browser</p>
+                <p><strong>Your mission:</strong> Figure out what this code does just by looking at it</p>
+                <div class="code-block">
+                    <pre><span class="keyword">var</span> a,b=<span class="number">0</span>,c=[],d=!<span class="number">1</span>,e={<span class="number">1</span>:<span class="string">'🔴'</span>,<span class="number">2</span>:<span class="string">'🔵'</span>...}
+<span class="keyword">function</span> f(){a=[];for(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">4</span>;i++)a.push(...)}
+<span class="keyword">function</span> g(){document.getElementById(<span class="string">'g'</span>).innerHTML=...}</pre>
+                </div>
+                <p><strong>Questions:</strong> Can you tell what this does? Would you want to work with this code?</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Classic Games -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Bonus: Classic Game</h2>
+                <div class="big-emoji">🎮</div>
+                <p>We also have a port of a classic 1990s QBasic game!</p>
+                <div class="game-preview">
+                    <h3>🦍 Gorilla/gorilla.html</h3>
+                    <p>Two gorillas throwing explosive bananas across a city</p>
+                    <p>Calculate angle and velocity to hit your opponent!</p>
+                </div>
+                <p><em>This game is a direct port from the original QBasic source code!</em></p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Problems with Bad Code -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Why That Code Was Terrible</h2>
+                <ul>
+                    <li>🔤 <strong>Cryptic names:</strong> What do <code>a</code>, <code>b</code>, <code>c</code> mean?</li>
+                    <li>📦 <strong>No structure:</strong> Everything crammed together</li>
+                    <li>💭 <strong>No comments:</strong> Zero explanation of what's happening</li>
+                    <li>🌫️ <strong>Deliberately confusing:</strong> Made to be unreadable</li>
+                </ul>
+                <div class="emphasis" style="margin-top: 2rem; font-size: 1.8rem;">
+                    🤖 The computer understands it perfectly!<br>
+                    👨‍💻 But humans can't maintain, fix, or improve it.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: The Clean Version -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Now Try the Clean Version</h2>
+                <div class="big-emoji">✨</div>
+                <p>Open <span class="emphasis">mastermind-clean.html</span></p>
+                <p><strong>This is the EXACT same game</strong> - but written for humans!</p>
+                <p>Compare how it feels to read this code versus the obfuscated version</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Clean Code Principles -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Clean Code Principles</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-box bad-code">
+                        <h3>❌ Bad Code</h3>
+                        <div class="code-block">
+                            <pre><span class="comment">// What is 'a'?</span>
+<span class="keyword">var</span> a = [];
+<span class="keyword">if</span> (i &lt; <span class="number">10</span>) { }</pre>
+                        </div>
+                    </div>
+                    <div class="comparison-box good-code">
+                        <h3>✅ Good Code</h3>
+                        <div class="code-block">
+                            <pre><span class="comment">// Names tell the story</span>
+<span class="keyword">let</span> secretCode = [];
+<span class="keyword">const</span> MAX_ATTEMPTS = <span class="number">10</span>;
+<span class="keyword">if</span> (attemptNumber &lt; MAX_ATTEMPTS) { }</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Self-Documenting Functions -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Functions That Explain Themselves</h2>
+                <div class="code-block">
+                    <pre><span class="keyword">function</span> <span class="function">generateSecretCode</span>() {
+    <span class="keyword">const</span> code = [];
+    <span class="keyword">for</span> (<span class="keyword">let</span> position = <span class="number">0</span>; position &lt; CODE_LENGTH; position++) {
+        <span class="keyword">const</span> randomColor = Math.floor(Math.random() * COLORS_AVAILABLE) + <span class="number">1</span>;
+        code.push(randomColor);
+    }
+    <span class="keyword">return</span> code;
+}</pre>
+                </div>
+                <p>The function name tells you <em>what</em> it does</p>
+                <p>The code inside shows you <em>how</em> it works</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Understanding Mastermind -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>How Mastermind Works</h2>
+                <div style="text-align: left; max-width: 800px;">
+                    <p><strong>1. The Secret:</strong> Computer picks 4 colors</p>
+                    <div class="code-block">
+                        <pre>secretCode = [<span class="number">3</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>]  <span class="comment">// Green, Red, Yellow, Blue</span></pre>
+                    </div>
+
+                    <p><strong>2. Your Guess:</strong> Try to crack the pattern</p>
+                    <div class="code-block">
+                        <pre>currentGuess = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">5</span>]  <span class="comment">// Red, Red, Yellow, Purple</span></pre>
+                    </div>
+
+                    <p><strong>3. Feedback:</strong> How close were you?</p>
+                    <ul>
+                        <li>🟢 <strong>Exact Match:</strong> Right color, right spot</li>
+                        <li>🟡 <strong>Color Match:</strong> Right color, wrong spot</li>
+                        <li>⚪ <strong>No Match:</strong> That color isn't in the code</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Programming Concepts Spotted -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Programming Concepts in Action</h2>
+                <div style="text-align: left; max-width: 900px;">
+                    <h3>🗃️ Variables (Storage)</h3>
+                    <div class="code-block">
+                        <pre><span class="keyword">let</span> secretCode = [];        <span class="comment">// Stores the answer</span>
+<span class="keyword">let</span> currentGuess = [];      <span class="comment">// Stores player's current guess</span>
+<span class="keyword">let</span> attemptNumber = <span class="number">0</span>;      <span class="comment">// Counts tries</span></pre>
+                    </div>
+
+                    <h3>⚡ Functions (Actions)</h3>
+                    <div class="code-block">
+                        <pre><span class="function">startNewGame</span>()             <span class="comment">// Resets everything</span>
+<span class="function">addColorToGuess</span>(color)     <span class="comment">// Adds a color to guess</span>
+<span class="function">submitGuess</span>()              <span class="comment">// Checks if guess is correct</span></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Your Mission -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Your Mission: Code Explorer</h2>
+                <div class="big-emoji">🚀</div>
+                <h3>Explore and Experiment</h3>
+                <ul>
+                    <li>🎮 Play Mastermind and Gorilla games</li>
+                    <li>🔍 Look at the clean code - what makes sense?</li>
+                    <li>🛠️ Try changing ONE small thing in mastermind-clean.html</li>
+                    <li>💭 Think about why clean code matters</li>
+                </ul>
+                <p style="margin-top: 2rem;"><strong>Remember:</strong> The best way to learn programming is to experiment!</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Thank You -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-emoji">🎉</div>
+                <h1>Thank You!</h1>
+                <h3>Questions?</h3>
+                <p style="margin-top: 2rem;">Go explore the code and games - have fun!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">← Previous</button>
+        <button class="nav-btn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <div class="slide-dots" id="slide-dots"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = document.querySelectorAll('.slide').length;
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Create dots
+        const dotsContainer = document.getElementById('slide-dots');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        }
+
+        function updateSlide() {
+            const slides = document.getElementById('slides');
+            slides.style.transform = `translateX(-${currentSlide * 100}vw)`;
+
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+
+            // Update dots
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+
+            scaleSlides();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateSlide();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') previousSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'Home') goToSlide(0);
+            if (e.key === 'End') goToSlide(totalSlides - 1);
+        });
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    previousSlide();
+                }
+            }
+        }
+
+        // Responsive scaling
+        function scaleSlides() {
+            const slides = document.querySelectorAll('.slide-content');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            const baseWidth = 1200;
+            const baseHeight = 800;
+
+            const marginX = 50;
+            const marginY = 50;
+
+            const scaleX = (windowWidth - marginX * 2) / baseWidth;
+            const scaleY = (windowHeight - marginY * 2) / baseHeight;
+
+            let scale = Math.min(scaleX, scaleY);
+            scale = Math.min(scale, 1.2);
+            scale = Math.max(scale, 0.5);
+
+            slides.forEach(slide => {
+                slide.style.transform = `scale(${scale})`;
+            });
+        }
+
+        // Initialize and handle resize
+        window.addEventListener('resize', scaleSlides);
+        window.addEventListener('load', () => {
+            updateSlide();
+            scaleSlides();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variables and Interactivity - Interactive Programming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .slide-container {
+            display: flex;
+            width: 1400vw;
+            height: 100vh;
+            transition: transform 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .slide-content {
+            transform-origin: center center;
+            width: 1200px;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 1rem;
+            }
+
+            .slide h1 {
+                font-size: clamp(1.5rem, 10vw, 2.5rem);
+            }
+
+            .slide h2 {
+                font-size: clamp(1.2rem, 8vw, 2rem);
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .demo-choices {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .demo-area button {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .slide {
+                justify-content: flex-start;
+                padding-top: 2rem;
+            }
+
+            .code-box {
+                padding: 0.8rem;
+            }
+
+            .code-box pre {
+                font-size: clamp(0.7rem, 3vw, 1rem);
+            }
+        }
+
+        .slide h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #ffd700;
+        }
+
+        .slide h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #87ceeb;
+        }
+
+        .slide p {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+        }
+
+        .slide ul {
+            font-size: 1.3rem;
+            text-align: left;
+            max-width: 800px;
+        }
+
+        .slide li {
+            margin-bottom: 0.8rem;
+            list-style: none;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .slide li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .code-box {
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #ffd700;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .code-box pre {
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .code-box .comment {
+            color: #cccccc;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .code-box .keyword {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .code-box .string {
+            color: #44ff88;
+        }
+
+        .code-box .number {
+            color: #ffff44;
+        }
+
+        .code-box .function {
+            color: #ff88ff;
+        }
+
+        .code-box .property {
+            color: #44ddff;
+        }
+
+        .analogy-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid #ffd700;
+            max-width: 800px;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            transform: none !important;
+        }
+
+        .controls button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .slide-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) !important;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+        /* Force navigation visibility for lower resolutions */
+        @media (max-width: 1440px) {
+            .controls {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                display: block !important;
+                visibility: visible !important;
+            }
+
+            .controls button {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.95rem;
+                margin: 0 0.4rem;
+                display: inline-block !important;
+            }
+
+            .slide-indicator {
+                bottom: 1.5rem;
+                display: flex !important;
+                visibility: visible !important;
+            }
+
+            .dot {
+                width: 11px;
+                height: 11px;
+                display: block !important;
+            }
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #ffd700;
+            transform: scale(1.2);
+        }
+
+        .big-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .demo-area {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem 0;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 2px solid #4a5568;
+            font-family: 'Courier New', monospace;
+        }
+
+        .demo-story {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+            border: 1px solid #444;
+            border-left: 4px solid #ffd700;
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.6;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            color: #f4f4f4;
+            font-family: 'Verdana', serif;
+            font-style: normal;
+        }
+
+        .demo-choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        .demo-area button {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border: 2px solid #ff4757;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(255, 107, 107, 0.4);
+            min-width: 140px;
+            font-family: 'Segoe UI', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .demo-area button:hover {
+            background: linear-gradient(135deg, #ff5252 0%, #d63031 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(255, 107, 107, 0.6);
+            border-color: #ff3742;
+        }
+
+        .demo-stats {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #555;
+        }
+
+        .demo-stats strong {
+            color: #ffff44;
+            font-size: 1.1rem;
+        }
+
+        .gold-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #ffaa00 0%, #ff8800 100%);
+            color: #000;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(255, 170, 0, 0.4);
+            border: 1px solid #ffcc00;
+            font-family: 'Courier New', monospace;
+        }
+
+        .gold-counter::before {
+            content: "🪙";
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container" id="slideContainer">
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-emoji">🎮</div>
+                <h1>Variables and Interactivity</h1>
+                <h3>Building Your First Interactive Story</h3>
+                <p>Learn to create dynamic web experiences with JavaScript</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: What We'll Learn -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What We'll Build Today</h2>
+                <div class="big-emoji">📚</div>
+                <ul>
+                    <li>Understand variables as "labeled boxes" for data</li>
+                    <li>Modify web pages with JavaScript</li>
+                    <li>Create an interactive Choose Your Own Adventure</li>
+                    <li>Track game state across user choices</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: Variables Explained -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What Are Variables?</h2>
+                <div class="analogy-box">
+                    <div class="big-emoji">📦</div>
+                    <h3>Think of Variables as Labeled Boxes</h3>
+                    <ul>
+                        <li><strong>📦 Box Label</strong> = Variable name</li>
+                        <li><strong>📝 What's Inside</strong> = Variable value</li>
+                        <li><strong>🔄 Can Change</strong> = We can put new things in the box</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: JavaScript Variables -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>JavaScript Variables in Action</h2>
+                <div class="code-box">
+                    <pre><span class="comment">// Creating variables (let = "let me create a box")</span>
+<span class="keyword">let</span> <span class="property">playerName</span> = <span class="string">"Alex"</span>;
+<span class="keyword">let</span> <span class="property">playerHealth</span> = <span class="number">100</span>;
+<span class="keyword">let</span> <span class="property">currentLocation</span> = <span class="string">"forest"</span>;
+
+<span class="comment">// Changing variable values</span>
+<span class="property">playerHealth</span> = <span class="number">75</span>;        <span class="comment">// Took some damage!</span>
+<span class="property">currentLocation</span> = <span class="string">"cave"</span>; <span class="comment">// Moved to a new place</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Variable Types -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Types of Variables We'll Use</h2>
+                <div class="two-column">
+                    <div>
+                        <h3>Text (Strings)</h3>
+                        <div class="code-box">
+                            <pre><span class="keyword">let</span> <span class="property">storyText</span> = <span class="string">"Once upon a time..."</span>;
+<span class="keyword">let</span> <span class="property">characterName</span> = <span class="string">"Brave Knight"</span>;</pre>
+                        </div>
+                        <p>Always use quotes for text!</p>
+                    </div>
+                    <div>
+                        <h3>Numbers</h3>
+                        <div class="code-box">
+                            <pre><span class="keyword">let</span> <span class="property">goldCoins</span> = <span class="number">50</span>;
+<span class="keyword">let</span> <span class="property">playerLevel</span> = <span class="number">1</span>;</pre>
+                        </div>
+                        <p>No quotes needed for numbers</p>
+                    </div>
+                </div>
+                <div style="margin-top: 2rem;">
+                    <h3>True/False (Booleans)</h3>
+                    <div class="code-box">
+                        <pre><span class="keyword">let</span> <span class="property">hasKey</span> = <span class="keyword">false</span>;
+<span class="keyword">let</span> <span class="property">doorIsOpen</span> = <span class="keyword">true</span>;</pre>
+                    </div>
+                    <p>Only two values: true or false</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: HTML Structure -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Our Story Structure</h2>
+                <div class="code-box">
+                    <pre><span class="keyword">&lt;div</span> <span class="property">id</span>=<span class="string">"story"</span><span class="keyword">&gt;</span>
+    You stand before a mysterious door...
+<span class="keyword">&lt;/div&gt;</span>
+
+<span class="keyword">&lt;div</span> <span class="property">id</span>=<span class="string">"choices"</span><span class="keyword">&gt;</span>
+    <span class="keyword">&lt;button</span> <span class="property">onclick</span>=<span class="string">"openDoor()"</span><span class="keyword">&gt;</span>Open the door<span class="keyword">&lt;/button&gt;</span>
+    <span class="keyword">&lt;button</span> <span class="property">onclick</span>=<span class="string">"walkAway()"</span><span class="keyword">&gt;</span>Walk away<span class="keyword">&lt;/button&gt;</span>
+<span class="keyword">&lt;/div&gt;</span></pre>
+                </div>
+                <p>Two key areas: story text and choice buttons</p>
+            </div>
+        </div>
+
+        <!-- NEW Slide 6.5: What Are Functions? -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Functions: Packages of Instructions</h2>
+                <div class="analogy-box">
+                    <div class="big-emoji">📦</div>
+                    <h3>Think of Functions as Recipe Cards</h3>
+                    <ul>
+                        <li><strong>📝 Name</strong> = What the recipe makes</li>
+                        <li><strong>📋 Instructions</strong> = Steps to follow</li>
+                        <li><strong>🍽️ Execute</strong> = Follow the recipe to make food</li>
+                    </ul>
+                </div>
+                <div class="code-box">
+                    <pre><span class="keyword">function</span> <span class="function">openDoor</span>() {
+    <span class="comment">// Package of instructions for opening door</span>
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"Door opens!"</span>;
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Live Demo -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Live Demo: Interactive Story</h2>
+                <div class="demo-area">
+                    <div class="demo-story" id="demo-story">You stand before a mysterious door...</div>
+                    <div class="demo-choices" id="demo-choices">
+                        <button onclick="demoOpenDoor()">Open the door</button>
+                        <button onclick="demoWalkAway()">Walk away</button>
+                    </div>
+                    <div class="demo-stats">
+                        <div class="gold-counter">
+                            Player Gold: <span id="demo-gold">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: How Buttons Call Functions -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Connecting Buttons to Functions</h2>
+                <div class="code-box">
+                    <pre><span class="comment">// When button is clicked, run the function</span>
+<span class="keyword">&lt;button</span> <span class="property">onclick</span>=<span class="string">"openDoor()"</span><span class="keyword">&gt;</span>Open door<span class="keyword">&lt;/button&gt;</span>
+
+<span class="comment">// This calls (runs) our function:</span>
+<span class="keyword">function</span> <span class="function">openDoor</span>() {
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"Door creaks open!"</span>;
+}</pre>
+                </div>
+                <p>onclick = "Run this function when clicked"</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: The Magic of getElementById -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Changing Web Pages with Code</h2>
+                <div class="code-box">
+                    <pre><span class="comment">// Find the element with id="story"</span>
+<span class="keyword">let</span> <span class="property">storyElement</span> = <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>);
+
+<span class="comment">// Change what's inside it</span>
+<span class="property">storyElement</span>.<span class="property">innerHTML</span> = <span class="string">"New story text!"</span>;
+
+<span class="comment">// Or do it in one line:</span>
+<span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"Even newer text!"</span>;</pre>
+                </div>
+                <p>This is how we make web pages interactive!</p>
+            </div>
+        </div>
+
+
+        <!-- Slide 10: Your Turn -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Your Mission</h2>
+                <div class="big-emoji">🚀</div>
+                <p style="font-size: 2rem; margin-bottom: 2rem;">Create your own 6-scene adventure!</p>
+                <ul>
+                    <li>At least 3 variables tracking player state</li>
+                    <li>6 different story scenes (functions)</li>
+                    <li>Meaningful choices that affect the story</li>
+                    <li>At least 2 different endings</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 11: Story Ideas -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Story Ideas to Get You Started</h2>
+                <div class="two-column">
+                    <div>
+                        <p>🏴‍☠️ Pirate treasure hunt</p>
+                        <p>🚀 Space exploration</p>
+                        <p>🏫 School mystery</p>
+                    </div>
+                    <div>
+                        <p>🦖 Time travel adventure</p>
+                        <p>🏰 Medieval quest</p>
+                        <p>🌊 Underwater exploration</p>
+                    </div>
+                </div>
+                <p style="margin-top: 2rem; font-size: 1.8rem;">What story will you tell?</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Quick Reference -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Quick Reference</h2>
+                <div class="two-column">
+                    <div>
+                        <h3>Variables</h3>
+                        <div class="code-box">
+                            <pre><span class="comment">// Create</span>
+<span class="keyword">let</span> <span class="property">name</span> = <span class="string">"Alex"</span>;
+<span class="keyword">let</span> <span class="property">score</span> = <span class="number">0</span>;
+
+<span class="comment">// Change</span>
+<span class="property">score</span> = <span class="property">score</span> + <span class="number">10</span>;
+
+<span class="comment">// Combine text</span>
+<span class="keyword">let</span> <span class="property">msg</span> = <span class="string">"Hello "</span> + <span class="property">name</span>;</pre>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Functions & Buttons</h3>
+                        <div class="code-box">
+                            <pre><span class="comment">// Function</span>
+<span class="keyword">function</span> <span class="function">doSomething</span>() {
+    <span class="comment">// code here</span>
+}
+
+<span class="comment">// Button</span>
+<span class="keyword">&lt;button</span> <span class="property">onclick</span>=<span class="string">"doSomething()"</span><span class="keyword">&gt;</span>
+    Click me
+<span class="keyword">&lt;/button&gt;</span></pre>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 2rem;">
+                    <h3>DOM Interactions</h3>
+                    <div class="code-box">
+                        <pre><span class="comment">// Get element</span>
+<span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>)
+
+<span class="comment">// Change content</span>
+<span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"New text!"</span>;
+
+<span class="comment">// Store in variable</span>
+<span class="keyword">let</span> <span class="property">element</span> = <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>);
+<span class="property">element</span>.<span class="property">innerHTML</span> = <span class="string">"Updated!"</span>;</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Thank You -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-emoji">🎉</div>
+                <h1>Thank You!</h1>
+                <h3>Questions?</h3>
+                <p style="margin-top: 2rem;">Now go build something amazing!</p>
+                <p style="margin-top: 1rem; opacity: 0.8;">Start with story-quest-starter.html and create your adventure</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="controls">
+        <button onclick="previousSlide()">← Previous</button>
+        <button onclick="nextSlide()">Next →</button>
+    </div>
+
+    <!-- Slide Indicators -->
+    <div class="slide-indicator" id="slideIndicator">
+        <!-- Dots will be generated by JavaScript -->
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 14;
+
+        // Demo variables for slide 7
+        let demoGold = 0;
+
+        function demoOpenDoor() {
+            document.getElementById('demo-story').innerHTML =
+                "The door creaks open. Inside, you see a glowing chest!";
+            document.getElementById('demo-choices').innerHTML =
+                '<button onclick="demoOpenChest()">Open the chest</button>' +
+                '<button onclick="demoLeave()">Leave quickly</button>';
+        }
+
+        function demoWalkAway() {
+            document.getElementById('demo-story').innerHTML =
+                "You walk away safely. The End.";
+            document.getElementById('demo-choices').innerHTML =
+                '<button onclick="demoRestart()">Start Over</button>';
+        }
+
+        function demoOpenChest() {
+            demoGold += 10;
+            document.getElementById('demo-gold').textContent = demoGold;
+            document.getElementById('demo-story').innerHTML =
+                "You found 10 gold coins! Your adventure continues...";
+            document.getElementById('demo-choices').innerHTML =
+                '<button onclick="demoRestart()">Start Over</button>';
+        }
+
+        function demoLeave() {
+            document.getElementById('demo-story').innerHTML =
+                "You leave the treasure behind. Sometimes wisdom is better than gold.";
+            document.getElementById('demo-choices').innerHTML =
+                '<button onclick="demoRestart()">Start Over</button>';
+        }
+
+        function demoRestart() {
+            demoGold = 0;
+            document.getElementById('demo-gold').textContent = demoGold;
+            document.getElementById('demo-story').innerHTML =
+                "You stand before a mysterious door...";
+            document.getElementById('demo-choices').innerHTML =
+                '<button onclick="demoOpenDoor()">Open the door</button>' +
+                '<button onclick="demoWalkAway()">Walk away</button>';
+        }
+
+        // Slide navigation
+        function updateSlidePosition() {
+            const container = document.getElementById('slideContainer');
+            container.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            updateIndicators();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlidePosition();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlidePosition();
+            }
+        }
+
+        function goToSlide(n) {
+            currentSlide = n;
+            updateSlidePosition();
+        }
+
+        function updateIndicators() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function createIndicators() {
+            const indicator = document.getElementById('slideIndicator');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                indicator.appendChild(dot);
+            }
+            updateIndicators();
+        }
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isDragging = false;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            isDragging = true;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                e.preventDefault(); // Prevent scrolling
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+                isDragging = false;
+            }
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 75; // Increased threshold
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next slide
+                    nextSlide();
+                } else {
+                    // Swipe right - previous slide
+                    previousSlide();
+                }
+            }
+        }
+
+        // Prevent default drag behavior on all elements
+        document.addEventListener('dragstart', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('selectstart', (e) => {
+            e.preventDefault();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key >= '1' && e.key <= '9') {
+                const slideNum = parseInt(e.key) - 1;
+                if (slideNum < totalSlides) {
+                    goToSlide(slideNum);
+                }
+            }
+        });
+
+        // Disabled mouse wheel navigation to prevent dragging issues
+        // Mouse wheel can cause unwanted slide container movement
+
+        // Scaling functionality for desktop/laptop resolutions only
+        function scaleSlides() {
+            const slides = document.querySelectorAll('.slide-content');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // Base dimensions (what we designed for)
+            const baseWidth = 1200;
+            const baseHeight = 800;
+
+            // Standard margins for all supported resolutions
+            const marginX = 50;
+            const marginY = 50;
+
+            // Calculate scale factors
+            const scaleX = (windowWidth - marginX * 2) / baseWidth;
+            const scaleY = (windowHeight - marginY * 2) / baseHeight;
+
+            // Use the smaller scale to maintain aspect ratio
+            let scale = Math.min(scaleX, scaleY);
+
+            // Scale limits optimized for classroom/presentation environments
+            // 1440x720: ~0.7 scale
+            // 1920x1080: ~0.9 scale
+            // 4K: up to 1.2 scale
+            scale = Math.min(scale, 1.2); // Cap at 120% for readability
+            scale = Math.max(scale, 0.5); // Minimum scale for classroom visibility
+
+            slides.forEach(slide => {
+                slide.style.transform = `scale(${scale})`;
+            });
+        }
+
+        // Initialize
+        createIndicators();
+        updateSlidePosition();
+        scaleSlides();
+
+        // Rescale on window resize
+        window.addEventListener('resize', scaleSlides);
+    </script>
+</body>
+</html>
