@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Mastermind - Code Breaking Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .instructions {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .color-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .color-button {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .color-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .current-guess {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .guess-slot {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #666;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .action-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .submit-button {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .submit-button:hover {
+            background: #45a049;
+        }
+        
+        .clear-button {
+            background: #f44336;
+            color: white;
+        }
+        
+        .clear-button:hover {
+            background: #da190b;
+        }
+        
+        .guess-history {
+            margin-top: 20px;
+        }
+        
+        .guess-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        
+        .guess-colors {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .history-slot {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #999;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .feedback {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .feedback-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid #666;
+        }
+        
+        .exact-match {
+            background: #4CAF50;
+        }
+        
+        .color-match {
+            background: #FFC107;
+        }
+        
+        .no-match {
+            background: #ddd;
+        }
+        
+        .game-over {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .victory {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .defeat {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="title">🎯 Mastermind</h1>
+        
+        <div class="instructions">
+            <strong>How to play:</strong><br>
+            I'm thinking of a secret code with 4 colors (1-6).<br>
+            🟢 Green dot = Right color, right position<br>
+            🟡 Yellow dot = Right color, wrong position<br>
+            ⚪ Gray dot = Color not in the code<br>
+            You have 10 tries to crack the code!
+        </div>
+        
+        <div id="gameArea"></div>
+    </div>
+
+    <script>
+        // Game Configuration
+        const COLORS_AVAILABLE = 6;  // Colors numbered 1-6
+        const CODE_LENGTH = 4;       // Secret code has 4 positions
+        const MAX_ATTEMPTS = 10;     // Player gets 10 guesses
+        
+        // Color representations for display
+        const COLOR_SYMBOLS = {
+            1: '🔴', // Red
+            2: '🔵', // Blue
+            3: '🟢', // Green
+            4: '🟡', // Yellow
+            5: '🟣', // Purple
+            6: '🟠'  // Orange
+        };
+        
+        // Game State
+        let secretCode = [];
+        let currentGuess = [];
+        let attemptNumber = 0;
+        let gameIsOver = false;
+        let guessHistory = [];
+        
+        // Initialize the game
+        function startNewGame() {
+            secretCode = generateSecretCode();
+            currentGuess = [];
+            attemptNumber = 0;
+            gameIsOver = false;
+            guessHistory = [];
+            updateGameDisplay();
+        }
+        
+        // Generate a random secret code
+        function generateSecretCode() {
+            const code = [];
+            for (let position = 0; position < CODE_LENGTH; position++) {
+                const randomColor = Math.floor(Math.random() * COLORS_AVAILABLE) + 1;
+                code.push(randomColor);
+            }
+            return code;
+        }
+        
+        // Add a color to the current guess
+        function addColorToGuess(color) {
+            if (gameIsOver) return;
+            if (currentGuess.length >= CODE_LENGTH) return;
+            
+            currentGuess.push(color);
+            updateGameDisplay();
+        }
+        
+        // Clear the current guess
+        function clearCurrentGuess() {
+            if (gameIsOver) return;
+            
+            currentGuess = [];
+            updateGameDisplay();
+        }
+        
+        // Submit the current guess
+        function submitGuess() {
+            if (gameIsOver) return;
+            if (currentGuess.length !== CODE_LENGTH) {
+                alert('Please select 4 colors before submitting!');
+                return;
+            }
+            
+            const feedback = evaluateGuess(currentGuess, secretCode);
+            
+            guessHistory.push({
+                guess: [...currentGuess],
+                feedback: feedback
+            });
+            
+            attemptNumber++;
+            
+            // Check for victory
+            const isVictory = feedback.exactMatches === CODE_LENGTH;
+            if (isVictory) {
+                gameIsOver = true;
+            }
+            
+            // Check for defeat
+            const isDefeat = attemptNumber >= MAX_ATTEMPTS && !isVictory;
+            if (isDefeat) {
+                gameIsOver = true;
+            }
+            
+            currentGuess = [];
+            updateGameDisplay();
+        }
+        
+        // Evaluate a guess against the secret code
+        function evaluateGuess(guess, secret) {
+            let exactMatches = 0;
+            let colorMatches = 0;
+            
+            // Create copies to track which positions we've already counted
+            const guessCopy = [...guess];
+            const secretCopy = [...secret];
+            
+            // First pass: Find exact matches (right color, right position)
+            for (let position = 0; position < CODE_LENGTH; position++) {
+                if (guessCopy[position] === secretCopy[position]) {
+                    exactMatches++;
+                    guessCopy[position] = null;  // Mark as counted
+                    secretCopy[position] = null; // Mark as counted
+                }
+            }
+            
+            // Second pass: Find color matches (right color, wrong position)
+            for (let guessPos = 0; guessPos < CODE_LENGTH; guessPos++) {
+                if (guessCopy[guessPos] === null) continue; // Already counted
+                
+                for (let secretPos = 0; secretPos < CODE_LENGTH; secretPos++) {
+                    if (secretCopy[secretPos] === null) continue; // Already counted
+                    
+                    if (guessCopy[guessPos] === secretCopy[secretPos]) {
+                        colorMatches++;
+                        guessCopy[guessPos] = null;  // Mark as counted
+                        secretCopy[secretPos] = null; // Mark as counted
+                        break; // Move to next guess position
+                    }
+                }
+            }
+            
+            return {
+                exactMatches: exactMatches,
+                colorMatches: colorMatches,
+                noMatches: CODE_LENGTH - exactMatches - colorMatches
+            };
+        }
+        
+        // Update the entire game display
+        function updateGameDisplay() {
+            const gameArea = document.getElementById('gameArea');
+            
+            let html = '';
+            
+            // Color selection buttons
+            html += '<div class="color-buttons">';
+            for (let color = 1; color <= COLORS_AVAILABLE; color++) {
+                html += `
+                    <button class="color-button" onclick="addColorToGuess(${color})">
+                        ${COLOR_SYMBOLS[color]}
+                    </button>
+                `;
+            }
+            html += '</div>';
+            
+            // Current guess display
+            html += '<div class="current-guess">';
+            html += '<strong>Current Guess:</strong>';
+            for (let position = 0; position < CODE_LENGTH; position++) {
+                const color = currentGuess[position];
+                const symbol = color ? COLOR_SYMBOLS[color] : '';
+                html += `<div class="guess-slot">${symbol}</div>`;
+            }
+            html += '</div>';
+            
+            // Action buttons
+            if (!gameIsOver) {
+                html += '<div class="action-buttons">';
+                html += '<button class="action-button submit-button" onclick="submitGuess()">Submit Guess</button>';
+                html += '<button class="action-button clear-button" onclick="clearCurrentGuess()">Clear</button>';
+                html += '</div>';
+            }
+            
+            // Attempts remaining
+            if (!gameIsOver) {
+                const attemptsLeft = MAX_ATTEMPTS - attemptNumber;
+                html += `<p style="text-align: center;">Attempts remaining: ${attemptsLeft}</p>`;
+            }
+            
+            // Guess history
+            if (guessHistory.length > 0) {
+                html += '<div class="guess-history">';
+                html += '<h3>Previous Guesses:</h3>';
+                
+                for (let i = 0; i < guessHistory.length; i++) {
+                    const historyItem = guessHistory[i];
+                    html += '<div class="guess-row">';
+                    
+                    // Guess number
+                    html += `<span>#${i + 1}</span>`;
+                    
+                    // Colors guessed
+                    html += '<div class="guess-colors">';
+                    for (const color of historyItem.guess) {
+                        html += `<div class="history-slot">${COLOR_SYMBOLS[color]}</div>`;
+                    }
+                    html += '</div>';
+                    
+                    // Feedback dots
+                    html += '<div class="feedback">';
+                    for (let j = 0; j < historyItem.feedback.exactMatches; j++) {
+                        html += '<div class="feedback-dot exact-match"></div>';
+                    }
+                    for (let j = 0; j < historyItem.feedback.colorMatches; j++) {
+                        html += '<div class="feedback-dot color-match"></div>';
+                    }
+                    for (let j = 0; j < historyItem.feedback.noMatches; j++) {
+                        html += '<div class="feedback-dot no-match"></div>';
+                    }
+                    html += '</div>';
+                    
+                    html += '</div>';
+                }
+                
+                html += '</div>';
+            }
+            
+            // Game over message
+            if (gameIsOver) {
+                const lastFeedback = guessHistory[guessHistory.length - 1]?.feedback;
+                const isVictory = lastFeedback?.exactMatches === CODE_LENGTH;
+                
+                if (isVictory) {
+                    html += `
+                        <div class="game-over victory">
+                            <h2>🎉 Congratulations!</h2>
+                            <p>You cracked the code in ${attemptNumber} attempts!</p>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="game-over defeat">
+                            <h2>Game Over</h2>
+                            <p>The secret code was: ${secretCode.map(c => COLOR_SYMBOLS[c]).join(' ')}</p>
+                        </div>
+                    `;
+                }
+                
+                html += '<div style="text-align: center;">';
+                html += '<button class="action-button submit-button" onclick="startNewGame()">Play Again</button>';
+                html += '</div>';
+            }
+            
+            gameArea.innerHTML = html;
+        }
+        
+        // Start the game when the page loads
+        startNewGame();
+    </script>
+</body>
+</html>
