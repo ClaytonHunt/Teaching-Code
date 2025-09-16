@@ -16,7 +16,8 @@
       "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" repo create Teaching-Code --public --clone)",
       "Bash(git init:*)",
       "Bash(git remote add:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Read(//c/Users/Clayton/Pictures/Screenshots/**)"
     ],
     "deny": [],
     "ask": []
