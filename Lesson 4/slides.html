@@ -52,193 +52,242 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            pointer-events: auto;
         }
 
-        h1 {
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 1rem;
+            }
+
+            .slide h1 {
+                font-size: clamp(1.5rem, 10vw, 2.5rem);
+            }
+
+            .slide h2 {
+                font-size: clamp(1.2rem, 8vw, 2rem);
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .slide {
+                justify-content: flex-start;
+                padding-top: 2rem;
+            }
+
+            .code-box {
+                padding: 0.8rem;
+            }
+
+            .code-box pre {
+                font-size: clamp(0.7rem, 3vw, 1rem);
+            }
+        }
+
+        .slide h1 {
             font-size: 3.5rem;
             margin-bottom: 1rem;
-            font-weight: 700;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        h2 {
-            font-size: 2.8rem;
+        .slide h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #ffd700;
+        }
+
+        .slide h3 {
+            font-size: 2rem;
             margin-bottom: 1.5rem;
-            font-weight: 600;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: #87ceeb;
         }
 
-        h3 {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
-            font-weight: 500;
-            color: #f0f0f0;
-        }
-
-        p, li {
-            font-size: 1.6rem;
+        .slide p {
+            font-size: 1.5rem;
             line-height: 1.6;
-            margin-bottom: 1rem;
-            max-width: 900px;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
         }
 
-        ul {
+        .slide ul {
+            font-size: 1.3rem;
             text-align: left;
             max-width: 800px;
         }
 
-        li {
+        .slide li {
             margin-bottom: 0.8rem;
-            padding-left: 1rem;
+            list-style: none;
+            position: relative;
+            padding-left: 2rem;
         }
 
-        .code-block {
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #444;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            text-align: left;
-            max-width: 1000px;
-            overflow-x: auto;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .code-block pre {
-            font-size: 1.2rem;
-            line-height: 1.5;
-            margin: 0;
-            color: #f8f8f2;
-        }
-
-        .keyword {
-            color: #66d9ef;
+        .slide li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #ffd700;
             font-weight: bold;
         }
 
-        .string {
-            color: #a6e22e;
+        .code-box {
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #ffd700;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
-        .comment {
-            color: #75715e;
+        .code-box pre {
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .code-box .comment {
+            color: #cccccc;
             font-style: italic;
+            font-weight: 400;
         }
 
-        .function {
-            color: #fd971f;
+        .code-box .keyword {
+            color: #ff4444;
+            font-weight: bold;
         }
 
-        .number {
-            color: #ae81ff;
+        .code-box .string {
+            color: #44ff88;
         }
 
-        .demo-box {
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+        .code-box .number {
+            color: #ffff44;
+        }
+
+        .code-box .function {
+            color: #ff88ff;
+        }
+
+        .code-box .property {
+            color: #44ddff;
+        }
+
+        .analogy-box {
+            background: rgba(255,255,255,0.1);
             border-radius: 15px;
             padding: 2rem;
             margin: 2rem 0;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 2px solid #ffd700;
+            max-width: 800px;
         }
 
-        .demo-box h3 {
-            color: #ffffff;
-            margin-bottom: 1rem;
-        }
-
-        .demo-box p {
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1000px;
+            width: 100%;
         }
 
         .big-emoji {
-            font-size: 6rem;
-            margin: 1rem 0;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            font-size: 4rem;
+            margin-bottom: 1rem;
         }
 
-        .slide-number {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            font-size: 1.1rem;
-            opacity: 0.8;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 15px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .navigation {
+        .controls {
             position: fixed;
-            bottom: 30px;
-            left: 30px;
+            bottom: 2rem;
+            right: 2rem;
             z-index: 1000;
-            display: flex;
-            gap: 10px;
+            transform: none !important;
         }
 
-        .nav-button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+        .controls button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
             color: white;
-            padding: 12px 20px;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 1rem;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
         }
 
-        .nav-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+        .controls button:hover {
+            background: white;
+            color: #667eea;
             transform: translateY(-2px);
         }
 
-        .nav-button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
+        .slide-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) !important;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 1000;
         }
 
-        /* Responsive scaling */
-        @media (max-width: 1920px) {
-            .slide-content {
-                transform: scale(0.9);
+        /* Force navigation visibility for lower resolutions */
+        @media (max-width: 1440px) {
+            .controls {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                display: block !important;
+                visibility: visible !important;
+            }
+
+            .controls button {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.95rem;
+                margin: 0 0.4rem;
+                display: inline-block !important;
+            }
+
+            .slide-indicator {
+                bottom: 1.5rem;
+                display: flex !important;
+                visibility: visible !important;
+            }
+
+            .dot {
+                width: 11px;
+                height: 11px;
+                display: block !important;
             }
         }
 
-        @media (max-width: 1600px) {
-            .slide-content {
-                transform: scale(0.8);
-            }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        @media (max-width: 1366px) {
-            .slide-content {
-                transform: scale(0.7);
-            }
+        .dot.active {
+            background: #ffd700;
+            transform: scale(1.2);
         }
 
-        @media (max-width: 1024px) {
-            .slide-content {
-                transform: scale(0.6);
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="navigation">
-        <button class="nav-button" onclick="previousSlide()" id="prevBtn">← Previous</button>
-        <button class="nav-button" onclick="nextSlide()" id="nextBtn">Next →</button>
-    </div>
-
     <div class="slide-container" id="slideContainer">
         <!-- Slide 1: Title -->
         <div class="slide">
@@ -246,7 +295,7 @@
                 <h1>Functions and Reusability</h1>
                 <p>Don't Repeat Yourself (DRY Programming)</p>
                 <div class="big-emoji">🔄</div>
-                <div class="demo-box">
+                <div class="analogy-box">
                     <h3>Today we learn to write smart, reusable code!</h3>
                     <ul>
                         <li>🏗️ <strong>Build Functions:</strong> Reusable code packages</li>
@@ -256,7 +305,6 @@
                     </ul>
                 </div>
             </div>
-            <div class="slide-number">1 / 13</div>
         </div>
 
         <!-- Slide 2: What Are Functions? -->
@@ -265,13 +313,12 @@
                 <h2>What Are Functions?</h2>
                 <div class="big-emoji">📦</div>
                 <p><strong>Functions are reusable packages of code</strong></p>
-                <div class="demo-box">
+                <div class="analogy-box">
                     <h3>🔄 The DRY Principle</h3>
                     <p><strong>Don't Repeat Yourself</strong> - Write once, use many times!</p>
                 </div>
                 <p>Functions solve the copy-paste problem by letting us package instructions and reuse them everywhere.</p>
             </div>
-            <div class="slide-number">2 / 13</div>
         </div>
 
         <!-- Slide 3: The Problem with Repetition -->
@@ -280,19 +327,18 @@
                 <h2>The Copy-Paste Trap</h2>
                 <div class="big-emoji">😵</div>
                 <p><strong>Look at this repetitive code:</strong></p>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// BAD: Lots of repetition!</span>
-playerGold = playerGold + <span class="number">10</span>;
-document.getElementById(<span class="string">'gold'</span>).innerHTML = playerGold;
-document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You found 10 gold!"</span>;
+<span class="property">playerGold</span> = <span class="property">playerGold</span> + <span class="number">10</span>;
+<span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'gold'</span>).<span class="property">innerHTML</span> = <span class="property">playerGold</span>;
+<span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"You found 10 gold!"</span>;
 
-playerGold = playerGold + <span class="number">15</span>;
-document.getElementById(<span class="string">'gold'</span>).innerHTML = playerGold;
-document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You found 15 gold!"</span>;</pre>
+<span class="property">playerGold</span> = <span class="property">playerGold</span> + <span class="number">15</span>;
+<span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'gold'</span>).<span class="property">innerHTML</span> = <span class="property">playerGold</span>;
+<span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"You found 15 gold!"</span>;</pre>
                 </div>
                 <p><strong>Problem:</strong> Same code, different numbers!</p>
             </div>
-            <div class="slide-number">3 / 13</div>
         </div>
 
         <!-- Slide 4: The DRY Solution -->
@@ -301,12 +347,12 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
                 <h2>The Smart Solution</h2>
                 <div class="big-emoji">✨</div>
                 <p><strong>One function handles everything:</strong></p>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// GOOD: One flexible function</span>
 <span class="keyword">function</span> <span class="function">findGold</span>(amount, location) {
-    playerGold = playerGold + amount;
-    document.getElementById(<span class="string">'gold'</span>).innerHTML = playerGold;
-    document.getElementById(<span class="string">'story'</span>).innerHTML =
+    <span class="property">playerGold</span> = <span class="property">playerGold</span> + amount;
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'gold'</span>).<span class="property">innerHTML</span> = <span class="property">playerGold</span>;
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> =
         <span class="string">"You found "</span> + amount + <span class="string">" gold in the "</span> + location + <span class="string">"!"</span>;
 }
 
@@ -315,42 +361,40 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
 <span class="function">findGold</span>(<span class="number">15</span>, <span class="string">"cave"</span>);</pre>
                 </div>
             </div>
-            <div class="slide-number">4 / 13</div>
         </div>
 
         <!-- Slide 5: Function Basics -->
         <div class="slide">
             <div class="slide-content">
                 <h2>Function Fundamentals</h2>
-                <div class="demo-box">
+                <div class="analogy-box">
                     <h3>📦 Functions are like recipes</h3>
                     <p>Write the instructions once, follow them many times</p>
                 </div>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// Function definition (the recipe)</span>
 <span class="keyword">function</span> <span class="function">greetPlayer</span>() {
-    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"Welcome, adventurer!"</span>;
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"Welcome, adventurer!"</span>;
 }
 
 <span class="comment">// Function call (following the recipe)</span>
 <span class="function">greetPlayer</span>();</pre>
                 </div>
             </div>
-            <div class="slide-number">5 / 13</div>
         </div>
 
         <!-- Slide 6: Parameters -->
         <div class="slide">
             <div class="slide-content">
                 <h2>Parameters: The Magic Inputs</h2>
-                <div class="demo-box">
+                <div class="analogy-box">
                     <h3>🎛️ Parameters make functions flexible</h3>
                     <p>Same function, different inputs = different results</p>
                 </div>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// Parameters are like mail slots</span>
 <span class="keyword">function</span> <span class="function">greetPlayer</span>(playerName) {
-    document.getElementById(<span class="string">'story'</span>).innerHTML =
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> =
         <span class="string">"Welcome, brave "</span> + playerName + <span class="string">"!"</span>;
 }
 
@@ -359,7 +403,6 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
 <span class="function">greetPlayer</span>(<span class="string">"Jordan"</span>);   <span class="comment">// "Welcome, brave Jordan!"</span></pre>
                 </div>
             </div>
-            <div class="slide-number">6 / 13</div>
         </div>
 
         <!-- Slide 7: Functions That Change Things -->
@@ -367,17 +410,17 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
             <div class="slide-content">
                 <h2>Functions That Modify Game State</h2>
                 <p><em>🔥 Using conditionals from Lesson 3!</em></p>
-                <div class="code-block">
-                    <pre><span class="keyword">let</span> playerHealth = <span class="number">100</span>;
+                <div class="code-box">
+                    <pre><span class="keyword">let</span> <span class="property">playerHealth</span> = <span class="number">100</span>;
 
 <span class="keyword">function</span> <span class="function">changeHealth</span>(amount) {
-    playerHealth = playerHealth + amount;
+    <span class="property">playerHealth</span> = <span class="property">playerHealth</span> + amount;
 
     <span class="comment">// Keep health between 0 and 100 using conditionals</span>
-    <span class="keyword">if</span> (playerHealth > <span class="number">100</span>) playerHealth = <span class="number">100</span>;
-    <span class="keyword">if</span> (playerHealth < <span class="number">0</span>) playerHealth = <span class="number">0</span>;
+    <span class="keyword">if</span> (<span class="property">playerHealth</span> > <span class="number">100</span>) <span class="property">playerHealth</span> = <span class="number">100</span>;
+    <span class="keyword">if</span> (<span class="property">playerHealth</span> < <span class="number">0</span>) <span class="property">playerHealth</span> = <span class="number">0</span>;
     <span class="comment">// Update the display</span>
-    document.getElementById(<span class="string">'health'</span>).innerHTML = playerHealth;
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'health'</span>).<span class="property">innerHTML</span> = <span class="property">playerHealth</span>;
 }
 <span class="comment">// Use positive numbers to heal:</span>
 <span class="function">changeHealth</span>(<span class="number">20</span>);   <span class="comment">// Heal 20 points</span>
@@ -385,7 +428,6 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
 <span class="function">changeHealth</span>(-<span class="number">30</span>);  <span class="comment">// Take 30 damage</span></pre>
                 </div>
             </div>
-            <div class="slide-number">7 / 13</div>
         </div>
 
         <!-- Slide 8: Essential Game Helper Functions -->
@@ -393,40 +435,39 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
             <div class="slide-content">
                 <h2>Essential Game Helper Functions</h2>
                 <div style="text-align: left; max-width: 900px;">
-                    <div class="code-block">
+                    <div class="code-box">
                         <pre><span class="comment">// 1. Update story text</span>
 <span class="keyword">function</span> <span class="function">updateStory</span>(text) {
-    document.getElementById(<span class="string">'story'</span>).innerHTML = text;
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = text;
 }
 
 <span class="comment">// 2. Manage inventory</span>
 <span class="keyword">function</span> <span class="function">hasItem</span>(itemName) {
-    <span class="keyword">return</span> inventory.includes(itemName);
+    <span class="keyword">return</span> <span class="property">inventory</span>.<span class="function">includes</span>(itemName);
 }
 
 <span class="keyword">function</span> <span class="function">addItem</span>(itemName) {
     <span class="keyword">if</span> (!<span class="function">hasItem</span>(itemName)) {
-        inventory.push(itemName);
+        <span class="property">inventory</span>.<span class="function">push</span>(itemName);
         <span class="function">updateStory</span>(<span class="string">"You found a "</span> + itemName + <span class="string">"!"</span>);
     }
 }</pre>
                     </div>
                 </div>
             </div>
-            <div class="slide-number">8 / 13</div>
         </div>
 
         <!-- Slide 9: Return Values -->
         <div class="slide">
             <div class="slide-content">
                 <h2>Return Values</h2>
-                <div class="demo-box">
+                <div class="analogy-box">
                     <h3>📤 Functions can give back information</h3>
                 </div>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// Functions that answer questions</span>
 <span class="keyword">function</span> <span class="function">canAfford</span>(cost) {
-    <span class="keyword">if</span> (playerGold >= cost) {
+    <span class="keyword">if</span> (<span class="property">playerGold</span> >= cost) {
         <span class="keyword">return</span> <span class="keyword">true</span>;
     } <span class="keyword">else</span> {
         <span class="keyword">return</span> <span class="keyword">false</span>;
@@ -441,7 +482,6 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
 }</pre>
                 </div>
             </div>
-            <div class="slide-number">9 / 13</div>
         </div>
 
         <!-- Slide 10: Smart Door System -->
@@ -449,12 +489,12 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
             <div class="slide-content">
                 <h2>Smart Game Systems</h2>
                 <p><strong>Combining Functions + Conditionals</strong></p>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// One function handles all doors!</span>
 <span class="keyword">function</span> <span class="function">tryOpenDoor</span>(doorColor, requiredKey, newRoom) {
     <span class="keyword">if</span> (<span class="function">hasItem</span>(requiredKey)) {
         <span class="function">updateStory</span>(<span class="string">"The "</span> + doorColor + <span class="string">" door opens!"</span>);
-        currentRoom = newRoom;
+        <span class="property">currentRoom</span> = newRoom;
         <span class="keyword">return</span> <span class="keyword">true</span>;
     } <span class="keyword">else</span> {
         <span class="function">updateStory</span>(<span class="string">"You need a "</span> + requiredKey + <span class="string">"!"</span>);
@@ -467,7 +507,6 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
 <span class="function">tryOpenDoor</span>(<span class="string">"blue"</span>, <span class="string">"Blue Key"</span>, <span class="string">"library"</span>);</pre>
                 </div>
             </div>
-            <div class="slide-number">10 / 13</div>
         </div>
 
         <!-- Slide 11: Combat System -->
@@ -475,9 +514,9 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
             <div class="slide-content">
                 <h2>Advanced Combat System</h2>
                 <p><strong>Functions + Conditionals = Smart Gameplay</strong></p>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="keyword">function</span> <span class="function">attackEnemy</span>(attackType, enemyType) {
-    <span class="keyword">let</span> damage = playerAttack;
+    <span class="keyword">let</span> damage = <span class="property">playerAttack</span>;
 
     <span class="comment">// Type effectiveness using conditionals!</span>
     <span class="keyword">if</span> (attackType === <span class="string">"fire"</span> && enemyType === <span class="string">"ice_troll"</span>) {
@@ -488,12 +527,11 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
         <span class="function">updateStory</span>(<span class="string">"Not very effective..."</span>);
     }
 
-    enemyHealth = enemyHealth - damage;
-    <span class="keyword">return</span> enemyHealth <= <span class="number">0</span> ? <span class="string">"victory"</span> : <span class="string">"continue"</span>;
+    <span class="property">enemyHealth</span> = <span class="property">enemyHealth</span> - damage;
+    <span class="keyword">return</span> <span class="property">enemyHealth</span> <= <span class="number">0</span> ? <span class="string">"victory"</span> : <span class="string">"continue"</span>;
 }</pre>
                 </div>
             </div>
-            <div class="slide-number">11 / 13</div>
         </div>
 
         <!-- Slide 12: Why Functions Are Amazing -->
@@ -508,18 +546,17 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
                     <li>🎯 <strong>Focused Purpose:</strong> Each function does one thing well</li>
                     <li>🔗 <strong>Works with Conditionals:</strong> Smart decision-making</li>
                 </ul>
-                <div class="demo-box">
+                <div class="analogy-box">
                     <h3>💡 Remember: Functions + Conditionals = Smart Games!</h3>
                 </div>
             </div>
-            <div class="slide-number">12 / 13</div>
         </div>
 
         <!-- Slide 13: Assignment -->
         <div class="slide">
             <div class="slide-content">
                 <h2>Your Mission: Function-Powered Game</h2>
-                <div class="demo-box">
+                <div class="analogy-box">
                     <h3>🎯 Build a Story Quest using Functions + Conditionals</h3>
                 </div>
                 <ul>
@@ -529,25 +566,33 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
                     <li>⚡ <strong>Use Conditionals:</strong> Make functions respond intelligently</li>
                     <li>🔄 <strong>DRY Principle:</strong> No copy-paste code!</li>
                 </ul>
-                <div class="demo-box">
+                <div class="analogy-box">
                     <p><strong>Goal:</strong> Create a game where functions do the work, conditionals make the decisions!</p>
                 </div>
             </div>
-            <div class="slide-number">13 / 13</div>
         </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="controls">
+        <button onclick="previousSlide()">← Previous</button>
+        <button onclick="nextSlide()">Next →</button>
+    </div>
+
+    <!-- Slide Indicators -->
+    <div class="slide-indicator" id="slideIndicator">
+        <!-- Dots will be generated by JavaScript -->
     </div>
 
     <script>
         let currentSlide = 0;
         const totalSlides = 13;
 
+        // Slide navigation
         function updateSlidePosition() {
             const container = document.getElementById('slideContainer');
             container.style.transform = `translateX(-${currentSlide * 100}vw)`;
-
-            // Update navigation buttons
-            document.getElementById('prevBtn').disabled = currentSlide === 0;
-            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            updateIndicators();
         }
 
         function nextSlide() {
@@ -564,46 +609,133 @@ document.getElementById(<span class="string">'story'</span>).innerHTML = <span c
             }
         }
 
+        function goToSlide(n) {
+            currentSlide = n;
+            updateSlidePosition();
+        }
+
+        function updateIndicators() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function createIndicators() {
+            const indicator = document.getElementById('slideIndicator');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                indicator.appendChild(dot);
+            }
+            updateIndicators();
+        }
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isDragging = false;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            isDragging = true;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                e.preventDefault(); // Prevent scrolling
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+                isDragging = false;
+            }
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 75; // Increased threshold
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next slide
+                    nextSlide();
+                } else {
+                    // Swipe right - previous slide
+                    previousSlide();
+                }
+            }
+        }
+
+        // Prevent default drag behavior on all elements
+        document.addEventListener('dragstart', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('selectstart', (e) => {
+            e.preventDefault();
+        });
+
         // Keyboard navigation
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'ArrowRight' || event.key === ' ') {
-                event.preventDefault();
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
                 nextSlide();
-            } else if (event.key === 'ArrowLeft') {
-                event.preventDefault();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
                 previousSlide();
+            } else if (e.key >= '1' && e.key <= '9') {
+                const slideNum = parseInt(e.key) - 1;
+                if (slideNum < totalSlides) {
+                    goToSlide(slideNum);
+                }
             }
         });
 
-        // Initialize
-        updateSlidePosition();
-
-        // Responsive scaling function
-        function adjustScale() {
+        // Scaling functionality for desktop/laptop resolutions only
+        function scaleSlides() {
             const slides = document.querySelectorAll('.slide-content');
-            const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
 
-            let scale = 1;
+            // Base dimensions (what we designed for)
+            const baseWidth = 1200;
+            const baseHeight = 800;
 
-            if (screenWidth <= 1024 || screenHeight <= 768) {
-                scale = 0.6;
-            } else if (screenWidth <= 1366) {
-                scale = 0.7;
-            } else if (screenWidth <= 1600) {
-                scale = 0.8;
-            } else if (screenWidth <= 1920) {
-                scale = 0.9;
-            }
+            // Standard margins for all supported resolutions
+            const marginX = 50;
+            const marginY = 50;
+
+            // Calculate scale factors
+            const scaleX = (windowWidth - marginX * 2) / baseWidth;
+            const scaleY = (windowHeight - marginY * 2) / baseHeight;
+
+            // Use the smaller scale to maintain aspect ratio
+            let scale = Math.min(scaleX, scaleY);
+
+            // Scale limits optimized for classroom/presentation environments
+            // 1440x720: ~0.7 scale
+            // 1920x1080: ~0.9 scale
+            // 4K: up to 1.2 scale
+            scale = Math.min(scale, 1.2); // Cap at 120% for readability
+            scale = Math.max(scale, 0.5); // Minimum scale for classroom visibility
 
             slides.forEach(slide => {
                 slide.style.transform = `scale(${scale})`;
             });
         }
 
-        // Call on load and resize
-        window.addEventListener('load', adjustScale);
-        window.addEventListener('resize', adjustScale);
+        // Initialize
+        createIndicators();
+        updateSlidePosition();
+        scaleSlides();
+
+        // Rescale on window resize
+        window.addEventListener('resize', scaleSlides);
     </script>
 </body>
 </html>
