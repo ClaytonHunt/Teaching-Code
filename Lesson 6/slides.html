@@ -400,21 +400,21 @@ player.health = <span class="number">75</span>;          <span class="comment">/
         <div class="slide">
             <div class="slide-content">
                 <h2>The Magic of 'this'</h2>
-                <p><span class="highlight">this</span> always refers to the object that owns the method</p>
+                <p><span class="highlight">this</span> refers to the object that called the method</p>
                 <div class="code-box">
                     <pre><span class="keyword">let</span> wizard = {
     <span class="property">name</span>: <span class="string">"Gandalf"</span>,
     <span class="property">mana</span>: <span class="number">100</span>,
 
     <span class="property">castSpell</span>: <span class="keyword">function</span>(cost) {
-        <span class="keyword">this</span>.mana -= cost;  <span class="comment">// 'this' = wizard object</span>
+        <span class="keyword">this</span>.mana -= cost;  <span class="comment">// 'this' = whatever called this method</span>
         console.<span class="function">log</span>(<span class="string">`${</span><span class="keyword">this</span><span class="string">.name} has ${</span><span class="keyword">this</span><span class="string">.mana} mana left`</span>);
     }
 };
 
-wizard.<span class="function">castSpell</span>(<span class="number">20</span>);  <span class="comment">// "Gandalf has 80 mana left"</span></pre>
+wizard.<span class="function">castSpell</span>(<span class="number">20</span>);  <span class="comment">// wizard called it, so 'this' = wizard</span></pre>
                 </div>
-                <p style="font-size: 1.5rem; margin-top: 1rem;">It's like the object talking about itself! 🪄</p>
+                <p style="font-size: 1.4rem; margin-top: 1rem;">When you call <code>object.method()</code>, <span class="highlight">this</span> = <code>object</code> 🪄</p>
             </div>
         </div>
 
