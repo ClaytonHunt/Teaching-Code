@@ -52,72 +52,154 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            pointer-events: auto;
         }
 
-        h1 {
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 1rem;
+            }
+
+            .slide h1 {
+                font-size: clamp(1.5rem, 10vw, 2.5rem);
+            }
+
+            .slide h2 {
+                font-size: clamp(1.2rem, 8vw, 2rem);
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .slide {
+                justify-content: flex-start;
+                padding-top: 2rem;
+            }
+
+            .code-box {
+                padding: 0.8rem;
+            }
+
+            .code-box pre {
+                font-size: clamp(0.7rem, 3vw, 1rem);
+            }
+        }
+
+        .slide h1 {
             font-size: 3.5rem;
             margin-bottom: 1rem;
-            font-weight: 700;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        h2 {
-            font-size: 2.8rem;
+        .slide h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #ffd700;
+        }
+
+        .slide h3 {
+            font-size: 2rem;
             margin-bottom: 1.5rem;
-            font-weight: 600;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: #87ceeb;
         }
 
-        h3 {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
-            font-weight: 500;
-            color: #f0f0f0;
-        }
-
-        p, li {
-            font-size: 1.6rem;
+        .slide p {
+            font-size: 1.5rem;
             line-height: 1.6;
-            margin-bottom: 1rem;
-            max-width: 900px;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
         }
 
-        ul {
+        .slide ul {
+            font-size: 1.3rem;
             text-align: left;
             max-width: 800px;
         }
 
-        li {
+        .slide li {
             margin-bottom: 0.8rem;
-            padding-left: 1rem;
+            list-style: none;
+            position: relative;
+            padding-left: 2rem;
         }
 
-        .code-block {
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #444;
-            border-radius: 12px;
+        .slide li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .code-box {
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
             padding: 1.5rem;
-            margin: 1.5rem 0;
-            font-family: 'Courier New', monospace;
-            text-align: left;
+            margin: 1rem 0;
+            border-left: 4px solid #ffd700;
             max-width: 900px;
             width: 100%;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
-        .code-block pre {
-            margin: 0;
-            white-space: pre-wrap;
-            font-size: 1.1rem;
-            line-height: 1.4;
+        .code-box pre {
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            text-align: left;
+            font-weight: 500;
         }
 
-        .keyword { color: #569cd6; }
-        .function { color: #dcdcaa; }
-        .string { color: #ce9178; }
-        .comment { color: #6a9955; }
-        .number { color: #b5cea8; }
+        .code-box .comment {
+            color: #cccccc;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .code-box .keyword {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .code-box .string {
+            color: #44ff88;
+        }
+
+        .code-box .number {
+            color: #ffff44;
+        }
+
+        .code-box .function {
+            color: #ff88ff;
+        }
+
+        .code-box .property {
+            color: #44ddff;
+        }
+
+        .analogy-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid #ffd700;
+            max-width: 800px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1000px;
+            width: 100%;
+        }
         .operator { color: #d4d4d4; }
 
         .comparison-grid {
@@ -147,79 +229,90 @@
         }
 
         .big-emoji {
-            font-size: 8rem;
+            font-size: 4rem;
             margin-bottom: 1rem;
-            animation: bounce 2s infinite;
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-30px); }
-            60% { transform: translateY(-15px); }
-        }
-
-        .navigation {
+        .controls {
             position: fixed;
             bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 1rem;
+            right: 2rem;
             z-index: 1000;
+            transform: none !important;
         }
 
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+        .controls button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
             color: white;
             padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
             border-radius: 25px;
             cursor: pointer;
             font-size: 1rem;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
         }
 
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .controls button:hover {
+            background: white;
+            color: #667eea;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .slide-counter {
+        .slide-indicator {
             position: fixed;
-            top: 2rem;
-            right: 2rem;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 1.1rem;
-            z-index: 1000;
-        }
-
-        .slide-dots {
-            position: fixed;
-            bottom: 6rem;
+            bottom: 2rem;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) !important;
             display: flex;
             gap: 0.5rem;
             z-index: 1000;
+        }
+
+
+        /* Force navigation visibility for lower resolutions */
+        @media (max-width: 1440px) {
+            .controls {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                display: block !important;
+                visibility: visible !important;
+            }
+
+            .controls button {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.95rem;
+                margin: 0 0.4rem;
+                display: inline-block !important;
+            }
+
+            .slide-indicator {
+                bottom: 1.5rem;
+                display: flex !important;
+                visibility: visible !important;
+            }
+
+            .dot {
+                width: 11px;
+                height: 11px;
+                display: block !important;
+            }
         }
 
         .dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255,255,255,0.3);
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .dot.active {
-            background: white;
+            background: #ffd700;
             transform: scale(1.2);
         }
+
 
         .emphasis {
             color: #ffd93d;
@@ -259,11 +352,7 @@
     </style>
 </head>
 <body>
-    <div class="slide-counter">
-        <span id="current-slide">1</span> / <span id="total-slides">14</span>
-    </div>
-
-    <div class="slide-container" id="slides">
+    <div class="slide-container" id="slideContainer">
         <!-- Slide 1: Title -->
         <div class="slide">
             <div class="slide-content">
@@ -294,7 +383,7 @@
                 <h2>Games Without Brains</h2>
                 <div class="big-emoji">🤖</div>
                 <p><strong>Without conditionals, games are boring:</strong></p>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// Always the same outcome</span>
 <span class="keyword">let</span> playerGold = <span class="number">50</span>;
 
@@ -313,7 +402,7 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
                 <h2>Games with Brains</h2>
                 <div class="big-emoji">🧠</div>
                 <p><strong>With conditionals, games become intelligent:</strong></p>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// Smart game responses using conditionals</span>
 <span class="keyword">let</span> hasTorch = <span class="keyword">true</span>;
 <span class="keyword">let</span> playerHealth = <span class="number">100</span>;
@@ -339,7 +428,7 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
                     <h3>🚪 If statements are like bouncers at a club</h3>
                     <p>They check if you meet the requirements before letting you in</p>
                 </div>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// Basic if statement structure</span>
 <span class="keyword">let</span> playerHealth = <span class="number">75</span>;
 
@@ -364,7 +453,7 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
             <div class="slide-content">
                 <h2>Multiple Paths (If-Else Chain)</h2>
                 <p>When you need more than two outcomes:</p>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="keyword">let</span> playerLevel = <span class="number">7</span>;
 
 <span class="keyword">if</span> (playerLevel >= <span class="number">10</span>) {
@@ -388,7 +477,7 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
             <div class="slide-content">
                 <h2>Comparison Operators</h2>
                 <div style="text-align: left; max-width: 900px;">
-                    <div class="code-block">
+                    <div class="code-box">
                         <pre><span class="comment">// The comparison toolbox</span>
 === <span class="comment">// Exactly equals (ALWAYS use this!)</span>
 !== <span class="comment">// Not exactly equals</span>
@@ -423,7 +512,7 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
                 <div class="comparison-grid">
                     <div class="comparison-box bad-code">
                         <h3>❌ Dangerous ==</h3>
-                        <div class="code-block">
+                        <div class="code-box">
                             <pre><span class="comment">// Confusing behavior!</span>
 <span class="number">5</span> == <span class="string">"5"</span>     <span class="comment">// true (converts types)</span>
 <span class="number">0</span> == <span class="keyword">false</span>   <span class="comment">// true (confusing!)</span>
@@ -432,7 +521,7 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
                     </div>
                     <div class="comparison-box good-code">
                         <h3>✅ Safe ===</h3>
-                        <div class="code-block">
+                        <div class="code-box">
                             <pre><span class="comment">// Predictable behavior!</span>
 <span class="number">5</span> === <span class="string">"5"</span>     <span class="comment">// false (different types)</span>
 <span class="number">0</span> === <span class="keyword">false</span>   <span class="comment">// false (different types)</span>
@@ -451,7 +540,7 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
                 <div class="demo-box">
                     <h3>🔗 Both conditions must be true</h3>
                 </div>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// Need both sword AND shield</span>
 <span class="keyword">let</span> hasSword = <span class="keyword">true</span>;
 <span class="keyword">let</span> hasShield = <span class="keyword">true</span>;
@@ -480,7 +569,7 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
                 <div class="demo-box">
                     <h3>⚡ At least one condition must be true</h3>
                 </div>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// Either magic key OR lockpicks work</span>
 <span class="keyword">let</span> hasMagicKey = <span class="keyword">false</span>;
 <span class="keyword">let</span> hasLockpicks = <span class="keyword">true</span>;
@@ -507,7 +596,7 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
                 <div class="demo-box">
                     <h3>🔄 Reverses true/false</h3>
                 </div>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// Check if something is missing</span>
 <span class="keyword">let</span> hasTorch = <span class="keyword">false</span>;
 
@@ -530,7 +619,7 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
         <div class="slide">
             <div class="slide-content">
                 <h2>Building Smart Game Systems</h2>
-                <div class="code-block">
+                <div class="code-box">
                     <pre><span class="comment">// Check if ready to fight dragon</span>
 <span class="keyword">let</span> hasSword = <span class="keyword">true</span>;
 <span class="keyword">let</span> hasMagicStaff = <span class="keyword">false</span>;
@@ -582,125 +671,172 @@ document.getElementById(<span class="string">'story'</span>).innerHTML =
         </div>
     </div>
 
-    <div class="navigation">
-        <button class="nav-btn" onclick="previousSlide()">← Previous</button>
-        <button class="nav-btn" onclick="nextSlide()">Next →</button>
+    <!-- Navigation Controls -->
+    <div class="controls">
+        <button onclick="previousSlide()">← Previous</button>
+        <button onclick="nextSlide()">Next →</button>
     </div>
 
-    <div class="slide-dots" id="slide-dots"></div>
+    <!-- Slide Indicators -->
+    <div class="slide-indicator" id="slideIndicator">
+        <!-- Dots will be generated by JavaScript -->
+    </div>
 
     <script>
         let currentSlide = 0;
-        const totalSlides = document.querySelectorAll('.slide').length;
-        document.getElementById('total-slides').textContent = totalSlides;
+        const totalSlides = 14;
 
-        // Create dots
-        const dotsContainer = document.getElementById('slide-dots');
-        for (let i = 0; i < totalSlides; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'dot';
-            if (i === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => goToSlide(i));
-            dotsContainer.appendChild(dot);
-        }
-
-        function updateSlide() {
-            const slides = document.getElementById('slides');
-            slides.style.transform = `translateX(-${currentSlide * 100}vw)`;
-
-            document.getElementById('current-slide').textContent = currentSlide + 1;
-
-            // Update dots
-            document.querySelectorAll('.dot').forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentSlide);
-            });
-
-            scaleSlides();
+        // Slide navigation
+        function updateSlidePosition() {
+            const container = document.getElementById('slideContainer');
+            container.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            updateIndicators();
         }
 
         function nextSlide() {
             if (currentSlide < totalSlides - 1) {
                 currentSlide++;
-                updateSlide();
+                updateSlidePosition();
             }
         }
 
         function previousSlide() {
             if (currentSlide > 0) {
                 currentSlide--;
-                updateSlide();
+                updateSlidePosition();
             }
         }
 
-        function goToSlide(slideIndex) {
-            currentSlide = slideIndex;
-            updateSlide();
+        function goToSlide(n) {
+            currentSlide = n;
+            updateSlidePosition();
         }
 
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') previousSlide();
-            if (e.key === 'ArrowRight') nextSlide();
-            if (e.key === 'Home') goToSlide(0);
-            if (e.key === 'End') goToSlide(totalSlides - 1);
-        });
+        function updateIndicators() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function createIndicators() {
+            const indicator = document.getElementById('slideIndicator');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                indicator.appendChild(dot);
+            }
+            updateIndicators();
+        }
 
         // Touch/swipe support
         let touchStartX = 0;
         let touchEndX = 0;
+        let isDragging = false;
 
-        document.addEventListener('touchstart', e => {
+        document.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
-        });
+            isDragging = true;
+        }, { passive: true });
 
-        document.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                e.preventDefault(); // Prevent scrolling
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+                isDragging = false;
+            }
+        }, { passive: true });
 
         function handleSwipe() {
-            const swipeThreshold = 50;
+            const swipeThreshold = 75; // Increased threshold
             const diff = touchStartX - touchEndX;
 
             if (Math.abs(diff) > swipeThreshold) {
                 if (diff > 0) {
+                    // Swipe left - next slide
                     nextSlide();
                 } else {
+                    // Swipe right - previous slide
                     previousSlide();
                 }
             }
         }
 
-        // Responsive scaling
+        // Prevent default drag behavior on all elements
+        document.addEventListener('dragstart', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('selectstart', (e) => {
+            e.preventDefault();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key >= '1' && e.key <= '9') {
+                const slideNum = parseInt(e.key) - 1;
+                if (slideNum < totalSlides) {
+                    goToSlide(slideNum);
+                }
+            }
+        });
+
+        // Disabled mouse wheel navigation to prevent dragging issues
+        // Mouse wheel can cause unwanted slide container movement
+
+        // Scaling functionality for desktop/laptop resolutions only
         function scaleSlides() {
             const slides = document.querySelectorAll('.slide-content');
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
 
+            // Base dimensions (what we designed for)
             const baseWidth = 1200;
             const baseHeight = 800;
 
+            // Standard margins for all supported resolutions
             const marginX = 50;
             const marginY = 50;
 
+            // Calculate scale factors
             const scaleX = (windowWidth - marginX * 2) / baseWidth;
             const scaleY = (windowHeight - marginY * 2) / baseHeight;
 
+            // Use the smaller scale to maintain aspect ratio
             let scale = Math.min(scaleX, scaleY);
-            scale = Math.min(scale, 1.2);
-            scale = Math.max(scale, 0.5);
+
+            // Scale limits optimized for classroom/presentation environments
+            // 1440x720: ~0.7 scale
+            // 1920x1080: ~0.9 scale
+            // 4K: up to 1.2 scale
+            scale = Math.min(scale, 1.2); // Cap at 120% for readability
+            scale = Math.max(scale, 0.5); // Minimum scale for classroom visibility
 
             slides.forEach(slide => {
                 slide.style.transform = `scale(${scale})`;
             });
         }
 
-        // Initialize and handle resize
+        // Initialize
+        createIndicators();
+        updateSlidePosition();
+        scaleSlides();
+
+        // Rescale on window resize
         window.addEventListener('resize', scaleSlides);
-        window.addEventListener('load', () => {
-            updateSlide();
-            scaleSlides();
-        });
     </script>
 </body>
 </html>
