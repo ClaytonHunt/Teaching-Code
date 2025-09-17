@@ -24,7 +24,7 @@
 
         .slide-container {
             display: flex;
-            width: 1400vw;
+            width: 1500vw;
             height: 100vh;
             transition: transform 0.5s ease-in-out;
             pointer-events: none;
@@ -622,7 +622,44 @@ wizard.<span class="function">castSpell</span>(<span class="number">20</span>); 
             </div>
         </div>
 
-        <!-- Slide 14: Thank You -->
+        <!-- Slide 14: Optional Mission - Debug the Game -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="emoji">🔧</div>
+                <h1>Optional Mission: Debug the RPG Game</h1>
+                <p style="font-size: 1.4rem; margin-bottom: 1.5rem;">The story quest game has several bugs and missing features. Can you fix them?</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; text-align: left;">
+                    <div>
+                        <h3 style="color: #ff6b6b; margin-bottom: 1rem;">🐛 Known Bugs</h3>
+                        <ul style="font-size: 1.1rem; line-height: 1.6;">
+                            <li>• Can't equip weapons/armor from inventory</li>
+                            <li>• Shield spell works but no status shown</li>
+                            <li>• Reset game loses starting mana potion</li>
+                            <li>• Healing spells don't trigger enemy turns</li>
+                            <li>• No validation for invalid equipment slots</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 style="color: #4ecdc4; margin-bottom: 1rem;">✨ Missing Features</h3>
+                        <ul style="font-size: 1.1rem; line-height: 1.6;">
+                            <li>• No spell list display at Spell Forge</li>
+                            <li>• Inventory doesn't always update UI</li>
+                            <li>• No shield duration countdown</li>
+                            <li>• Quest completion tracking inconsistent</li>
+                            <li>• No maximum inventory size limit</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p style="font-size: 1.3rem; margin-top: 1.5rem; color: #ffd700;">
+                    🎯 <strong>Your Mission:</strong> Use your debugging skills to identify, understand, and fix these issues!
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Thank You -->
         <div class="slide">
             <div class="slide-content">
                 <div class="emoji">🎮</div>
@@ -652,7 +689,7 @@ wizard.<span class="function">castSpell</span>(<span class="number">20</span>); 
 
     <script>
         let currentSlide = 0;
-        const totalSlides = 14;
+        const totalSlides = 15;
 
         function updateSlidePosition() {
             const container = document.getElementById('slideContainer');

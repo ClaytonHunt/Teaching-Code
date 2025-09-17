@@ -1,985 +1,794 @@
-// Epic Quest - Final Adventure Game
-// Lesson 6: Objects and Polish
+// The Legendary Spell Forge - Complete RPG Capstone
+// Demonstrates ALL programming concepts from Lessons 1-6
 
-// Character object with properties and methods
-const character = {
-    name: "Adventurer",
-    className: "Hero",
-    avatar: "🧙‍♂️",
-    level: 1,
-    health: 100,
-    maxHealth: 100,
-    mana: 50,
-    maxMana: 50,
-    gold: 0,
-    experience: 0,
-    experienceToNext: 100,
-    
-    // Character methods
-    gainExperience(amount) {
-        this.experience += amount;
-        logMessage(`Gained ${amount} experience!`, 'info');
-        
-        while (this.experience >= this.experienceToNext) {
-            this.levelUp();
-        }
-        updateDisplay();
-    },
-    
-    levelUp() {
-        this.level++;
-        this.experience -= this.experienceToNext;
-        this.experienceToNext = this.level * 100;
-        this.maxHealth += 20;
-        this.maxMana += 10;
-        this.health = this.maxHealth; // Full heal on level up
-        this.mana = this.maxMana;
-        
-        logMessage(`Level up! Now level ${this.level}!`, 'achievement');
-        showLevelUpAnimation();
-        checkAchievements();
-    },
-    
-    takeDamage(amount) {
-        this.health = Math.max(0, this.health - amount);
-        logMessage(`Took ${amount} damage!`, 'damage');
-        
-        if (this.health === 0) {
-            gameOver();
-        }
-        updateDisplay();
-    },
-    
-    heal(amount) {
-        const actualHeal = Math.min(amount, this.maxHealth - this.health);
-        this.health += actualHeal;
-        logMessage(`Healed ${actualHeal} health!`, 'healing');
-        updateDisplay();
-        return actualHeal;
-    },
-    
-    spendMana(amount) {
-        if (this.mana >= amount) {
-            this.mana -= amount;
-            updateDisplay();
-            return true;
-        }
-        return false;
-    }
+// =============================================================================
+// LESSON 1-2: Variables, Basic Data Types, and Conditionals
+// =============================================================================
+
+// Game state variables
+let currentLocation = "village";
+let gameCompleted = false;
+let questsCompleted = [];
+
+// =============================================================================
+// LESSON 3: Functions and Code Organization
+// =============================================================================
+
+// Utility functions for common operations
+function rollDice(sides) {
+    return Math.floor(Math.random() * sides) + 1;
+}
+
+function calculateDamage(baseDamage, randomness = 10) {
+    return baseDamage + rollDice(randomness);
+}
+
+function formatGold(amount) {
+    return `${amount} gold`;
+}
+
+// =============================================================================
+// LESSON 4: Arrays and Data Management
+// =============================================================================
+
+// Available items in the game (arrays of objects)
+const availableItems = {
+    weapons: [
+        { id: 'wooden_sword', name: "Wooden Sword", attack: 5, price: 50, description: "A basic training sword" },
+        { id: 'iron_sword', name: "Iron Sword", attack: 12, price: 150, description: "A reliable iron blade" },
+        { id: 'silver_sword', name: "Silver Sword", attack: 20, price: 400, description: "Gleaming silver weapon" },
+        { id: 'dragon_staff', name: "Dragon Staff", attack: 35, price: 1000, description: "Legendary magical staff" }
+    ],
+    armor: [
+        { id: 'cloth_robe', name: "Cloth Robes", defense: 3, price: 40, description: "Simple cloth protection" },
+        { id: 'leather_armor', name: "Leather Armor", defense: 8, price: 120, description: "Flexible leather protection" },
+        { id: 'chain_mail', name: "Chain Mail", defense: 15, price: 300, description: "Interlocked metal rings" },
+        { id: 'archmage_robes', name: "Archmage Robes", defense: 25, price: 800, description: "Magical protective robes" }
+    ],
+    consumables: [
+        { id: 'health_potion', name: "Health Potion", effect: 'heal', power: 30, price: 25, description: "Restores 30 health" },
+        { id: 'mana_potion', name: "Mana Potion", effect: 'mana', power: 40, price: 30, description: "Restores 40 mana" },
+        { id: 'super_health', name: "Super Health Potion", effect: 'heal', power: 60, price: 50, description: "Restores 60 health" },
+        { id: 'magic_crystal', name: "Magic Crystal", effect: 'mana', power: 80, price: 60, description: "Restores 80 mana" }
+    ]
 };
 
-// Game state object
-const gameState = {
-    currentLocation: null,
-    currentStory: null,
-    gameStarted: false,
-    difficulty: 'normal',
-    settings: {
-        soundEnabled: true,
-        animationsEnabled: true,
-        autoSave: true
+// Available quests (demonstrates arrays and complex data structures)
+const availableQuests = [
+    {
+        id: 'rat_problem',
+        name: "Rat Infestation",
+        description: "The tavern cellar is overrun with giant rats! Clear them out.",
+        goldReward: 100,
+        xpReward: 150,
+        completed: false,
+        enemy: { name: "Giant Rat", health: 25, attack: 8 }
+    },
+    {
+        id: 'goblin_camp',
+        name: "Goblin Bandits",
+        description: "Goblins are attacking merchant caravans. Stop them!",
+        goldReward: 200,
+        xpReward: 300,
+        completed: false,
+        enemy: { name: "Goblin Bandit", health: 45, attack: 12 }
+    },
+    {
+        id: 'ancient_ruins',
+        name: "Ancient Ruins",
+        description: "Explore the mysterious ruins and retrieve the sacred artifact.",
+        goldReward: 400,
+        xpReward: 500,
+        completed: false,
+        enemy: { name: "Stone Guardian", health: 80, attack: 18 }
+    },
+    {
+        id: 'dragon_lair',
+        name: "The Dragon's Challenge",
+        description: "Face the legendary dragon to prove your worth!",
+        goldReward: 1000,
+        xpReward: 1500,
+        completed: false,
+        enemy: { name: "Ancient Dragon", health: 150, attack: 25 }
     }
-};
+];
 
-// Equipment system with objects
-const equipment = {
-    weapon: null,
-    armor: null,
-    accessory: null,
-    
-    equip(item) {
-        if (item.slot && this[item.slot] !== item) {
-            this.unequip(item.slot);
-            this[item.slot] = item;
-            item.equipped = true;
-            this.applyStats(item, true);
-            logMessage(`Equipped ${item.name}!`, 'info');
-            updateDisplay();
-        }
-    },
-    
-    unequip(slot) {
-        if (this[slot]) {
-            this.applyStats(this[slot], false);
-            this[slot].equipped = false;
-            this[slot] = null;
-            updateDisplay();
-        }
-    },
-    
-    applyStats(item, isEquipping) {
-        const multiplier = isEquipping ? 1 : -1;
-        if (item.stats) {
-            if (item.stats.health) character.maxHealth += item.stats.health * multiplier;
-            if (item.stats.mana) character.maxMana += item.stats.mana * multiplier;
-            if (item.stats.attack) character.attack = (character.attack || 10) + item.stats.attack * multiplier;
-        }
-    }
-};
+// =============================================================================
+// LESSON 5: Loops and Advanced Array Operations
+// =============================================================================
 
-// Inventory system
-const inventory = {
-    items: [],
-    maxSize: 20,
-    
-    add(item) {
-        if (this.items.length < this.maxSize) {
-            this.items.push(item);
-            updateDisplay();
-            return true;
-        } else {
-            logMessage("Inventory full!", 'info');
-            return false;
-        }
-    },
-    
-    remove(item) {
-        const index = this.items.indexOf(item);
-        if (index > -1) {
-            this.items.splice(index, 1);
-            updateDisplay();
-            return true;
-        }
-        return false;
-    },
-    
-    has(itemName) {
-        return this.items.some(item => item.name === itemName);
-    },
-    
-    getItem(itemName) {
-        return this.items.find(item => item.name === itemName);
-    },
-    
-    use(item) {
-        if (item.type === 'consumable' && item.effect) {
-            item.effect();
-            this.remove(item);
-        } else if (item.type === 'equipment') {
-            equipment.equip(item);
+// Inventory management functions using loops
+function findItemInInventory(itemId) {
+    for (let i = 0; i < character.inventory.length; i++) {
+        if (character.inventory[i].id === itemId) {
+            return i;
         }
     }
-};
-
-// Item definitions with object properties
-const items = {
-    // Weapons
-    ironSword: {
-        name: "Iron Sword",
-        type: "equipment",
-        slot: "weapon",
-        rarity: "common",
-        stats: { attack: 5 },
-        description: "A sturdy iron sword"
-    },
-    
-    magicStaff: {
-        name: "Magic Staff",
-        type: "equipment",
-        slot: "weapon",
-        rarity: "rare",
-        stats: { attack: 3, mana: 20 },
-        description: "A staff crackling with magical energy"
-    },
-    
-    // Armor
-    leatherArmor: {
-        name: "Leather Armor",
-        type: "equipment",
-        slot: "armor",
-        rarity: "common",
-        stats: { health: 15 },
-        description: "Basic protection for adventurers"
-    },
-    
-    // Consumables
-    healthPotion: {
-        name: "Health Potion",
-        type: "consumable",
-        rarity: "common",
-        description: "Restores 30 health",
-        effect: () => character.heal(30)
-    },
-    
-    manaPotion: {
-        name: "Mana Potion",
-        type: "consumable",
-        rarity: "common",
-        description: "Restores 25 mana",
-        effect: () => {
-            const oldMana = character.mana;
-            character.mana = Math.min(character.maxMana, character.mana + 25);
-            const restored = character.mana - oldMana;
-            logMessage(`Restored ${restored} mana!`, 'magic');
-            updateDisplay();
-        }
-    }
-};
-
-// Location system with objects
-const locations = {
-    village: {
-        name: "Peaceful Village",
-        description: "A quiet village where your adventure begins",
-        image: "🏘️",
-        visited: false,
-        events: ['meetMerchant', 'visitTavern', 'exploreShop']
-    },
-    
-    forest: {
-        name: "Mystic Forest",
-        description: "Ancient trees whisper secrets of old magic",
-        image: "🌲",
-        visited: false,
-        events: ['encounterWolf', 'findTreasure', 'meetWiseOldMan']
-    },
-    
-    dungeon: {
-        name: "Dark Dungeon",
-        description: "A foreboding dungeon filled with danger and treasure",
-        image: "⚫",
-        visited: false,
-        requirements: { level: 3 },
-        events: ['trapRoom', 'treasureChest', 'bossMonster']
-    },
-    
-    castle: {
-        name: "Royal Castle",
-        description: "The magnificent castle of the realm",
-        image: "🏰",
-        visited: false,
-        requirements: { reputation: 50 },
-        events: ['meetKing', 'royalQuest', 'knightTraining']
-    }
-};
-
-// Enemy objects
-const enemies = {
-    wolf: {
-        name: "Forest Wolf",
-        health: 25,
-        maxHealth: 25,
-        attack: 8,
-        gold: 15,
-        experience: 20,
-        image: "🐺"
-    },
-    
-    goblin: {
-        name: "Sneaky Goblin",
-        health: 20,
-        maxHealth: 20,
-        attack: 6,
-        gold: 12,
-        experience: 18,
-        image: "👹"
-    },
-    
-    dragon: {
-        name: "Ancient Dragon",
-        health: 100,
-        maxHealth: 100,
-        attack: 25,
-        gold: 200,
-        experience: 500,
-        image: "🐉"
-    }
-};
-
-// Achievement system
-const achievements = {
-    firstBlood: {
-        name: "First Blood",
-        description: "Defeat your first enemy",
-        unlocked: false,
-        icon: "⚔️"
-    },
-    
-    collector: {
-        name: "Collector",
-        description: "Collect 10 items",
-        unlocked: false,
-        icon: "📦"
-    },
-    
-    explorer: {
-        name: "Explorer",
-        description: "Visit all locations",
-        unlocked: false,
-        icon: "🗺️"
-    },
-    
-    dragonSlayer: {
-        name: "Dragon Slayer",
-        description: "Defeat the Ancient Dragon",
-        unlocked: false,
-        icon: "🐲"
-    }
-};
-
-// Combat system with objects
-const combat = {
-    currentEnemy: null,
-    
-    start(enemyType) {
-        this.currentEnemy = { ...enemies[enemyType] }; // Create copy
-        showCombatInterface();
-        logMessage(`Combat started with ${this.currentEnemy.name}!`, 'info');
-    },
-    
-    playerAttack() {
-        if (!this.currentEnemy) return;
-        
-        const damage = this.calculateDamage();
-        this.currentEnemy.health -= damage;
-        
-        const isCritical = Math.random() < 0.1; // 10% crit chance
-        if (isCritical) {
-            logMessage(`Critical hit! Dealt ${damage * 2} damage!`, 'damage');
-            this.currentEnemy.health -= damage; // Double damage
-        } else {
-            logMessage(`Dealt ${damage} damage!`, 'damage');
-        }
-        
-        if (this.currentEnemy.health <= 0) {
-            this.victory();
-        } else {
-            this.enemyAttack();
-        }
-        
-        updateCombatDisplay();
-    },
-    
-    calculateDamage() {
-        let baseDamage = 10;
-        if (equipment.weapon && equipment.weapon.stats.attack) {
-            baseDamage += equipment.weapon.stats.attack;
-        }
-        return baseDamage + Math.floor(Math.random() * 5); // Random 0-4 bonus
-    },
-    
-    enemyAttack() {
-        if (!this.currentEnemy) return;
-        
-        let damage = this.currentEnemy.attack;
-        if (equipment.armor && equipment.armor.stats.defense) {
-            damage = Math.max(1, damage - equipment.armor.stats.defense);
-        }
-        
-        character.takeDamage(damage);
-        logMessage(`${this.currentEnemy.name} attacked for ${damage} damage!`, 'damage');
-    },
-    
-    victory() {
-        character.gold += this.currentEnemy.gold;
-        character.gainExperience(this.currentEnemy.experience);
-        
-        logMessage(`Victory! Gained ${this.currentEnemy.gold} gold!`, 'achievement');
-        
-        // Chance for item drop
-        if (Math.random() < 0.3) {
-            const possibleDrops = [items.healthPotion, items.manaPotion];
-            const drop = possibleDrops[Math.floor(Math.random() * possibleDrops.length)];
-            inventory.add({ ...drop }); // Create copy
-            logMessage(`Found ${drop.name}!`, 'info');
-        }
-        
-        this.currentEnemy = null;
-        checkAchievements();
-        hideCombatInterface();
-        continueStory();
-    },
-    
-    flee() {
-        logMessage("You fled from battle!", 'info');
-        this.currentEnemy = null;
-        hideCombatInterface();
-        continueStory();
-    }
-};
-
-// Story system with branching paths
-const stories = {
-    intro: {
-        text: "Choose your character class to begin your epic adventure:",
-        image: "✨",
-        choices: [
-            {
-                text: "🗡️ Warrior - Strong and brave",
-                action: () => selectClass('warrior')
-            },
-            {
-                text: "🔮 Mage - Wise and magical",
-                action: () => selectClass('mage')
-            },
-            {
-                text: "🏹 Ranger - Swift and skilled",
-                action: () => selectClass('ranger')
-            }
-        ]
-    },
-    
-    villageStart: {
-        text: "You arrive at a peaceful village. The villagers seem friendly, but you sense adventure calling from beyond.",
-        image: "🏘️",
-        choices: [
-            {
-                text: "🛍️ Visit the merchant",
-                action: () => showStory('merchantEncounter')
-            },
-            {
-                text: "🌲 Explore the nearby forest",
-                action: () => goToLocation('forest'),
-                requirements: { level: 1 }
-            },
-            {
-                text: "🏰 Head towards the castle",
-                action: () => goToLocation('castle'),
-                requirements: { level: 5 }
-            }
-        ]
-    },
-    
-    merchantEncounter: {
-        text: "The friendly merchant shows you various wares. 'Take this starter pack, young adventurer!' he says with a smile.",
-        image: "🧙‍♂️",
-        choices: [
-            {
-                text: "📦 Accept the starter pack",
-                action: () => {
-                    inventory.add({ ...items.healthPotion });
-                    inventory.add({ ...items.ironSword });
-                    character.gold += 50;
-                    logMessage("Received starter pack!", 'achievement');
-                    showStory('villageStart');
-                }
-            },
-            {
-                text: "🛍️ Browse the shop",
-                action: () => openShop()
-            },
-            {
-                text: "🚶 Leave politely",
-                action: () => showStory('villageStart')
-            }
-        ]
-    }
-};
-
-// Game initialization
-function initializeGame() {
-    // Add starting items
-    inventory.add({ ...items.healthPotion });
-    
-    // Set initial location
-    gameState.currentLocation = locations.village;
-    
-    // Start the game
-    showStory('intro');
-    updateDisplay();
-    
-    logMessage("Welcome to Epic Quest!", 'info');
-    logMessage("Your adventure begins now...", 'info');
+    return -1;
 }
 
-// Character class selection
-function selectClass(className) {
-    switch(className) {
-        case 'warrior':
-            character.className = "Warrior";
-            character.avatar = "⚔️";
-            character.maxHealth = 120;
-            character.health = 120;
-            character.attack = 15;
-            inventory.add({ ...items.ironSword });
-            break;
-            
-        case 'mage':
-            character.className = "Mage";
-            character.avatar = "🔮";
-            character.maxMana = 80;
-            character.mana = 80;
-            character.attack = 8;
-            inventory.add({ ...items.magicStaff });
-            inventory.add({ ...items.manaPotion });
-            break;
-            
-        case 'ranger':
-            character.className = "Ranger";
-            character.avatar = "🏹";
-            character.maxHealth = 110;
-            character.health = 110;
-            character.maxMana = 60;
-            character.mana = 60;
-            character.attack = 12;
-            inventory.add({ ...items.leatherArmor });
-            break;
+function addItemToInventory(item, quantity = 1) {
+    const existingIndex = findItemInInventory(item.id);
+
+    if (existingIndex >= 0) {
+        character.inventory[existingIndex].quantity += quantity;
+    } else {
+        character.inventory.push({ ...item, quantity: quantity });
     }
-    
-    updateDisplay();
-    showStory('villageStart');
-    logMessage(`You are now a ${character.className}!`, 'achievement');
-}
 
-// Story display functions
-function showStory(storyKey) {
-    const story = stories[storyKey];
-    if (!story) return;
-    
-    gameState.currentStory = storyKey;
-    
-    document.getElementById('storyText').innerHTML = story.text;
-    document.getElementById('storyImage').innerHTML = story.image;
-    
-    displayChoices(story.choices);
-}
-
-function displayChoices(choices) {
-    const choicesGrid = document.getElementById('choicesGrid');
-    choicesGrid.innerHTML = '';
-    
-    choices.forEach(choice => {
-        const button = document.createElement('button');
-        button.className = 'choice-button';
-        button.innerHTML = choice.text;
-        
-        // Check requirements
-        let canChoose = true;
-        let requirementText = '';
-        
-        if (choice.requirements) {
-            if (choice.requirements.level && character.level < choice.requirements.level) {
-                canChoose = false;
-                requirementText = `<span class="choice-requirement">Requires level ${choice.requirements.level}</span>`;
-            }
-            if (choice.requirements.gold && character.gold < choice.requirements.gold) {
-                canChoose = false;
-                requirementText = `<span class="choice-requirement">Requires ${choice.requirements.gold} gold</span>`;
-            }
-            if (choice.requirements.item && !inventory.has(choice.requirements.item)) {
-                canChoose = false;
-                requirementText = `<span class="choice-requirement">Requires ${choice.requirements.item}</span>`;
-            }
-        }
-        
-        if (!canChoose) {
-            button.disabled = true;
-            button.innerHTML += requirementText;
-        } else {
-            button.onclick = choice.action;
-        }
-        
-        // Add special styling
-        if (choice.type) {
-            button.classList.add(choice.type);
-        }
-        
-        choicesGrid.appendChild(button);
-    });
-}
-
-// Location system
-function goToLocation(locationKey) {
-    const location = locations[locationKey];
-    if (!location) return;
-    
-    gameState.currentLocation = location;
-    location.visited = true;
-    
-    document.getElementById('locationName').innerHTML = location.name;
-    document.getElementById('locationDescription').innerHTML = location.description;
-    document.getElementById('storyImage').innerHTML = location.image;
-    
-    // Random event
-    const randomEvent = location.events[Math.floor(Math.random() * location.events.length)];
-    handleLocationEvent(randomEvent);
-    
-    checkAchievements();
-}
-
-function handleLocationEvent(eventName) {
-    switch(eventName) {
-        case 'encounterWolf':
-            document.getElementById('storyText').innerHTML = "A fierce wolf blocks your path!";
-            combat.start('wolf');
-            break;
-            
-        case 'findTreasure':
-            document.getElementById('storyText').innerHTML = "You discover a hidden treasure chest!";
-            character.gold += 25 + Math.floor(Math.random() * 25);
-            inventory.add({ ...items.healthPotion });
-            logMessage("Found treasure!", 'achievement');
-            updateDisplay();
-            showLocationChoices();
-            break;
-            
-        case 'meetWiseOldMan':
-            document.getElementById('storyText').innerHTML = "A wise old man offers to teach you ancient secrets.";
-            if (character.gold >= 30) {
-                displayChoices([
-                    {
-                        text: "💰 Pay 30 gold for training",
-                        action: () => {
-                            character.gold -= 30;
-                            character.gainExperience(100);
-                            showLocationChoices();
-                        },
-                        requirements: { gold: 30 }
-                    },
-                    {
-                        text: "🚶 Decline and continue",
-                        action: () => showLocationChoices()
-                    }
-                ]);
-            } else {
-                showLocationChoices();
-            }
-            break;
-            
-        default:
-            showLocationChoices();
-    }
-}
-
-function showLocationChoices() {
-    const location = gameState.currentLocation;
-    const choices = [
-        {
-            text: "🔍 Explore more",
-            action: () => goToLocation(Object.keys(locations).find(key => locations[key] === location))
-        },
-        {
-            text: "🏘️ Return to village",
-            action: () => goToLocation('village')
-        }
-    ];
-    
-    // Add location-specific choices
-    if (location === locations.village) {
-        choices.push(
-            {
-                text: "🛍️ Visit shop",
-                action: () => openShop()
-            },
-            {
-                text: "🌲 Go to forest",
-                action: () => goToLocation('forest')
-            }
-        );
-    }
-    
-    displayChoices(choices);
-}
-
-// Combat interface
-function showCombatInterface() {
-    const enemy = combat.currentEnemy;
-    document.getElementById('storyText').innerHTML = `
-        <h3>Combat: ${enemy.name} ${enemy.image}</h3>
-        <p>Enemy Health: ${enemy.health}/${enemy.maxHealth}</p>
-    `;
-    
-    displayChoices([
-        {
-            text: "⚔️ Attack",
-            action: () => combat.playerAttack()
-        },
-        {
-            text: "🧪 Use Health Potion",
-            action: () => useHealthPotion(),
-            requirements: { item: "Health Potion" }
-        },
-        {
-            text: "🏃 Flee",
-            action: () => combat.flee()
-        }
-    ]);
-}
-
-function updateCombatDisplay() {
-    if (combat.currentEnemy) {
-        const enemy = combat.currentEnemy;
-        document.getElementById('storyText').innerHTML = `
-            <h3>Combat: ${enemy.name} ${enemy.image}</h3>
-            <p>Enemy Health: ${enemy.health}/${enemy.maxHealth}</p>
-        `;
-    }
-}
-
-function hideCombatInterface() {
-    // Combat interface is hidden when choices are updated
-}
-
-function continueStory() {
-    showLocationChoices();
-}
-
-// Utility functions
-function useHealthPotion() {
-    const potion = inventory.getItem("Health Potion");
-    if (potion) {
-        inventory.use(potion);
-    }
-}
-
-function openShop() {
-    document.getElementById('storyText').innerHTML = "Welcome to the shop! What would you like to buy?";
-    
-    const shopItems = [
-        { item: items.healthPotion, price: 15 },
-        { item: items.manaPotion, price: 20 },
-        { item: items.ironSword, price: 50 },
-        { item: items.leatherArmor, price: 75 }
-    ];
-    
-    const choices = shopItems.map(shopItem => ({
-        text: `💰 Buy ${shopItem.item.name} (${shopItem.price} gold)`,
-        action: () => buyItem(shopItem.item, shopItem.price),
-        requirements: { gold: shopItem.price }
-    }));
-    
-    choices.push({
-        text: "🚶 Leave shop",
-        action: () => showStory('villageStart')
-    });
-    
-    displayChoices(choices);
-}
-
-function buyItem(item, price) {
-    if (character.gold >= price && inventory.add({ ...item })) {
-        character.gold -= price;
-        logMessage(`Bought ${item.name} for ${price} gold!`, 'info');
-        updateDisplay();
-    }
-    openShop(); // Refresh shop
-}
-
-// Achievement system
-function checkAchievements() {
-    // First Blood achievement
-    if (!achievements.firstBlood.unlocked && combat.currentEnemy === null) {
-        unlockAchievement('firstBlood');
-    }
-    
-    // Collector achievement
-    if (!achievements.collector.unlocked && inventory.items.length >= 10) {
-        unlockAchievement('collector');
-    }
-    
-    // Explorer achievement
-    const visitedCount = Object.values(locations).filter(loc => loc.visited).length;
-    if (!achievements.explorer.unlocked && visitedCount >= Object.keys(locations).length) {
-        unlockAchievement('explorer');
-    }
-}
-
-function unlockAchievement(achievementKey) {
-    const achievement = achievements[achievementKey];
-    if (achievement && !achievement.unlocked) {
-        achievement.unlocked = true;
-        logMessage(`🏆 Achievement Unlocked: ${achievement.name}!`, 'achievement');
-        updateAchievementsDisplay();
-    }
-}
-
-// Display update functions
-function updateDisplay() {
-    updateStatsDisplay();
+    effects.popup(`+${quantity} ${item.name}`, 'achievement');
     updateInventoryDisplay();
-    updateEquipmentDisplay();
 }
 
-function updateStatsDisplay() {
-    document.getElementById('characterName').innerHTML = character.name;
-    document.getElementById('characterClass').innerHTML = character.className;
-    document.getElementById('avatar').innerHTML = character.avatar;
-    
-    const healthPercent = (character.health / character.maxHealth) * 100;
-    const manaPercent = (character.mana / character.maxMana) * 100;
-    
-    document.getElementById('healthBar').style.width = healthPercent + '%';
-    document.getElementById('manaBar').style.width = manaPercent + '%';
-    document.getElementById('healthText').innerHTML = `${character.health}/${character.maxHealth}`;
-    document.getElementById('manaText').innerHTML = `${character.mana}/${character.maxMana}`;
-    document.getElementById('goldText').innerHTML = character.gold;
-    document.getElementById('levelText').innerHTML = character.level;
+function removeItemFromInventory(itemId, quantity = 1) {
+    const index = findItemInInventory(itemId);
+    if (index >= 0) {
+        character.inventory[index].quantity -= quantity;
+        if (character.inventory[index].quantity <= 0) {
+            character.inventory.splice(index, 1);
+        }
+        updateInventoryDisplay();
+        return true;
+    }
+    return false;
 }
 
 function updateInventoryDisplay() {
-    const inventoryGrid = document.getElementById('inventoryGrid');
-    inventoryGrid.innerHTML = '';
-    
-    inventory.items.forEach(item => {
-        const itemDiv = document.createElement('div');
-        itemDiv.className = `inventory-item ${item.rarity || ''}`;
-        itemDiv.innerHTML = item.name;
-        itemDiv.title = item.description;
-        itemDiv.onclick = () => inventory.use(item);
-        inventoryGrid.appendChild(itemDiv);
-    });
-}
+    const inventoryDiv = document.getElementById('inventory');
+    if (!inventoryDiv) return;
 
-function updateEquipmentDisplay() {
-    document.getElementById('weaponSlot').innerHTML = equipment.weapon ? equipment.weapon.name : '⚔️';
-    document.getElementById('armorSlot').innerHTML = equipment.armor ? equipment.armor.name : '🛡️';
-    document.getElementById('accessorySlot').innerHTML = equipment.accessory ? equipment.accessory.name : '💍';
-}
+    let html = '<h4>📦 Inventory:</h4>';
 
-function updateAchievementsDisplay() {
-    const achievementsList = document.getElementById('achievementsList');
-    achievementsList.innerHTML = '';
-    
-    Object.values(achievements).forEach(achievement => {
-        const achievementDiv = document.createElement('div');
-        achievementDiv.className = `achievement ${achievement.unlocked ? 'unlocked' : ''}`;
-        achievementDiv.innerHTML = `${achievement.icon} ${achievement.name}`;
-        achievementDiv.title = achievement.description;
-        achievementsList.appendChild(achievementDiv);
-    });
-}
-
-// Game log
-function logMessage(message, type = 'info') {
-    const gameLog = document.getElementById('gameLog');
-    const logEntry = document.createElement('div');
-    logEntry.className = `log-entry ${type}`;
-    logEntry.innerHTML = message;
-    gameLog.appendChild(logEntry);
-    gameLog.scrollTop = gameLog.scrollHeight;
-    
-    // Keep only last 20 messages
-    while (gameLog.children.length > 20) {
-        gameLog.removeChild(gameLog.firstChild);
-    }
-}
-
-// Animation functions
-function showLevelUpAnimation() {
-    const characterCard = document.querySelector('.character-card');
-    characterCard.classList.add('pulse');
-    setTimeout(() => characterCard.classList.remove('pulse'), 2000);
-}
-
-// Modal functions
-function showGameMenu() {
-    const modal = document.getElementById('gameModal');
-    const content = document.getElementById('modalContent');
-    
-    content.innerHTML = `
-        <h2>Game Menu</h2>
-        <button onclick="saveGame()">💾 Save Game</button><br><br>
-        <button onclick="loadGame()">📂 Load Game</button><br><br>
-        <button onclick="showSettings()">⚙️ Settings</button><br><br>
-        <button onclick="restartGame()">🔄 Restart Game</button><br><br>
-        <button onclick="closeModal()">❌ Close</button>
-    `;
-    
-    modal.style.display = 'block';
-}
-
-function showSettings() {
-    const modal = document.getElementById('gameModal');
-    const content = document.getElementById('modalContent');
-    
-    content.innerHTML = `
-        <h2>Settings</h2>
-        <label><input type="checkbox" ${gameState.settings.soundEnabled ? 'checked' : ''}> Sound Effects</label><br><br>
-        <label><input type="checkbox" ${gameState.settings.animationsEnabled ? 'checked' : ''}> Animations</label><br><br>
-        <label><input type="checkbox" ${gameState.settings.autoSave ? 'checked' : ''}> Auto Save</label><br><br>
-        <button onclick="closeModal()">✅ Apply Settings</button>
-    `;
-    
-    modal.style.display = 'block';
-}
-
-function showHelp() {
-    const modal = document.getElementById('gameModal');
-    const content = document.getElementById('modalContent');
-    
-    content.innerHTML = `
-        <h2>How to Play</h2>
-        <p><strong>Combat:</strong> Click Attack to fight enemies. Use potions to heal.</p>
-        <p><strong>Equipment:</strong> Click items in inventory to equip them.</p>
-        <p><strong>Leveling:</strong> Gain experience by defeating enemies and completing quests.</p>
-        <p><strong>Exploration:</strong> Visit different locations to find new adventures.</p>
-        <p><strong>Achievements:</strong> Complete special objectives to unlock achievements.</p>
-        <button onclick="closeModal()">❌ Close</button>
-    `;
-    
-    modal.style.display = 'block';
-}
-
-function closeModal() {
-    document.getElementById('gameModal').style.display = 'none';
-}
-
-// Save/Load functions
-function saveGame() {
-    const saveData = {
-        character: character,
-        inventory: inventory.items,
-        equipment: equipment,
-        gameState: gameState,
-        achievements: achievements
-    };
-    
-    localStorage.setItem('epicQuestSave', JSON.stringify(saveData));
-    logMessage('Game saved!', 'info');
-}
-
-function loadGame() {
-    const saveData = localStorage.getItem('epicQuestSave');
-    if (saveData) {
-        const data = JSON.parse(saveData);
-        
-        // Restore game state
-        Object.assign(character, data.character);
-        inventory.items = data.inventory || [];
-        Object.assign(equipment, data.equipment);
-        Object.assign(gameState, data.gameState);
-        Object.assign(achievements, data.achievements);
-        
-        updateDisplay();
-        logMessage('Game loaded!', 'info');
-        closeModal();
+    if (character.inventory.length === 0) {
+        html += '<p>Empty inventory</p>';
     } else {
-        logMessage('No saved game found!', 'info');
-    }
-}
+        for (let item of character.inventory) {
+            let buttons = '';
 
-function restartGame() {
-    if (confirm('Are you sure you want to restart? This will delete your current progress.')) {
-        location.reload();
-    }
-}
+            if (item.effect) {
+                buttons += `<button onclick="useItem('${item.id}')">Use</button>`;
+            }
 
-function gameOver() {
-    document.getElementById('storyText').innerHTML = `
-        <h2 style="color: #e74c3c;">Game Over</h2>
-        <p>Your adventure has come to an end...</p>
-        <p>Final Level: ${character.level}</p>
-        <p>Gold Earned: ${character.gold}</p>
-        <p>But every ending is a new beginning!</p>
-    `;
-    
-    displayChoices([
-        {
-            text: "🔄 Try Again",
-            action: () => location.reload()
+            if (item.attack !== undefined) {
+                buttons += `<button onclick="equipItem('${item.id}', 'weapon')">Equip</button>`;
+            }
+
+            if (item.defense !== undefined) {
+                buttons += `<button onclick="equipItem('${item.id}', 'armor')">Equip</button>`;
+            }
+
+            html += `<div class="inventory-item">
+                <span>${item.name} x${item.quantity}</span>
+                <div class="item-buttons">${buttons}</div>
+            </div>`;
         }
-    ]);
+    }
+
+    inventoryDiv.innerHTML = html;
 }
 
-// Initialize the game when page loads
-window.onload = function() {
-    initializeGame();
-    updateAchievementsDisplay();
-    
-    // Auto-save every 30 seconds if enabled
-    setInterval(() => {
-        if (gameState.settings.autoSave) {
-            saveGame();
+// =============================================================================
+// LESSON 6: Objects and Professional Organization
+// =============================================================================
+
+// Main character object with comprehensive methods
+const character = {
+    name: "Hero",
+    health: 80,
+    maxHealth: 80,
+    mana: 60,
+    maxMana: 60,
+    gold: 200,
+    level: 1,
+    experience: 0,
+    experienceToNext: 100,
+
+    // Equipment system
+    equipment: {
+        weapon: { id: 'wooden_sword', name: "Wooden Sword", attack: 5 },
+        armor: { id: 'cloth_robe', name: "Cloth Robes", defense: 3 }
+    },
+
+    // Inventory system (array of items)
+    inventory: [
+        { id: 'health_potion', name: "Health Potion", effect: 'heal', power: 30, quantity: 2 },
+        { id: 'mana_potion', name: "Mana Potion", effect: 'mana', power: 40, quantity: 1 }
+    ],
+
+    // Known spells array
+    spells: ['heal', 'fireball'],
+
+    // Methods for character management
+    modifyStats: function(changes) {
+        if (changes.health !== undefined) {
+            const oldHealth = this.health;
+            this.health = Math.max(0, Math.min(this.maxHealth, this.health + changes.health));
+
+            if (changes.health < 0) {
+                effects.shake(document.querySelector('.status-panel'));
+                effects.popup(`-${Math.abs(changes.health)} HP`, 'damage');
+            } else if (changes.health > 0) {
+                effects.popup(`+${changes.health} HP`, 'healing');
+            }
         }
-    }, 30000);
+
+        if (changes.mana !== undefined) {
+            this.mana = Math.max(0, Math.min(this.maxMana, this.mana + changes.mana));
+            if (changes.mana < 0) {
+                effects.popup(`-${Math.abs(changes.mana)} MP`, 'info');
+            }
+        }
+
+        if (changes.gold !== undefined) {
+            this.gold = Math.max(0, this.gold + changes.gold);
+            if (changes.gold > 0) {
+                effects.popup(`+${changes.gold} Gold!`, 'achievement');
+            }
+        }
+
+        this.updateDisplay();
+    },
+
+    gainExperience: function(amount) {
+        this.experience += amount;
+        effects.popup(`+${amount} XP`, 'achievement');
+
+        while (this.experience >= this.experienceToNext) {
+            this.levelUp();
+        }
+    },
+
+    levelUp: function() {
+        this.level++;
+        this.experience -= this.experienceToNext;
+        this.experienceToNext = this.level * 100;
+
+        this.maxHealth += 15;
+        this.maxMana += 10;
+        this.health = this.maxHealth;
+        this.mana = this.maxMana;
+
+        effects.popup(`Level Up! Now level ${this.level}!`, 'achievement');
+        this.updateDisplay();
+    },
+
+    equipItem: function(item, slot) {
+        const oldItem = this.equipment[slot];
+        this.equipment[slot] = { ...item };
+
+        // Add old item back to inventory if it exists
+        if (oldItem && oldItem.id !== 'wooden_sword' && oldItem.id !== 'cloth_robe') {
+            addItemToInventory(oldItem);
+        }
+
+        effects.popup(`Equipped ${item.name}!`, 'info');
+        this.updateDisplay();
+        updateInventoryDisplay();
+    },
+
+    updateDisplay: function() {
+        document.getElementById('health').textContent = `${this.health}/${this.maxHealth}`;
+        document.getElementById('mana').textContent = `${this.mana}/${this.maxMana}`;
+        document.getElementById('gold').textContent = this.gold;
+        document.getElementById('level').textContent = this.level;
+        document.getElementById('experience').textContent = `${this.experience}/${this.experienceToNext}`;
+
+        // Update equipment display
+        document.getElementById('weapon').textContent = this.equipment.weapon.name;
+        document.getElementById('armor').textContent = this.equipment.armor.name;
+    }
 };
+
+// Spell system object
+const spellSystem = {
+    spells: {
+        heal: { name: "Heal", manaCost: 15, effect: 'heal', power: 25 },
+        fireball: { name: "Fireball", manaCost: 20, effect: 'damage', power: 30 },
+        shield: { name: "Magic Shield", manaCost: 25, effect: 'shield', power: 20 },
+        lightning: { name: "Lightning Bolt", manaCost: 35, effect: 'damage', power: 45 }
+    },
+
+    castSpell: function(spellName) {
+        const spell = this.spells[spellName];
+        if (!spell) return false;
+
+        if (!character.spells.includes(spellName)) {
+            effects.popup("You don't know that spell!", 'damage');
+            return false;
+        }
+
+        if (character.mana >= spell.manaCost) {
+            character.modifyStats({ mana: -spell.manaCost });
+
+            if (spell.effect === 'heal') {
+                character.modifyStats({ health: spell.power });
+            } else if (spell.effect === 'damage' && combat.currentEnemy) {
+                combat.currentEnemy.health -= spell.power;
+                effects.popup(`${spell.name} deals ${spell.power} damage!`, 'achievement');
+            } else if (spell.effect === 'shield') {
+                character.shieldActive = spell.power;
+                setTimeout(() => { character.shieldActive = 0; }, 30000);
+            }
+
+            effects.popup(`Cast ${spell.name}!`, 'info');
+            return true;
+        } else {
+            effects.popup('Not enough mana!', 'damage');
+            return false;
+        }
+    }
+};
+
+// Combat system object
+const combat = {
+    currentEnemy: null,
+    isInCombat: false,
+    currentQuest: null,
+
+    startCombat: function(enemy, quest = null) {
+        this.currentEnemy = { ...enemy };
+        this.currentQuest = quest;
+        this.isInCombat = true;
+
+        ui.updateStory(`A ${enemy.name} appears! It has ${enemy.health} health and looks dangerous!`);
+
+        ui.updateChoices(`
+            <button onclick="combat.attack()">⚔️ Attack (${character.equipment.weapon.name})</button>
+            <button onclick="combat.showSpells()">🔮 Cast Spell</button>
+            <button onclick="combat.showItems()">🧪 Use Item</button>
+            <button onclick="combat.flee()">🏃 Flee</button>
+        `);
+    },
+
+    attack: function() {
+        const weaponDamage = character.equipment.weapon.attack;
+        const damage = calculateDamage(weaponDamage);
+
+        this.currentEnemy.health -= damage;
+        effects.popup(`Dealt ${damage} damage!`, 'achievement');
+
+        if (this.currentEnemy.health <= 0) {
+            this.victory();
+        } else {
+            this.enemyTurn();
+        }
+    },
+
+    showSpells: function() {
+        let spellButtons = '';
+        for (let spellName of character.spells) {
+            const spell = spellSystem.spells[spellName];
+            spellButtons += `<button onclick="combat.castSpell('${spellName}')">${spell.name} (${spell.manaCost} MP)</button>`;
+        }
+        spellButtons += '<button onclick="combat.backToMenu()">🔙 Back</button>';
+
+        ui.updateChoices(spellButtons);
+    },
+
+    showItems: function() {
+        let itemButtons = '';
+        for (let item of character.inventory) {
+            if (item.effect) {
+                itemButtons += `<button onclick="combat.useItemInCombat('${item.id}')">${item.name} x${item.quantity}</button>`;
+            }
+        }
+        itemButtons += '<button onclick="combat.backToMenu()">🔙 Back</button>';
+
+        ui.updateChoices(itemButtons);
+    },
+
+    castSpell: function(spellName) {
+        const success = spellSystem.castSpell(spellName);
+        if (success && this.currentEnemy && this.currentEnemy.health <= 0) {
+            this.victory();
+        } else if (success) {
+            this.enemyTurn();
+        }
+    },
+
+    useItemInCombat: function(itemId) {
+        useItem(itemId);
+        this.enemyTurn();
+    },
+
+    backToMenu: function() {
+        ui.updateChoices(`
+            <button onclick="combat.attack()">⚔️ Attack (${character.equipment.weapon.name})</button>
+            <button onclick="combat.showSpells()">🔮 Cast Spell</button>
+            <button onclick="combat.showItems()">🧪 Use Item</button>
+            <button onclick="combat.flee()">🏃 Flee</button>
+        `);
+    },
+
+    enemyTurn: function() {
+        const damage = Math.max(1, this.currentEnemy.attack - character.equipment.armor.defense - (character.shieldActive || 0));
+        character.modifyStats({ health: -damage });
+
+        ui.updateStory(`The ${this.currentEnemy.name} attacks for ${damage} damage! Your health: ${character.health}/${character.maxHealth}`);
+
+        if (character.health <= 0) {
+            this.defeat();
+        } else {
+            this.backToMenu();
+        }
+    },
+
+    victory: function() {
+        let goldReward = 50;
+        let xpReward = 75;
+
+        if (this.currentQuest) {
+            goldReward = this.currentQuest.goldReward;
+            xpReward = this.currentQuest.xpReward;
+            this.currentQuest.completed = true;
+            questsCompleted.push(this.currentQuest.id);
+        }
+
+        character.modifyStats({ gold: goldReward });
+        character.gainExperience(xpReward);
+
+        ui.updateStory(`Victory! You defeated the ${this.currentEnemy.name}! Gained ${goldReward} gold and ${xpReward} experience.`);
+
+        this.endCombat();
+
+        // Check win condition
+        this.checkWinCondition();
+
+        ui.updateChoices('<button onclick="returnToLocation()">Continue</button>');
+    },
+
+    defeat: function() {
+        ui.updateStory("You have been defeated! You wake up back in the village with half health.");
+        character.health = Math.floor(character.maxHealth / 2);
+        character.updateDisplay();
+        this.endCombat();
+        currentLocation = "village";
+
+        ui.updateChoices('<button onclick="goToLocation(\'village\')">Return to Village</button>');
+    },
+
+    flee: function() {
+        if (rollDice(6) > 2) {
+            this.endCombat();
+            ui.updateStory("You successfully escape from combat!");
+            ui.updateChoices('<button onclick="returnToLocation()">Continue</button>');
+        } else {
+            effects.popup("Can't escape!", 'damage');
+            this.enemyTurn();
+        }
+    },
+
+    endCombat: function() {
+        this.currentEnemy = null;
+        this.currentQuest = null;
+        this.isInCombat = false;
+        character.shieldActive = 0;
+    },
+
+    checkWinCondition: function() {
+        // Win condition: complete all 4 quests
+        if (questsCompleted.length >= 4) {
+            gameCompleted = true;
+            setTimeout(() => {
+                ui.showVictoryScreen();
+            }, 2000);
+        }
+    }
+};
+
+// Location and navigation system
+const locations = {
+    village: {
+        name: "Peaceful Village",
+        description: "A quiet village where your adventure begins. The tavern bustles with activity, and a merchant sells supplies.",
+        actions: [
+            { text: "🍺 Visit Tavern", action: "goToLocation('tavern')" },
+            { text: "🛒 Visit Merchant", action: "goToLocation('merchant')" },
+            { text: "🏰 Travel to Spell Forge", action: "goToLocation('forge')" }
+        ]
+    },
+
+    tavern: {
+        name: "The Prancing Pony Tavern",
+        description: "A warm tavern filled with adventurers sharing tales and seeking quests.",
+        actions: [
+            { text: "📋 Check Quest Board", action: "showQuests()" },
+            { text: "🍻 Rest and Recover", action: "restAtTavern()" },
+            { text: "🚪 Return to Village", action: "goToLocation('village')" }
+        ]
+    },
+
+    merchant: {
+        name: "Merchant's Shop",
+        description: "A well-stocked shop with weapons, armor, and supplies for brave adventurers.",
+        actions: [
+            { text: "⚔️ Browse Weapons", action: "showShop('weapons')" },
+            { text: "🛡️ Browse Armor", action: "showShop('armor')" },
+            { text: "🧪 Browse Potions", action: "showShop('consumables')" },
+            { text: "🚪 Return to Village", action: "goToLocation('village')" }
+        ]
+    },
+
+    forge: {
+        name: "The Legendary Spell Forge",
+        description: "An ancient magical workshop where powerful spells can be learned and mastered.",
+        actions: [
+            { text: "📚 Learn Lightning Spell (500g)", action: "learnSpell('lightning', 500)" },
+            { text: "🔮 Practice Magic", action: "practiceMagic()" },
+            { text: "🚪 Return to Village", action: "goToLocation('village')" }
+        ]
+    }
+};
+
+// Shop system
+const shopSystem = {
+    showShop: function(category) {
+        const items = availableItems[category];
+        let html = `<h3>${category.charAt(0).toUpperCase() + category.slice(1)}</h3>`;
+
+        for (let item of items) {
+            const canAfford = character.gold >= item.price;
+            const buttonClass = canAfford ? '' : 'disabled';
+
+            html += `
+                <div class="shop-item">
+                    <strong>${item.name}</strong> - ${formatGold(item.price)}
+                    <br><small>${item.description}</small>
+                    <br><button class="${buttonClass}" onclick="shopSystem.buyItem('${item.id}', '${category}')" ${canAfford ? '' : 'disabled'}>Buy</button>
+                </div>
+            `;
+        }
+
+        html += '<button onclick="goToLocation(\'merchant\')">🔙 Back to Shop</button>';
+        ui.updateChoices(html);
+    },
+
+    buyItem: function(itemId, category) {
+        const items = availableItems[category];
+        const item = items.find(i => i.id === itemId);
+
+        if (!item || character.gold < item.price) {
+            effects.popup("Can't afford that!", 'damage');
+            return;
+        }
+
+        character.modifyStats({ gold: -item.price });
+
+        if (category === 'weapons' || category === 'armor') {
+            // Equipment goes to inventory for manual equipping
+            addItemToInventory(item);
+        } else {
+            // Consumables go directly to inventory
+            addItemToInventory(item);
+        }
+
+        this.showShop(category);
+    }
+};
+
+// UI and effects systems
+const effects = {
+    shake: function(element) {
+        element.classList.add('shake');
+        setTimeout(() => element.classList.remove('shake'), 500);
+    },
+
+    popup: function(text, type = 'info') {
+        const popup = document.createElement('div');
+        popup.className = `popup ${type}`;
+        popup.textContent = text;
+        document.body.appendChild(popup);
+
+        setTimeout(() => popup.remove(), 3000);
+    },
+
+    fadeIn: function(element) {
+        element.classList.add('fade-in');
+        setTimeout(() => element.classList.remove('fade-in'), 500);
+    }
+};
+
+const ui = {
+    updateStory: function(newText) {
+        const storyElement = document.getElementById('story');
+        effects.fadeIn(storyElement);
+        storyElement.innerHTML = newText;
+    },
+
+    updateChoices: function(choicesHtml) {
+        const choicesElement = document.getElementById('choices');
+        choicesElement.innerHTML = choicesHtml;
+        effects.fadeIn(choicesElement);
+    },
+
+    showVictoryScreen: function() {
+        this.updateStory(`
+            <h2>🎉 CONGRATULATIONS! 🎉</h2>
+            <p>You have completed all quests and proven yourself a true hero!</p>
+            <p>Final Stats:</p>
+            <ul>
+                <li>Level: ${character.level}</li>
+                <li>Health: ${character.health}/${character.maxHealth}</li>
+                <li>Gold: ${character.gold}</li>
+                <li>Quests Completed: ${questsCompleted.length}/4</li>
+            </ul>
+            <p>Thank you for playing this demonstration of programming concepts!</p>
+        `);
+
+        this.updateChoices(`
+            <button onclick="resetGame()">🔄 Play Again</button>
+            <button onclick="showProgrammingConcepts()">🎓 View Programming Concepts</button>
+        `);
+    }
+};
+
+// =============================================================================
+// GAME FUNCTIONS - Bringing it all together
+// =============================================================================
+
+function goToLocation(locationName) {
+    currentLocation = locationName;
+    const location = locations[locationName];
+
+    ui.updateStory(`<h2>${location.name}</h2><p>${location.description}</p>`);
+
+    let actionsHtml = '';
+    for (let action of location.actions) {
+        actionsHtml += `<button onclick="${action.action}">${action.text}</button>`;
+    }
+
+    ui.updateChoices(actionsHtml);
+}
+
+function returnToLocation() {
+    goToLocation(currentLocation);
+}
+
+function showQuests() {
+    let html = '<h3>📋 Available Quests</h3>';
+
+    for (let quest of availableQuests) {
+        if (!quest.completed) {
+            html += `
+                <div class="quest-item">
+                    <strong>${quest.name}</strong>
+                    <br><small>${quest.description}</small>
+                    <br>Reward: ${formatGold(quest.goldReward)} + ${quest.xpReward} XP
+                    <br><button onclick="startQuest('${quest.id}')">Accept Quest</button>
+                </div>
+            `;
+        }
+    }
+
+    html += '<button onclick="goToLocation(\'tavern\')">🔙 Back to Tavern</button>';
+    ui.updateChoices(html);
+}
+
+function startQuest(questId) {
+    const quest = availableQuests.find(q => q.id === questId);
+    if (!quest) return;
+
+    ui.updateStory(`<h3>${quest.name}</h3><p>${quest.description}</p><p>Prepare for battle!</p>`);
+
+    setTimeout(() => {
+        combat.startCombat(quest.enemy, quest);
+    }, 1500);
+}
+
+function showShop(category) {
+    shopSystem.showShop(category);
+}
+
+function restAtTavern() {
+    character.health = character.maxHealth;
+    character.mana = character.maxMana;
+    character.modifyStats({ gold: -10 });
+
+    ui.updateStory("You rest at the tavern, fully recovering your health and mana for 10 gold.");
+    ui.updateChoices('<button onclick="goToLocation(\'tavern\')">Continue</button>');
+}
+
+function useItem(itemId) {
+    const itemIndex = findItemInInventory(itemId);
+    if (itemIndex < 0) return;
+
+    const item = character.inventory[itemIndex];
+
+    if (item.effect === 'heal') {
+        character.modifyStats({ health: item.power });
+    } else if (item.effect === 'mana') {
+        character.modifyStats({ mana: item.power });
+    }
+
+    removeItemFromInventory(itemId, 1);
+    effects.popup(`Used ${item.name}!`, 'healing');
+}
+
+function equipItem(itemId, slot) {
+    const itemIndex = findItemInInventory(itemId);
+    if (itemIndex < 0) return;
+
+    const item = character.inventory[itemIndex];
+
+    // Remove the item from inventory before equipping
+    removeItemFromInventory(itemId, 1);
+
+    // Equip the item
+    character.equipItem(item, slot);
+}
+
+function learnSpell(spellName, cost) {
+    if (character.gold >= cost && !character.spells.includes(spellName)) {
+        character.modifyStats({ gold: -cost });
+        character.spells.push(spellName);
+        effects.popup(`Learned ${spellSystem.spells[spellName].name}!`, 'achievement');
+    } else if (character.spells.includes(spellName)) {
+        effects.popup("You already know that spell!", 'info');
+    } else {
+        effects.popup("Not enough gold!", 'damage');
+    }
+}
+
+function practiceMagic() {
+    character.gainExperience(50);
+    character.modifyStats({ mana: -10 });
+    ui.updateStory("You practice your magical abilities, gaining experience!");
+    ui.updateChoices('<button onclick="goToLocation(\'forge\')">Continue</button>');
+}
+
+function resetGame() {
+    // Reset all game state
+    character.health = 80;
+    character.maxHealth = 80;
+    character.mana = 60;
+    character.maxMana = 60;
+    character.gold = 200;
+    character.level = 1;
+    character.experience = 0;
+    character.experienceToNext = 100;
+    character.equipment = {
+        weapon: { id: 'wooden_sword', name: "Wooden Sword", attack: 5 },
+        armor: { id: 'cloth_robe', name: "Cloth Robes", defense: 3 }
+    };
+    character.inventory = [
+        { id: 'health_potion', name: "Health Potion", effect: 'heal', power: 30, quantity: 2 }
+    ];
+    character.spells = ['heal', 'fireball'];
+
+    questsCompleted = [];
+    gameCompleted = false;
+
+    for (let quest of availableQuests) {
+        quest.completed = false;
+    }
+
+    initializeGame();
+}
+
+function showProgrammingConcepts() {
+    ui.updateStory(`
+        <h2>🎓 Programming Concepts Demonstrated</h2>
+        <p>This game showcases everything learned in Lessons 1-6:</p>
+        <ul>
+            <li><strong>Variables & Data Types:</strong> Game state, player stats, gold amounts</li>
+            <li><strong>Conditionals:</strong> Quest completion checks, combat logic, shop affordability</li>
+            <li><strong>Functions:</strong> Combat system, location navigation, item management</li>
+            <li><strong>Arrays:</strong> Inventory system, quest lists, spell collections</li>
+            <li><strong>Loops:</strong> Inventory searching, shop display generation</li>
+            <li><strong>Objects:</strong> Character stats, equipment system, organized code structure</li>
+            <li><strong>Professional Organization:</strong> Separate files, commented code sections</li>
+        </ul>
+    `);
+
+    ui.updateChoices('<button onclick="resetGame()">🔄 Play Again</button>');
+}
+
+// Initialize the game
+function initializeGame() {
+    character.updateDisplay();
+    updateInventoryDisplay();
+    goToLocation('village');
+}
+
+// Start the game when page loads
+window.addEventListener('DOMContentLoaded', initializeGame);
