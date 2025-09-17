@@ -24,7 +24,7 @@
 
         .slide-container {
             display: flex;
-            width: 1300vw;
+            width: 1400vw;
             height: 100vh;
             transition: transform 0.5s ease-in-out;
             pointer-events: none;
@@ -292,36 +292,48 @@
         <!-- Slide 1: Title -->
         <div class="slide">
             <div class="slide-content">
-                <h1>Functions and Reusability</h1>
-                <p>Don't Repeat Yourself (DRY Programming)</p>
                 <div class="big-emoji">🔄</div>
-                <div class="analogy-box">
-                    <h3>Today we learn to write smart, reusable code!</h3>
-                    <ul>
-                        <li>🏗️ <strong>Build Functions:</strong> Reusable code packages</li>
-                        <li>🎛️ <strong>Use Parameters:</strong> Make functions flexible</li>
-                        <li>📤 <strong>Return Values:</strong> Functions that give back information</li>
-                        <li>🧠 <strong>Combine with Conditionals:</strong> Building on Lesson 3</li>
-                    </ul>
-                </div>
+                <h1>Functions and Reusability</h1>
+                <h3>Don't Repeat Yourself (DRY Programming)</h3>
+                <p>Learn to write smart, reusable code that makes programming efficient</p>
             </div>
         </div>
 
-        <!-- Slide 2: What Are Functions? -->
+        <!-- Slide 2: What We'll Learn Today -->
         <div class="slide">
             <div class="slide-content">
-                <h2>What Are Functions?</h2>
-                <div class="big-emoji">📦</div>
-                <p><strong>Functions are reusable packages of code</strong></p>
-                <div class="analogy-box">
-                    <h3>🔄 The DRY Principle</h3>
-                    <p><strong>Don't Repeat Yourself</strong> - Write once, use many times!</p>
-                </div>
-                <p>Functions solve the copy-paste problem by letting us package instructions and reuse them everywhere.</p>
+                <h2>What We'll Learn Today</h2>
+                <div class="big-emoji">📚</div>
+                <ul>
+                    <li>🏗️ <strong>Build Functions:</strong> Reusable code packages</li>
+                    <li>🎛️ <strong>Use Parameters:</strong> Make functions flexible</li>
+                    <li>📤 <strong>Return Values:</strong> Functions that give back information</li>
+                    <li>🧠 <strong>Combine with Conditionals:</strong> Building on Lesson 3</li>
+                    <li>🎮 <strong>Create Smart Games:</strong> Functions that power interactive stories</li>
+                </ul>
             </div>
         </div>
 
-        <!-- Slide 3: The Problem with Repetition -->
+        <!-- Slide 3: Building on Lesson 2 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Building on Lesson 2</h2>
+                <div class="big-emoji">🏗️</div>
+                <p><strong>You already know how to create and call functions!</strong></p>
+                <div class="code-box">
+                    <pre><span class="comment">// Function definition (the recipe)</span>
+<span class="keyword">function</span> <span class="function">greetPlayer</span>() {
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"Welcome, adventurer!"</span>;
+}
+
+<span class="comment">// Function call (following the recipe)</span>
+<span class="function">greetPlayer</span>();</pre>
+                </div>
+                <p><strong>Today:</strong> Make functions flexible with parameters and return values!</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: The Copy-Paste Trap -->
         <div class="slide">
             <div class="slide-content">
                 <h2>The Copy-Paste Trap</h2>
@@ -341,49 +353,7 @@
             </div>
         </div>
 
-        <!-- Slide 4: The DRY Solution -->
-        <div class="slide">
-            <div class="slide-content">
-                <h2>The Smart Solution</h2>
-                <div class="big-emoji">✨</div>
-                <p><strong>One function handles everything:</strong></p>
-                <div class="code-box">
-                    <pre><span class="comment">// GOOD: One flexible function</span>
-<span class="keyword">function</span> <span class="function">findGold</span>(amount, location) {
-    <span class="property">playerGold</span> = <span class="property">playerGold</span> + amount;
-    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'gold'</span>).<span class="property">innerHTML</span> = <span class="property">playerGold</span>;
-    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> =
-        <span class="string">"You found "</span> + amount + <span class="string">" gold in the "</span> + location + <span class="string">"!"</span>;
-}
-
-<span class="comment">// Usage - so much cleaner!</span>
-<span class="function">findGold</span>(<span class="number">10</span>, <span class="string">"forest"</span>);
-<span class="function">findGold</span>(<span class="number">15</span>, <span class="string">"cave"</span>);</pre>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 5: Function Basics -->
-        <div class="slide">
-            <div class="slide-content">
-                <h2>Function Fundamentals</h2>
-                <div class="analogy-box">
-                    <h3>📦 Functions are like recipes</h3>
-                    <p>Write the instructions once, follow them many times</p>
-                </div>
-                <div class="code-box">
-                    <pre><span class="comment">// Function definition (the recipe)</span>
-<span class="keyword">function</span> <span class="function">greetPlayer</span>() {
-    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> = <span class="string">"Welcome, adventurer!"</span>;
-}
-
-<span class="comment">// Function call (following the recipe)</span>
-<span class="function">greetPlayer</span>();</pre>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 6: Parameters -->
+        <!-- Slide 5: Parameters -->
         <div class="slide">
             <div class="slide-content">
                 <h2>Parameters: The Magic Inputs</h2>
@@ -401,6 +371,28 @@
 <span class="comment">// Same function, different results!</span>
 <span class="function">greetPlayer</span>(<span class="string">"Alex"</span>);     <span class="comment">// "Welcome, brave Alex!"</span>
 <span class="function">greetPlayer</span>(<span class="string">"Jordan"</span>);   <span class="comment">// "Welcome, brave Jordan!"</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: The DRY Solution -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>The Smart Solution</h2>
+                <div class="big-emoji">✨</div>
+                <p><strong>One function handles everything:</strong></p>
+                <div class="code-box">
+                    <pre><span class="comment">// GOOD: One flexible function</span>
+<span class="keyword">function</span> <span class="function">findGold</span>(amount, location) {
+    <span class="property">playerGold</span> = <span class="property">playerGold</span> + amount;
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'gold'</span>).<span class="property">innerHTML</span> = <span class="property">playerGold</span>;
+    <span class="property">document</span>.<span class="function">getElementById</span>(<span class="string">'story'</span>).<span class="property">innerHTML</span> =
+        <span class="string">"You found "</span> + amount + <span class="string">" gold in the "</span> + location + <span class="string">"!"</span>;
+}
+
+<span class="comment">// Usage - so much cleaner!</span>
+<span class="function">findGold</span>(<span class="number">10</span>, <span class="string">"forest"</span>);
+<span class="function">findGold</span>(<span class="number">15</span>, <span class="string">"cave"</span>);</pre>
                 </div>
             </div>
         </div>
@@ -555,20 +547,26 @@
         <!-- Slide 13: Assignment -->
         <div class="slide">
             <div class="slide-content">
-                <h2>Your Mission: Function-Powered Game</h2>
-                <div class="analogy-box">
-                    <h3>🎯 Build a Story Quest using Functions + Conditionals</h3>
-                </div>
+                <h2>Your Mission</h2>
+                <div class="big-emoji">🚀</div>
+                <p style="font-size: 2rem; margin-bottom: 2rem;">Build a Function-Powered Adventure!</p>
                 <ul>
                     <li>📦 <strong>Helper Functions:</strong> updateStory(), changeHealth(), hasItem()</li>
                     <li>🎮 <strong>Game Functions:</strong> tryOpenContainer(), buyItem(), attackEnemy()</li>
-                    <li>🧠 <strong>Smart Systems:</strong> Reputation effects, level requirements</li>
-                    <li>⚡ <strong>Use Conditionals:</strong> Make functions respond intelligently</li>
-                    <li>🔄 <strong>DRY Principle:</strong> No copy-paste code!</li>
+                    <li>🧠 <strong>Smart Systems:</strong> Combine functions with conditionals</li>
+                    <li>🔄 <strong>DRY Principle:</strong> No copy-paste code allowed!</li>
                 </ul>
-                <div class="analogy-box">
-                    <p><strong>Goal:</strong> Create a game where functions do the work, conditionals make the decisions!</p>
-                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Thank You -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-emoji">🎉</div>
+                <h1>Thank You!</h1>
+                <h3>Questions?</h3>
+                <p style="margin-top: 2rem;">Now go build something amazing!</p>
+                <p style="margin-top: 1rem; opacity: 0.8;">Start with story-quest-functions.html and create your adventure</p>
             </div>
         </div>
     </div>
@@ -586,7 +584,7 @@
 
     <script>
         let currentSlide = 0;
-        const totalSlides = 13;
+        const totalSlides = 14;
 
         // Slide navigation
         function updateSlidePosition() {

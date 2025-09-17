@@ -89,17 +89,28 @@ function changeHealth(amount) {
     document.getElementById('health').innerHTML = playerHealth;
 }
 
-// 3. Manage inventory
+// 3. Manage inventory (using individual variables)
 function hasItem(itemName) {
-    return inventory.includes(itemName);
+    if (itemName === "Red Key") return hasRedKey;
+    if (itemName === "Blue Key") return hasBlueKey;
+    if (itemName === "Gold Key") return hasGoldKey;
+    return false;
 }
 
 function addItem(itemName) {
-    if (!hasItem(itemName)) {
-        inventory.push(itemName);
+    if (itemName === "Red Key" && !hasRedKey) {
+        hasRedKey = true;
         return true;  // Successfully added
     }
-    return false;  // Already had item
+    if (itemName === "Blue Key" && !hasBlueKey) {
+        hasBlueKey = true;
+        return true;
+    }
+    if (itemName === "Gold Key" && !hasGoldKey) {
+        hasGoldKey = true;
+        return true;
+    }
+    return false;  // Already had item or unknown item
 }
 ```
 
@@ -185,17 +196,21 @@ function attackEnemy(attackType, targetEnemy) {
 
 ### Level-Based Requirements
 ```javascript
-function checkRequirements(requiredLevel, requiredItems) {
+function checkRequirements(requiredLevel, item1, item2, item3) {
     // Check level first
     if (playerLevel < requiredLevel) {
         return "Need level " + requiredLevel;
     }
 
-    // Check each required item
-    for (let i = 0; i < requiredItems.length; i++) {
-        if (!hasItem(requiredItems[i])) {
-            return "Need " + requiredItems[i];
-        }
+    // Check required items using individual parameters
+    if (item1 && !hasItem(item1)) {
+        return "Need " + item1;
+    }
+    if (item2 && !hasItem(item2)) {
+        return "Need " + item2;
+    }
+    if (item3 && !hasItem(item3)) {
+        return "Need " + item3;
     }
 
     return "requirements_met";
@@ -203,7 +218,7 @@ function checkRequirements(requiredLevel, requiredItems) {
 
 // Usage
 function startBossQuest() {
-    let result = checkRequirements(10, ["Silver Sword", "Magic Shield"]);
+    let result = checkRequirements(10, "Silver Sword", "Magic Shield", null);
 
     if (result === "requirements_met") {
         updateStory("You're ready to face the boss!");

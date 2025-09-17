@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>The Function-Powered Adventure</title>
+    <title>The Wizard's Tower</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -163,13 +163,7 @@
 </head>
 <body>
     <div class="game-container">
-        <h1>🔧 The Function-Powered Adventure 🔧</h1>
-
-        <div class="function-demo">
-            <h4>🎯 Learning Goal</h4>
-            <p>This game demonstrates <code>functions</code> working with <code>conditionals</code> from Lesson 3!<br>
-            Watch how functions make code reusable and smart.</p>
-        </div>
+        <h1>🧙‍♂️ The Wizard's Tower 🧙‍♂️</h1>
 
         <div class="status-panel">
             <div class="stat-card">
@@ -191,36 +185,31 @@
         </div>
 
         <div class="story-section">
-            <div class="location-tag" id="location">Academy Entrance</div>
+            <div class="location-tag" id="location">Tower Entrance</div>
             <div class="story-text" id="story">
-                Welcome to the Coding Academy! You're here to learn the power of functions.
-                This magical academy teaches adventurers how to write smart, reusable code.
-                Your journey will demonstrate how functions work with conditionals to create amazing games!
+                You stand before an ancient wizard's tower, its stones humming with magical energy.
+                The tower is said to contain powerful spells and enchanted artifacts.
+                Rumor has it that the wizard created magical helpers to assist with various tasks!
             </div>
         </div>
 
         <div class="choices-section" id="choices">
             <button class="choice-button" onclick="enterLibrary()">
-                📚 Enter the Function Library
+                📚 Enter the Spell Library
             </button>
             <button class="choice-button" onclick="visitShop()">
-                🛍️ Visit the Smart Shop
+                🛍️ Visit the Enchanted Shop
             </button>
             <button class="choice-button" onclick="enterTrainingGrounds()">
-                ⚔️ Enter Training Grounds
+                ⚔️ Enter the Practice Chamber
             </button>
         </div>
 
         <div class="inventory-section">
             <strong>Inventory:</strong>
             <div class="inventory-grid" id="inventory">
-                <div class="inventory-item">Beginner's Guide</div>
+                <div class="inventory-item">Apprentice Robes</div>
             </div>
-        </div>
-
-        <div class="function-demo">
-            <h4>🔍 Function Tracker</h4>
-            <div id="function-tracker">No functions called yet...</div>
         </div>
     </div>
 
@@ -230,30 +219,32 @@
         let playerGold = 50;
         let playerLevel = 1;
         let playerReputation = 0;
-        let currentLocation = "Academy Entrance";
-        let inventory = ["Beginner's Guide"];
-        let functionCallLog = [];
+        let currentLocation = "Tower Entrance";
+        // Individual item variables
+        let hasApprenticeRobes = true;
+        let hasEnchantedSword = false;
+        let hasMagicalShield = false;
+        let hasHealthPotion = false;
+        let hasAncientSpellTome = false;
+        let hasMasterWizardMedallion = false;
+        let hasSwordMasteryScroll = false;
 
         // Quest Flags
-        let knowsAboutFunctions = false;
-        let learnedParameters = false;
-        let learnedReturns = false;
+        let hasExploredLibrary = false;
+        let hasFoundAncientKnowledge = false;
         let masterQuest = false;
 
         // LESSON 4 DEMONSTRATION: Helper Functions with Parameters
         function updateStory(text) {
-            logFunctionCall("updateStory", [text]);
             document.getElementById('story').innerHTML = text;
         }
 
         function updateLocation(newLocation) {
-            logFunctionCall("updateLocation", [newLocation]);
             currentLocation = newLocation;
             document.getElementById('location').innerHTML = currentLocation;
         }
 
         function changeHealth(amount) {
-            logFunctionCall("changeHealth", [amount]);
             playerHealth += amount;
 
             // Using conditionals from Lesson 3!
@@ -270,27 +261,60 @@
         }
 
         function changeGold(amount) {
-            logFunctionCall("changeGold", [amount]);
             playerGold += amount;
             if (playerGold < 0) playerGold = 0;
             updateDisplay();
         }
 
         function changeReputation(amount) {
-            logFunctionCall("changeReputation", [amount]);
             playerReputation += amount;
             updateDisplay();
         }
 
         function hasItem(itemName) {
-            logFunctionCall("hasItem", [itemName]);
-            return inventory.includes(itemName);
+            if (itemName === "Apprentice Robes") return hasApprenticeRobes;
+            if (itemName === "Enchanted Sword") return hasEnchantedSword;
+            if (itemName === "Magical Shield") return hasMagicalShield;
+            if (itemName === "Health Potion") return hasHealthPotion;
+            if (itemName === "Ancient Spell Tome") return hasAncientSpellTome;
+            if (itemName === "Master Wizard Medallion") return hasMasterWizardMedallion;
+            if (itemName === "Sword Mastery Scroll") return hasSwordMasteryScroll;
+            return false;
         }
 
         function addItem(itemName) {
-            logFunctionCall("addItem", [itemName]);
-            if (!hasItem(itemName)) {
-                inventory.push(itemName);
+            if (itemName === "Apprentice Robes" && !hasApprenticeRobes) {
+                hasApprenticeRobes = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Enchanted Sword" && !hasEnchantedSword) {
+                hasEnchantedSword = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Magical Shield" && !hasMagicalShield) {
+                hasMagicalShield = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Health Potion" && !hasHealthPotion) {
+                hasHealthPotion = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Ancient Spell Tome" && !hasAncientSpellTome) {
+                hasAncientSpellTome = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Master Wizard Medallion" && !hasMasterWizardMedallion) {
+                hasMasterWizardMedallion = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Sword Mastery Scroll" && !hasSwordMasteryScroll) {
+                hasSwordMasteryScroll = true;
                 updateDisplay();
                 return true;
             }
@@ -298,8 +322,13 @@
         }
 
         function removeItem(itemName) {
-            logFunctionCall("removeItem", [itemName]);
-            inventory = inventory.filter(item => item !== itemName);
+            if (itemName === "Apprentice Robes") hasApprenticeRobes = false;
+            if (itemName === "Enchanted Sword") hasEnchantedSword = false;
+            if (itemName === "Magical Shield") hasMagicalShield = false;
+            if (itemName === "Health Potion") hasHealthPotion = false;
+            if (itemName === "Ancient Spell Tome") hasAncientSpellTome = false;
+            if (itemName === "Master Wizard Medallion") hasMasterWizardMedallion = false;
+            if (itemName === "Sword Mastery Scroll") hasSwordMasteryScroll = false;
             updateDisplay();
         }
 
@@ -309,31 +338,48 @@
             document.getElementById('level').innerHTML = playerLevel;
             document.getElementById('reputation').innerHTML = playerReputation;
 
-            // Update inventory
+            // Update inventory display
             let inventoryHTML = "";
-            for (let i = 0; i < inventory.length; i++) {
-                inventoryHTML += '<div class="inventory-item">' + inventory[i] + '</div>';
+            let hasAnyItems = false;
+
+            if (hasApprenticeRobes) {
+                inventoryHTML += '<div class="inventory-item">Apprentice Robes</div>';
+                hasAnyItems = true;
             }
-            if (inventoryHTML === "") {
+            if (hasEnchantedSword) {
+                inventoryHTML += '<div class="inventory-item">Enchanted Sword</div>';
+                hasAnyItems = true;
+            }
+            if (hasMagicalShield) {
+                inventoryHTML += '<div class="inventory-item">Magical Shield</div>';
+                hasAnyItems = true;
+            }
+            if (hasHealthPotion) {
+                inventoryHTML += '<div class="inventory-item">Health Potion</div>';
+                hasAnyItems = true;
+            }
+            if (hasAncientSpellTome) {
+                inventoryHTML += '<div class="inventory-item">Ancient Spell Tome</div>';
+                hasAnyItems = true;
+            }
+            if (hasMasterWizardMedallion) {
+                inventoryHTML += '<div class="inventory-item">Master Wizard Medallion</div>';
+                hasAnyItems = true;
+            }
+            if (hasSwordMasteryScroll) {
+                inventoryHTML += '<div class="inventory-item">Sword Mastery Scroll</div>';
+                hasAnyItems = true;
+            }
+
+            if (!hasAnyItems) {
                 inventoryHTML = '<div class="inventory-item">Empty</div>';
             }
             document.getElementById('inventory').innerHTML = inventoryHTML;
         }
 
-        function logFunctionCall(functionName, parameters) {
-            let paramString = parameters ? parameters.join(", ") : "";
-            let callString = functionName + "(" + paramString + ")";
-            functionCallLog.push(callString);
-
-            // Show last 3 function calls
-            let recentCalls = functionCallLog.slice(-3);
-            document.getElementById('function-tracker').innerHTML =
-                "Recent function calls:<br>" + recentCalls.join("<br>");
-        }
 
         // LESSON 4: Functions that use conditionals for smart behavior
         function canAfford(price) {
-            logFunctionCall("canAfford", [price]);
             if (playerGold >= price) {
                 return true;
             } else {
@@ -342,7 +388,6 @@
         }
 
         function buyItem(itemName, price, description) {
-            logFunctionCall("buyItem", [itemName, price, description]);
 
             if (canAfford(price)) {
                 changeGold(-price);
@@ -357,26 +402,27 @@
             }
         }
 
-        function checkRequirements(requiredLevel, requiredItems) {
-            logFunctionCall("checkRequirements", [requiredLevel, requiredItems]);
-
+        function checkRequirements(requiredLevel, item1, item2, item3) {
             // Check level first
             if (playerLevel < requiredLevel) {
                 return "Need level " + requiredLevel;
             }
 
-            // Check each required item
-            for (let i = 0; i < requiredItems.length; i++) {
-                if (!hasItem(requiredItems[i])) {
-                    return "Need " + requiredItems[i];
-                }
+            // Check required items
+            if (item1 && !hasItem(item1)) {
+                return "Need " + item1;
+            }
+            if (item2 && !hasItem(item2)) {
+                return "Need " + item2;
+            }
+            if (item3 && !hasItem(item3)) {
+                return "Need " + item3;
             }
 
             return "requirements_met";
         }
 
         function giveReward(goldAmount, itemName, reputationAmount) {
-            logFunctionCall("giveReward", [goldAmount, itemName, reputationAmount]);
 
             changeGold(goldAmount);
             if (itemName) addItem(itemName);
@@ -392,37 +438,35 @@
 
         // Location Functions
         function enterLibrary() {
-            updateLocation("Function Library");
+            updateLocation("Spell Library");
 
-            let storyText = "You enter a vast library filled with code scrolls. ";
+            let storyText = "You enter a vast library filled with ancient spell scrolls and magical tomes. ";
 
-            if (!knowsAboutFunctions) {
-                storyText += "A wise librarian approaches: 'Welcome! Let me teach you about functions - reusable packages of code!'";
-                knowsAboutFunctions = true;
-                changeReputation(2);
+            if (!hasExploredLibrary) {
+                storyText += "A wise librarian approaches: 'Welcome, young apprentice! These shelves contain the secrets of magical spell-craft.'";
             } else if (playerReputation >= 10) {
-                storyText += "The librarian smiles warmly at you - a respected student!";
+                storyText += "The librarian smiles warmly at you - a respected scholar of the magical arts!";
                 changeGold(5);
             } else {
-                storyText += "Scholars quietly study advanced function techniques.";
+                storyText += "Wizards quietly study advanced magical techniques in the reading chambers.";
             }
 
             updateStory(storyText);
 
             let choices = "";
 
-            if (!learnedParameters) {
-                choices += '<button class="choice-button" onclick="learnParameters()">📖 Learn About Parameters (Free)</button>';
+            if (!hasExploredLibrary) {
+                choices += '<button class="choice-button" onclick="exploreAncientTexts()">📖 Study Ancient Spell Texts</button>';
             }
 
-            if (learnedParameters && !learnedReturns) {
-                choices += '<button class="choice-button" onclick="learnReturns()">📤 Learn About Return Values (Free)</button>';
+            if (hasExploredLibrary && !hasFoundAncientKnowledge) {
+                choices += '<button class="choice-button" onclick="discoverSecretKnowledge()">✨ Discover Hidden Knowledge</button>';
             }
 
-            if (canAfford(20) && !hasItem("Advanced Function Guide")) {
-                choices += '<button class="choice-button" onclick="buyAdvancedGuide()">📜 Buy Advanced Function Guide (20 gold)</button>';
-            } else if (!hasItem("Advanced Function Guide")) {
-                choices += '<button class="choice-button disabled">📜 Buy Advanced Function Guide (Need 20 gold)</button>';
+            if (canAfford(20) && !hasItem("Ancient Spell Tome")) {
+                choices += '<button class="choice-button" onclick="buyAdvancedGuide()">📜 Buy Ancient Spell Tome (20 gold)</button>';
+            } else if (!hasItem("Ancient Spell Tome")) {
+                choices += '<button class="choice-button disabled">📜 Buy Ancient Spell Tome (Need 20 gold)</button>';
             }
 
             choices += '<button class="choice-button" onclick="returnToEntrance()">🚪 Return to Entrance</button>';
@@ -431,17 +475,17 @@
         }
 
         function visitShop() {
-            updateLocation("Smart Shop");
+            updateLocation("Enchanted Shop");
 
-            let storyText = "You enter a shop run entirely by smart functions! ";
+            let storyText = "You enter an enchanted shop filled with magical artifacts and helpful enchantments! ";
 
             // Shop behavior depends on reputation (conditionals from Lesson 3!)
             if (playerReputation >= 15) {
-                storyText += "The shop functions recognize you as a master coder! You get VIP pricing.";
+                storyText += "The enchanted shop recognizes you as a master wizard! You get special pricing.";
             } else if (playerReputation >= 5) {
-                storyText += "The shop functions appreciate your growing skills.";
+                storyText += "The magical shop spirits appreciate your growing magical abilities.";
             } else {
-                storyText += "The shop functions treat you as a beginning student.";
+                storyText += "The magical shop spirits treat you as a novice apprentice.";
             }
 
             updateStory(storyText);
@@ -453,19 +497,19 @@
             let shieldPrice = playerReputation >= 15 ? 20 : 30;
             let potionPrice = playerReputation >= 5 ? 8 : 12;
 
-            if (!hasItem("Code Sword")) {
+            if (!hasItem("Enchanted Sword")) {
                 if (canAfford(swordPrice)) {
-                    choices += '<button class="choice-button" onclick="buyCodeSword(' + swordPrice + ')">⚔️ Buy Code Sword (' + swordPrice + ' gold)</button>';
+                    choices += '<button class="choice-button" onclick="buyCodeSword(' + swordPrice + ')">⚔️ Buy Enchanted Sword (' + swordPrice + ' gold)</button>';
                 } else {
-                    choices += '<button class="choice-button disabled">⚔️ Buy Code Sword (Need ' + swordPrice + ' gold)</button>';
+                    choices += '<button class="choice-button disabled">⚔️ Buy Enchanted Sword (Need ' + swordPrice + ' gold)</button>';
                 }
             }
 
-            if (!hasItem("Logic Shield")) {
+            if (!hasItem("Magical Shield")) {
                 if (canAfford(shieldPrice)) {
-                    choices += '<button class="choice-button" onclick="buyLogicShield(' + shieldPrice + ')">🛡️ Buy Logic Shield (' + shieldPrice + ' gold)</button>';
+                    choices += '<button class="choice-button" onclick="buyLogicShield(' + shieldPrice + ')">🛡️ Buy Magical Shield (' + shieldPrice + ' gold)</button>';
                 } else {
-                    choices += '<button class="choice-button disabled">🛡️ Buy Logic Shield (Need ' + shieldPrice + ' gold)</button>';
+                    choices += '<button class="choice-button disabled">🛡️ Buy Magical Shield (Need ' + shieldPrice + ' gold)</button>';
                 }
             }
 
@@ -481,12 +525,12 @@
         }
 
         function enterTrainingGrounds() {
-            updateLocation("Training Grounds");
+            updateLocation("Practice Chamber");
 
-            let storyText = "You arrive at the training grounds where functions and conditionals work together! ";
+            let storyText = "You arrive at the practice chamber where magical spells and ancient wisdom combine! ";
 
             // Check if player is ready for different challenges
-            if (hasItem("Code Sword") && hasItem("Logic Shield")) {
+            if (hasItem("Enchanted Sword") && hasItem("Magical Shield")) {
                 storyText += "Fully equipped, you're ready for any challenge!";
             } else if (playerLevel >= 2) {
                 storyText += "Your experience shows, but better equipment would help.";
@@ -499,7 +543,7 @@
             let choices = "";
 
             // Basic training - always available
-            choices += '<button class="choice-button" onclick="basicTraining()">🥋 Basic Function Training</button>';
+            choices += '<button class="choice-button" onclick="basicTraining()">🥋 Basic Spell Training</button>';
 
             // Intermediate training - need level 2
             if (playerLevel >= 2) {
@@ -509,7 +553,7 @@
             }
 
             // Master quest - need equipment and knowledge
-            let masterRequirements = checkRequirements(3, ["Code Sword", "Logic Shield", "Advanced Function Guide"]);
+            let masterRequirements = checkRequirements(3, "Enchanted Sword", "Magical Shield", "Ancient Spell Tome");
             if (masterRequirements === "requirements_met" && !masterQuest) {
                 choices += '<button class="choice-button" onclick="masterChallenge()">👑 Master\'s Challenge</button>';
             } else if (!masterQuest) {
@@ -522,23 +566,23 @@
         }
 
         // Action Functions
-        function learnParameters() {
-            learnedParameters = true;
+        function exploreAncientTexts() {
+            hasExploredLibrary = true;
             changeReputation(3);
-            updateStory("You learned about parameters! Functions can now accept inputs to make them flexible. This is like giving a recipe different ingredients!");
+            updateStory("You study the ancient spell texts and learn about magical incantations that can be customized with different components!");
             enterLibrary();
         }
 
-        function learnReturns() {
-            learnedReturns = true;
+        function discoverSecretKnowledge() {
+            hasFoundAncientKnowledge = true;
             changeReputation(3);
             playerLevel = 2;
-            updateStory("You learned about return values! Functions can give back information. Level up! You're now Level 2!");
+            updateStory("You discover hidden knowledge about advanced spellcasting! The magic flows stronger through you. Level up! You're now Level 2!");
             enterLibrary();
         }
 
         function buyAdvancedGuide() {
-            if (buyItem("Advanced Function Guide", 20, "This will help you master complex function techniques!")) {
+            if (buyItem("Ancient Spell Tome", 20, "This powerful tome contains the secrets of advanced magical techniques!")) {
                 playerLevel = 3;
                 updateStory(document.getElementById('story').innerHTML + " Level up! You're now Level 3!");
             }
@@ -546,12 +590,12 @@
         }
 
         function buyCodeSword(price) {
-            buyItem("Code Sword", price, "A weapon that channels the power of well-written functions!");
+            buyItem("Enchanted Sword", price, "A weapon that channels the power of well-written functions!");
             visitShop();
         }
 
         function buyLogicShield(price) {
-            buyItem("Logic Shield", price, "Protection powered by conditional logic from Lesson 3!");
+            buyItem("Magical Shield", price, "Protection powered by conditional logic from Lesson 3!");
             visitShop();
         }
 
@@ -569,15 +613,15 @@
             changeHealth(-5);
             changeReputation(2);
             giveReward(15, null, 0);
-            updateStory("You complete basic function training! You practiced writing helper functions and earned 15 gold. Functions make code so much cleaner!");
+            updateStory("You complete basic magical training! You practiced casting helpful spells and earned 15 gold. Magic flows through you more easily now!");
             enterTrainingGrounds();
         }
 
         function intermediateTraining() {
-            if (hasItem("Code Sword")) {
+            if (hasItem("Enchanted Sword")) {
                 changeHealth(-10);
-                giveReward(25, "Certificate of Competence", 5);
-                updateStory("With your Code Sword, you excel at the intermediate challenge! You demonstrated functions with parameters and return values.");
+                giveReward(25, "Sword Mastery Scroll", 5);
+                updateStory("With your Enchanted Sword, you excel at the intermediate challenge! Your blade dances with magical precision.");
             } else {
                 changeHealth(-20);
                 giveReward(10, null, 2);
@@ -589,32 +633,32 @@
         function masterChallenge() {
             masterQuest = true;
             changeHealth(-15);
-            giveReward(100, "Master Function Certificate", 25);
-            updateStory("Incredible! You completed the Master's Challenge! You demonstrated mastery of functions, parameters, return values, and how they work with conditionals. You are now a Function Master!");
+            giveReward(100, "Master Wizard Medallion", 25);
+            updateStory("Incredible! You completed the Master's Challenge! You demonstrated mastery of ancient magical arts and powerful spellcasting techniques. You are now a Master Wizard!");
             enterTrainingGrounds();
         }
 
         function returnToEntrance() {
-            updateLocation("Academy Entrance");
+            updateLocation("Tower Entrance");
 
-            let storyText = "You return to the academy entrance. ";
+            let storyText = "You return to the tower entrance. ";
 
             if (masterQuest) {
-                storyText += "Everyone recognizes you as a Function Master! Your journey in learning functions is complete.";
+                storyText += "Everyone recognizes you as a Master Wizard! Your magical journey has reached its pinnacle.";
             } else if (playerLevel >= 3) {
-                storyText += "Fellow students look up to you as an advanced function programmer.";
+                storyText += "Fellow apprentices look up to you as an advanced spell-weaver.";
             } else if (playerReputation >= 10) {
-                storyText += "Other students nod respectfully - you're making good progress!";
+                storyText += "Other apprentices nod respectfully - you're making good progress!";
             } else {
-                storyText += "You're learning the basics of functions. Keep practicing!";
+                storyText += "You're learning the basics of magic. Keep practicing your spells!";
             }
 
             updateStory(storyText);
 
             document.getElementById('choices').innerHTML =
-                '<button class="choice-button" onclick="enterLibrary()">📚 Enter the Function Library</button>' +
-                '<button class="choice-button" onclick="visitShop()">🛍️ Visit the Smart Shop</button>' +
-                '<button class="choice-button" onclick="enterTrainingGrounds()">⚔️ Enter Training Grounds</button>' +
+                '<button class="choice-button" onclick="enterLibrary()">📚 Enter the Spell Library</button>' +
+                '<button class="choice-button" onclick="visitShop()">🛍️ Visit the Enchanted Shop</button>' +
+                '<button class="choice-button" onclick="enterTrainingGrounds()">⚔️ Enter the Practice Chamber</button>' +
                 '<button class="choice-button" onclick="restart()">🔄 Start New Game</button>';
         }
 
@@ -624,16 +668,21 @@
             playerGold = 50;
             playerLevel = 1;
             playerReputation = 0;
-            currentLocation = "Academy Entrance";
-            inventory = ["Beginner's Guide"];
-            functionCallLog = [];
+            currentLocation = "Tower Entrance";
+            // Reset individual item variables
+            hasApprenticeRobes = true;
+            hasEnchantedSword = false;
+            hasMagicalShield = false;
+            hasHealthPotion = false;
+            hasAncientSpellTome = false;
+            hasMasterWizardMedallion = false;
+            hasSwordMasteryScroll = false;
 
-            knowsAboutFunctions = false;
-            learnedParameters = false;
-            learnedReturns = false;
+            hasExploredLibrary = false;
+            hasFoundAncientKnowledge = false;
             masterQuest = false;
 
-            updateStory("Welcome to the Coding Academy! You're here to learn the power of functions. This magical academy teaches adventurers how to write smart, reusable code. Your journey will demonstrate how functions work with conditionals to create amazing games!");
+            updateStory("You stand before an ancient wizard's tower, its stones humming with magical energy. The tower is said to contain powerful spells and enchanted artifacts. Rumor has it that the wizard created magical helpers to assist with various tasks!");
             returnToEntrance();
         }
 
