@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conditionals and Game Logic - Interactive Programming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .slide-container {
+            display: flex;
+            width: 1400vw;
+            height: 100vh;
+            transition: transform 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .slide-content {
+            transform-origin: center center;
+            width: 1200px;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 1rem;
+            }
+
+            .slide h1 {
+                font-size: clamp(1.5rem, 10vw, 2.5rem);
+            }
+
+            .slide h2 {
+                font-size: clamp(1.2rem, 8vw, 2rem);
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .slide {
+                justify-content: flex-start;
+                padding-top: 2rem;
+            }
+
+            .code-box {
+                padding: 0.8rem;
+            }
+
+            .code-box pre {
+                font-size: clamp(0.7rem, 3vw, 1rem);
+            }
+        }
+
+        .slide h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #ffd700;
+        }
+
+        .slide h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #87ceeb;
+        }
+
+        .slide p {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+        }
+
+        .slide ul {
+            font-size: 1.3rem;
+            text-align: left;
+            max-width: 800px;
+        }
+
+        .slide li {
+            margin-bottom: 0.8rem;
+            list-style: none;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .slide li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .code-box {
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #ffd700;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .code-box pre {
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .code-box .comment {
+            color: #cccccc;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .code-box .keyword {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .code-box .string {
+            color: #44ff88;
+        }
+
+        .code-box .number {
+            color: #ffff44;
+        }
+
+        .code-box .function {
+            color: #ff88ff;
+        }
+
+        .code-box .property {
+            color: #44ddff;
+        }
+
+        .analogy-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid #ffd700;
+            max-width: 800px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .operator { color: #d4d4d4; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1000px;
+            margin: 1rem 0;
+        }
+
+        .comparison-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #666;
+        }
+
+        .bad-code {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .good-code {
+            border-color: #51cf66;
+            background: rgba(81, 207, 102, 0.1);
+        }
+
+        .big-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            transform: none !important;
+        }
+
+        .controls button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .slide-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) !important;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+
+        /* Force navigation visibility for lower resolutions */
+        @media (max-width: 1440px) {
+            .controls {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                display: block !important;
+                visibility: visible !important;
+            }
+
+            .controls button {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.95rem;
+                margin: 0 0.4rem;
+                display: inline-block !important;
+            }
+
+            .slide-indicator {
+                bottom: 1.5rem;
+                display: flex !important;
+                visibility: visible !important;
+            }
+
+            .dot {
+                width: 11px;
+                height: 11px;
+                display: block !important;
+            }
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #ffd700;
+            transform: scale(1.2);
+        }
+
+
+        .emphasis {
+            color: #ffd93d;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .demo-box {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            max-width: 700px;
+        }
+
+        @media (max-width: 1440px) {
+            .navigation {
+                bottom: 2rem !important;
+                z-index: 1000 !important;
+            }
+
+            .nav-btn {
+                padding: 0.8rem 1.5rem !important;
+                font-size: 1rem !important;
+            }
+
+            .slide-dots {
+                bottom: 6rem !important;
+                z-index: 1000 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container" id="slideContainer">
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-emoji">🚪</div>
+                <h1>Conditionals and Game Logic</h1>
+                <p class="subtitle">Making Smart Decisions in Code</p>
+                <p>Teaching your games to think and react intelligently</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Learning Objectives -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What We'll Learn Today</h2>
+                <ul>
+                    <li>🚪 <strong>If Statements:</strong> Digital bouncers that check conditions</li>
+                    <li>🔀 <strong>Branching Logic:</strong> Multiple paths through your story</li>
+                    <li>⚖️ <strong>Comparison Operators:</strong> Greater than, less than, equals</li>
+                    <li>🔗 <strong>Logical Operators:</strong> AND, OR, NOT combinations</li>
+                    <li>🎮 <strong>Smart Games:</strong> Stories that react to player choices</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: The Problem Without Conditionals -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Games Without Brains</h2>
+                <div class="big-emoji">🤖</div>
+                <p><strong>Without conditionals, games are boring:</strong></p>
+                <div class="code-box">
+                    <pre><span class="comment">// Always the same outcome</span>
+<span class="keyword">let</span> playerGold = <span class="number">50</span>;
+
+<span class="comment">// No conditional check - always the same result</span>
+playerGold = playerGold + <span class="number">10</span>;
+document.getElementById(<span class="string">'story'</span>).innerHTML =
+    <span class="string">"You enter the dungeon and find treasure!"</span>;</pre>
+                </div>
+                <p><strong>Problem:</strong> No intelligence, no choices matter!</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Smart Games with Conditionals -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Games with Brains</h2>
+                <div class="big-emoji">🧠</div>
+                <p><strong>With conditionals, games become intelligent:</strong></p>
+                <div class="code-box">
+                    <pre><span class="comment">// Smart game responses using conditionals</span>
+<span class="keyword">let</span> hasTorch = <span class="keyword">true</span>;
+<span class="keyword">let</span> playerHealth = <span class="number">100</span>;
+
+<span class="keyword">if</span> (hasTorch) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML =
+        <span class="string">"Your torch lights the way. You find ancient treasure!"</span>;
+} <span class="keyword">else</span> {
+    document.getElementById(<span class="string">'story'</span>).innerHTML =
+        <span class="string">"It's too dark! You stumble and fall."</span>;
+    playerHealth = playerHealth - <span class="number">10</span>;
+}</pre>
+                </div>
+                <p><strong>Result:</strong> Player choices and items matter!</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Basic If Statement -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>The Digital Bouncer</h2>
+                <div class="demo-box">
+                    <h3>🚪 If statements are like bouncers at a club</h3>
+                    <p>They check if you meet the requirements before letting you in</p>
+                </div>
+                <div class="code-box">
+                    <pre><span class="comment">// Basic if statement structure</span>
+<span class="keyword">let</span> playerHealth = <span class="number">75</span>;
+
+<span class="keyword">if</span> (playerHealth > <span class="number">0</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're still alive!"</span>;
+}
+
+<span class="comment">// If-else for two outcomes</span>
+<span class="keyword">let</span> playerGold = <span class="number">30</span>;
+
+<span class="keyword">if</span> (playerGold >= <span class="number">50</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You can afford the magic sword!"</span>;
+} <span class="keyword">else</span> {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You need more gold."</span>;
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Multiple Conditions -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Multiple Paths (If-Else Chain)</h2>
+                <p>When you need more than two outcomes:</p>
+                <div class="code-box">
+                    <pre><span class="keyword">let</span> playerLevel = <span class="number">7</span>;
+
+<span class="keyword">if</span> (playerLevel >= <span class="number">10</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're a master adventurer!"</span>;
+} <span class="keyword">else if</span> (playerLevel >= <span class="number">5</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're an experienced explorer!"</span>;
+} <span class="keyword">else if</span> (playerLevel >= <span class="number">1</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're a brave beginner!"</span>;
+} <span class="keyword">else</span> {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"Your journey starts now!"</span>;
+}</pre>
+                </div>
+                <div class="demo-box">
+                    <p><strong>💡 Pro Tip:</strong> Check conditions in order from highest to lowest!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Comparison Operators -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Comparison Operators</h2>
+                <div style="text-align: left; max-width: 900px;">
+                    <div class="code-box">
+                        <pre><span class="comment">// The comparison toolbox</span>
+=== <span class="comment">// Exactly equals (ALWAYS use this!)</span>
+!== <span class="comment">// Not exactly equals</span>
+>   <span class="comment">// Greater than</span>
+<   <span class="comment">// Less than</span>
+>=  <span class="comment">// Greater than or equal</span>
+<=  <span class="comment">// Less than or equal</span>
+
+<span class="comment">// Examples</span>
+<span class="keyword">let</span> gold = <span class="number">50</span>;
+<span class="keyword">let</span> swordPrice = <span class="number">30</span>;
+
+<span class="keyword">if</span> (gold >= swordPrice) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You can afford the sword!"</span>;
+}
+
+<span class="keyword">let</span> userInput = <span class="string">"secret123"</span>;
+<span class="keyword">let</span> password = <span class="string">"secret123"</span>;
+
+<span class="keyword">if</span> (userInput === password) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"Access granted!"</span>;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Dangerous == vs Safe === -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>⚠️ Avoid == (Use === Instead!)</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-box bad-code">
+                        <h3>❌ Dangerous ==</h3>
+                        <div class="code-box">
+                            <pre><span class="comment">// Confusing behavior!</span>
+<span class="number">5</span> == <span class="string">"5"</span>     <span class="comment">// true (converts types)</span>
+<span class="number">0</span> == <span class="keyword">false</span>   <span class="comment">// true (confusing!)</span>
+<span class="string">""</span> == <span class="keyword">false</span>  <span class="comment">// true (what?!)</span></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-box good-code">
+                        <h3>✅ Safe ===</h3>
+                        <div class="code-box">
+                            <pre><span class="comment">// Predictable behavior!</span>
+<span class="number">5</span> === <span class="string">"5"</span>     <span class="comment">// false (different types)</span>
+<span class="number">0</span> === <span class="keyword">false</span>   <span class="comment">// false (different types)</span>
+<span class="string">""</span> === <span class="keyword">false</span>  <span class="comment">// false (different types)</span></pre>
+                        </div>
+                    </div>
+                </div>
+                <p><strong>Rule:</strong> <span class="emphasis">Always use === and !==</span></p>
+            </div>
+        </div>
+
+        <!-- Slide 9: AND Operator -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>AND Operator (&&)</h2>
+                <div class="demo-box">
+                    <h3>🔗 Both conditions must be true</h3>
+                </div>
+                <div class="code-box">
+                    <pre><span class="comment">// Need both sword AND shield</span>
+<span class="keyword">let</span> hasSword = <span class="keyword">true</span>;
+<span class="keyword">let</span> hasShield = <span class="keyword">true</span>;
+
+<span class="keyword">if</span> (hasSword && hasShield) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're fully equipped for battle!"</span>;
+}
+
+<span class="comment">// Multiple health and level checks</span>
+<span class="keyword">let</span> playerHealth = <span class="number">100</span>;
+<span class="keyword">let</span> playerLevel = <span class="number">7</span>;
+<span class="keyword">let</span> hasKey = <span class="keyword">true</span>;
+
+<span class="keyword">if</span> (playerHealth > <span class="number">0</span> && playerLevel >= <span class="number">5</span> && hasKey) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You can enter the dragon's lair!"</span>;
+}</pre>
+                </div>
+                <p><strong>Think:</strong> "I need this <em>AND</em> this <em>AND</em> this"</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: OR Operator -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>OR Operator (||)</h2>
+                <div class="demo-box">
+                    <h3>⚡ At least one condition must be true</h3>
+                </div>
+                <div class="code-box">
+                    <pre><span class="comment">// Either magic key OR lockpicks work</span>
+<span class="keyword">let</span> hasMagicKey = <span class="keyword">false</span>;
+<span class="keyword">let</span> hasLockpicks = <span class="keyword">true</span>;
+
+<span class="keyword">if</span> (hasMagicKey || hasLockpicks) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You can open the chest!"</span>;
+}
+
+<span class="comment">// Class-based abilities</span>
+<span class="keyword">let</span> playerClass = <span class="string">"Wizard"</span>;
+
+<span class="keyword">if</span> (playerClass === <span class="string">"Wizard"</span> || playerClass === <span class="string">"Sorcerer"</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You can cast spells!"</span>;
+}</pre>
+                </div>
+                <p><strong>Think:</strong> "I need this <em>OR</em> this (or both!)"</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: NOT Operator -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>NOT Operator (!)</h2>
+                <div class="demo-box">
+                    <h3>🔄 Reverses true/false</h3>
+                </div>
+                <div class="code-box">
+                    <pre><span class="comment">// Check if something is missing</span>
+<span class="keyword">let</span> hasTorch = <span class="keyword">false</span>;
+
+<span class="keyword">if</span> (!hasTorch) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"It's too dark to see!"</span>;
+}
+
+<span class="comment">// Reverse boolean values</span>
+<span class="keyword">let</span> isDaytime = <span class="keyword">false</span>;
+
+<span class="keyword">if</span> (!isDaytime) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"Monsters come out at night!"</span>;
+}</pre>
+                </div>
+                <p><strong>Think:</strong> "If I <em>don't</em> have this..." or "If this is <em>not</em> true..."</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Complex Game Logic -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Building Smart Game Systems</h2>
+                <div class="code-box">
+                    <pre><span class="comment">// Check if ready to fight dragon</span>
+<span class="keyword">let</span> hasSword = <span class="keyword">true</span>;
+<span class="keyword">let</span> hasMagicStaff = <span class="keyword">false</span>;
+<span class="keyword">let</span> hasShield = <span class="keyword">true</span>;
+<span class="keyword">let</span> playerHealth = <span class="number">60</span>;
+
+<span class="comment">// Need weapon AND shield AND enough health</span>
+<span class="keyword">if</span> ((hasSword || hasMagicStaff) && hasShield && playerHealth >= <span class="number">50</span>) {
+    document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You're ready to fight the dragon!"</span>;
+} <span class="keyword">else</span> {
+    <span class="comment">// Give specific feedback about what's missing</span>
+    <span class="keyword">if</span> (playerHealth < <span class="number">50</span>) {
+        document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"Your health is too low for this battle!"</span>;
+    } <span class="keyword">else if</span> (!hasShield) {
+        document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You need a shield to protect yourself!"</span>;
+    } <span class="keyword">else</span> {
+        document.getElementById(<span class="string">'story'</span>).innerHTML = <span class="string">"You need a weapon to fight!"</span>;
+    }
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Your Assignment -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Your Mission: Smart Story Quest</h2>
+                <div class="big-emoji">🧠</div>
+                <h3>Build an Intelligent Adventure</h3>
+                <ul>
+                    <li>🚪 <strong>Use all conditionals</strong> - if, else if, else</li>
+                    <li>⚖️ <strong>Master comparisons</strong> - ===, >, <, >=, <=, !==</li>
+                    <li>🔗 <strong>Combine conditions</strong> - &&, ||, !</li>
+                    <li>🎮 <strong>React to everything</strong> - inventory, stats, choices</li>
+                    <li>🔀 <strong>Multiple endings</strong> - consequences matter</li>
+                </ul>
+                <p style="margin-top: 2rem;"><strong>Goal:</strong> Create a story that feels alive and intelligent!</p>
+            </div>
+        </div>
+
+        <!-- Slide 14: Thank You -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-emoji">🎉</div>
+                <h1>Thank You!</h1>
+                <h3>Questions?</h3>
+                <p style="margin-top: 2rem;">Start with story-quest-conditionals.html and build an intelligent adventure!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="controls">
+        <button onclick="previousSlide()">← Previous</button>
+        <button onclick="nextSlide()">Next →</button>
+    </div>
+
+    <!-- Slide Indicators -->
+    <div class="slide-indicator" id="slideIndicator">
+        <!-- Dots will be generated by JavaScript -->
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 14;
+
+        // Slide navigation
+        function updateSlidePosition() {
+            const container = document.getElementById('slideContainer');
+            container.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            updateIndicators();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlidePosition();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlidePosition();
+            }
+        }
+
+        function goToSlide(n) {
+            currentSlide = n;
+            updateSlidePosition();
+        }
+
+        function updateIndicators() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function createIndicators() {
+            const indicator = document.getElementById('slideIndicator');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                indicator.appendChild(dot);
+            }
+            updateIndicators();
+        }
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isDragging = false;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            isDragging = true;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                e.preventDefault(); // Prevent scrolling
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+                isDragging = false;
+            }
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 75; // Increased threshold
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next slide
+                    nextSlide();
+                } else {
+                    // Swipe right - previous slide
+                    previousSlide();
+                }
+            }
+        }
+
+        // Prevent default drag behavior on all elements
+        document.addEventListener('dragstart', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('selectstart', (e) => {
+            e.preventDefault();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key >= '1' && e.key <= '9') {
+                const slideNum = parseInt(e.key) - 1;
+                if (slideNum < totalSlides) {
+                    goToSlide(slideNum);
+                }
+            }
+        });
+
+        // Disabled mouse wheel navigation to prevent dragging issues
+        // Mouse wheel can cause unwanted slide container movement
+
+        // Scaling functionality for desktop/laptop resolutions only
+        function scaleSlides() {
+            const slides = document.querySelectorAll('.slide-content');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // Base dimensions (what we designed for)
+            const baseWidth = 1200;
+            const baseHeight = 800;
+
+            // Standard margins for all supported resolutions
+            const marginX = 50;
+            const marginY = 50;
+
+            // Calculate scale factors
+            const scaleX = (windowWidth - marginX * 2) / baseWidth;
+            const scaleY = (windowHeight - marginY * 2) / baseHeight;
+
+            // Use the smaller scale to maintain aspect ratio
+            let scale = Math.min(scaleX, scaleY);
+
+            // Scale limits optimized for classroom/presentation environments
+            // 1440x720: ~0.7 scale
+            // 1920x1080: ~0.9 scale
+            // 4K: up to 1.2 scale
+            scale = Math.min(scale, 1.2); // Cap at 120% for readability
+            scale = Math.max(scale, 0.5); // Minimum scale for classroom visibility
+
+            slides.forEach(slide => {
+                slide.style.transform = `scale(${scale})`;
+            });
+        }
+
+        // Initialize
+        createIndicators();
+        updateSlidePosition();
+        scaleSlides();
+
+        // Rescale on window resize
+        window.addEventListener('resize', scaleSlides);
+    </script>
+</body>
+</html>
