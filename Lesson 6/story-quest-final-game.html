@@ -1,25 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Grand Finale - Interactive Programming</title>
+    <title>The Hero's Ascension</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 700px;
+            max-width: 800px;
             margin: 50px auto;
             padding: 20px;
             background: linear-gradient(to bottom, #1e3c72, #2a5298);
             min-height: 100vh;
         }
 
-        .story-container {
+        .game-container {
             background: rgba(255, 255, 255, 0.95);
-            padding: 2rem;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         h1 {
@@ -54,21 +51,20 @@
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: #333;
         }
 
         .story-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #2c3e50;
             background: #f8f9fa;
             border-radius: 10px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             border-left: 5px solid #667eea;
-            font-size: 1.2rem;
-            line-height: 1.7;
-            color: #2c3e50;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .choices {
@@ -104,7 +100,7 @@
             transform: none;
         }
 
-        .equipment-section {
+        .guild-info {
             background: #e8f4fd;
             border-radius: 10px;
             padding: 1rem;
@@ -112,7 +108,7 @@
             border-left: 5px solid #3498db;
         }
 
-        .equipment-item {
+        .guild-member {
             display: inline-block;
             background: white;
             padding: 0.5rem 1rem;
@@ -132,14 +128,38 @@
             color: #856404;
         }
 
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 8px;
+            color: white;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background: #2ecc71;
+        }
+
+        .notification.info {
+            background: #3498db;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         @media (max-width: 768px) {
             body {
                 margin: 20px auto;
                 padding: 10px;
             }
 
-            .story-container {
-                padding: 1rem;
+            .game-container {
+                padding: 20px;
             }
 
             .status-panel {
@@ -149,8 +169,8 @@
     </style>
 </head>
 <body>
-    <div class="story-container">
-        <h1>🏆 The Grand Finale</h1>
+    <div class="game-container">
+        <h1>🏰 The Hero's Ascension</h1>
 
         <div class="status-panel">
             <div class="stat-card">
@@ -159,83 +179,87 @@
             </div>
             <div class="stat-card">
                 <div class="stat-label">Mana</div>
-                <div class="stat-value" id="mana">50</div>
+                <div class="stat-value" id="mana">80</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Gold</div>
-                <div class="stat-value" id="gold">150</div>
+                <div class="stat-value" id="gold">500</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Level</div>
-                <div class="stat-value" id="level">3</div>
+                <div class="stat-label">Renown</div>
+                <div class="stat-value" id="renown">10</div>
             </div>
         </div>
 
-        <div class="equipment-section">
-            <strong>🎒 Current Equipment:</strong>
-            <div id="equipment">
-                <span class="equipment-item">⚔️ Steel Sword</span>
-                <span class="equipment-item">🛡️ Iron Shield</span>
-                <span class="equipment-item">💍 Ring of Power</span>
+        <div class="guild-info">
+            <strong>🏛️ Royal Guild Members:</strong>
+            <div id="guildMembers">
+                <span class="guild-member">👑 Captain Marcus (Leader)</span>
+                <span class="guild-member">🏹 Archer Elena</span>
+                <span class="guild-member">🛡️ Guardian Thor</span>
             </div>
         </div>
 
         <div id="story" class="story-text">
-            After your legendary adventures across the realm, you stand before the ancient Nexus of Power - the source of all magic in the land. You've become a master adventurer, and now face your ultimate choice...
+            After defeating the ancient dragon, you have become a legendary hero! The Royal Guild has invited you to join their ranks and help establish a new order of protection for the realm. As a guild member, you'll lead expeditions, manage resources, and coordinate with other heroes using advanced magical systems.
         </div>
 
         <div id="choices" class="choices">
-            <button onclick="chooseWisdom()">📚 Become the Keeper of Wisdom</button>
-            <button onclick="choosePower()">⚡ Claim the Ultimate Power</button>
-            <button onclick="chooseBalance()">⚖️ Restore the Balance</button>
+            <button onclick="organizeExpedition()">🗺️ Organize New Expedition</button>
+            <button onclick="manageGuildResources()">📦 Manage Guild Resources</button>
+            <button onclick="upgradeGuildSystems()">⚙️ Upgrade Guild Systems</button>
         </div>
 
         <div class="system-info">
-            <strong>🎯 Learning Objectives Demonstrated:</strong>
-            This final quest showcases all the concepts from our programming journey:
-            <br>• Objects to organize character data and game systems
-            <br>• Methods to handle character actions and state changes
-            <br>• Professional code structure and organization
-            <br>• Polish with animations and visual feedback
+            <strong>🎯 Programming Concepts Demonstrated:</strong>
+            This quest showcases objects and professional game systems:
+            <br>• Hero object with properties and methods for complex character management
+            <br>• Guild system object with member management and resource tracking
+            <br>• Expedition object with planning, preparation, and execution phases
+            <br>• Save/load system for persistent guild progress
         </div>
     </div>
 
     <script>
-        // Character object - demonstrates objects and methods from Lesson 6
-        const character = {
-            name: "Hero",
+        // Hero object - demonstrates complex object with nested properties and methods
+        const hero = {
+            name: "Legendary Hero",
             health: 100,
             maxHealth: 100,
-            mana: 50,
-            maxMana: 50,
-            gold: 150,
-            level: 3,
-            equipment: {
-                weapon: "Steel Sword",
-                armor: "Iron Shield",
-                accessory: "Ring of Power"
-            },
+            mana: 80,
+            maxMana: 80,
+            gold: 500,
+            renown: 10,
+            titles: ["Dragon Slayer", "Tower Master", "Village Savior"],
 
-            // Method to heal the character
-            heal: function(amount) {
-                this.health = Math.min(this.maxHealth, this.health + amount);
-                this.updateDisplay();
-            },
-
-            // Method to spend mana
-            spendMana: function(cost) {
-                if (this.mana >= cost) {
-                    this.mana -= cost;
-                    this.updateDisplay();
-                    return true;
+            // Method to modify stats safely
+            modifyStats: function(changes) {
+                if (changes.health !== undefined) {
+                    this.health = Math.max(0, Math.min(this.maxHealth, this.health + changes.health));
                 }
-                return false;
+                if (changes.mana !== undefined) {
+                    this.mana = Math.max(0, Math.min(this.maxMana, this.mana + changes.mana));
+                }
+                if (changes.gold !== undefined) {
+                    this.gold = Math.max(0, this.gold + changes.gold);
+                }
+                if (changes.renown !== undefined) {
+                    this.renown = Math.max(0, this.renown + changes.renown);
+                }
+                this.updateDisplay();
             },
 
-            // Method to gain gold
-            gainGold: function(amount) {
-                this.gold += amount;
-                this.updateDisplay();
+            // Method to check if hero can afford something
+            canAfford: function(cost) {
+                return this.gold >= cost && this.mana >= (cost / 10);
+            },
+
+            // Method to gain a new title
+            earnTitle: function(newTitle) {
+                if (!this.titles.includes(newTitle)) {
+                    this.titles.push(newTitle);
+                    ui.showNotification(`New title earned: ${newTitle}!`, 'success');
+                }
             },
 
             // Method to update the display
@@ -243,37 +267,163 @@
                 document.getElementById('health').textContent = this.health;
                 document.getElementById('mana').textContent = this.mana;
                 document.getElementById('gold').textContent = this.gold;
-                document.getElementById('level').textContent = this.level;
+                document.getElementById('renown').textContent = this.renown;
             }
         };
 
-        // Game effects object - demonstrates professional polish
-        const effects = {
-            showMessage: function(message, type = 'info') {
-                const popup = document.createElement('div');
-                popup.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: ${type === 'success' ? '#2ecc71' : '#3498db'};
-                    color: white;
-                    padding: 1rem;
-                    border-radius: 8px;
-                    z-index: 1000;
-                    animation: slideIn 0.3s ease;
-                `;
-                popup.textContent = message;
-                document.body.appendChild(popup);
-
-                setTimeout(() => popup.remove(), 3000);
+        // Guild system object - demonstrates object organization for complex systems
+        const guild = {
+            name: "Royal Protectors",
+            members: [
+                { name: "Captain Marcus", role: "Leader", specialty: "Strategy", available: true },
+                { name: "Archer Elena", role: "Scout", specialty: "Reconnaissance", available: true },
+                { name: "Guardian Thor", role: "Tank", specialty: "Defense", available: true }
+            ],
+            resources: {
+                supplies: 100,
+                artifacts: 5,
+                reputation: 85
             },
 
-            animateChoice: function(element) {
-                element.style.transform = 'scale(0.95)';
-                element.style.transition = 'transform 0.1s ease';
+            // Method to recruit new members
+            recruitMember: function(newMember) {
+                this.members.push({
+                    name: newMember.name,
+                    role: newMember.role,
+                    specialty: newMember.specialty,
+                    available: true
+                });
+                this.updateMemberDisplay();
+                ui.showNotification(`${newMember.name} joined the guild!`, 'success');
+            },
+
+            // Method to assign members to expeditions
+            assignMembers: function(expedition) {
+                const assignedMembers = [];
+                for (let member of this.members) {
+                    if (member.available && assignedMembers.length < expedition.requiredMembers) {
+                        member.available = false;
+                        assignedMembers.push(member);
+                    }
+                }
+                return assignedMembers;
+            },
+
+            // Method to complete expeditions and return members
+            completeExpedition: function(assignedMembers, success) {
+                for (let member of assignedMembers) {
+                    member.available = true;
+                    if (success) {
+                        // Members gain experience on successful expeditions
+                        if (!member.experience) member.experience = 0;
+                        member.experience += 10;
+                    }
+                }
+                this.updateMemberDisplay();
+            },
+
+            // Method to update member display
+            updateMemberDisplay: function() {
+                const container = document.getElementById('guildMembers');
+                container.innerHTML = '';
+                for (let member of this.members) {
+                    const statusIcon = member.available ? '✅' : '🚫';
+                    const memberSpan = document.createElement('span');
+                    memberSpan.className = 'guild-member';
+                    memberSpan.textContent = `${statusIcon} ${member.name} (${member.role})`;
+                    container.appendChild(memberSpan);
+                }
+            }
+        };
+
+        // Expedition system object - demonstrates complex object interactions
+        const expeditionSystem = {
+            activeExpeditions: [],
+            expeditionTypes: [
+                { name: "Ancient Ruins Exploration", difficulty: "Medium", reward: { gold: 200, renown: 3 }, requiredMembers: 2 },
+                { name: "Bandit Camp Clearance", difficulty: "Hard", reward: { gold: 300, renown: 5 }, requiredMembers: 3 },
+                { name: "Artifact Recovery Mission", difficulty: "Extreme", reward: { gold: 500, renown: 8 }, requiredMembers: 4 }
+            ],
+
+            // Method to create and launch expeditions
+            launchExpedition: function(expeditionType) {
+                if (hero.canAfford(50)) {
+                    const assignedMembers = guild.assignMembers(expeditionType);
+
+                    if (assignedMembers.length >= expeditionType.requiredMembers) {
+                        hero.modifyStats({ gold: -50, mana: -10 });
+
+                        const expedition = {
+                            type: expeditionType.name,
+                            members: assignedMembers,
+                            startTime: Date.now(),
+                            duration: 3000, // 3 seconds for demo
+                            reward: expeditionType.reward
+                        };
+
+                        this.activeExpeditions.push(expedition);
+                        ui.showNotification(`${expeditionType.name} launched!`, 'info');
+
+                        // Simulate expedition completion
+                        setTimeout(() => this.completeExpedition(expedition), expedition.duration);
+
+                        return true;
+                    } else {
+                        ui.showNotification('Not enough available guild members!', 'info');
+                        return false;
+                    }
+                } else {
+                    ui.showNotification('Not enough gold or mana!', 'info');
+                    return false;
+                }
+            },
+
+            // Method to handle expedition completion
+            completeExpedition: function(expedition) {
+                const success = Math.random() > 0.3; // 70% success rate
+
+                if (success) {
+                    hero.modifyStats(expedition.reward);
+                    hero.earnTitle("Expedition Leader");
+                    ui.showNotification(`${expedition.type} succeeded!`, 'success');
+                } else {
+                    ui.showNotification(`${expedition.type} failed, but members returned safely.`, 'info');
+                }
+
+                guild.completeExpedition(expedition.members, success);
+
+                // Remove completed expedition
+                const index = this.activeExpeditions.indexOf(expedition);
+                this.activeExpeditions.splice(index, 1);
+            }
+        };
+
+        // UI system object - demonstrates professional interface management
+        const ui = {
+            // Method to show notifications
+            showNotification: function(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                setTimeout(() => notification.remove(), 3000);
+            },
+
+            // Method to update story text with animation
+            updateStory: function(newText) {
+                const storyElement = document.getElementById('story');
+                storyElement.style.opacity = '0.5';
+
                 setTimeout(() => {
-                    element.style.transform = 'scale(1)';
-                }, 100);
+                    storyElement.innerHTML = newText;
+                    storyElement.style.opacity = '1';
+                }, 200);
+            },
+
+            // Method to update choices
+            updateChoices: function(choicesHtml) {
+                document.getElementById('choices').innerHTML = choicesHtml;
             }
         };
 
@@ -281,172 +431,278 @@
         const saveSystem = {
             save: function() {
                 const saveData = {
-                    character: {
-                        health: character.health,
-                        mana: character.mana,
-                        gold: character.gold,
-                        level: character.level
+                    hero: {
+                        health: hero.health,
+                        mana: hero.mana,
+                        gold: hero.gold,
+                        renown: hero.renown,
+                        titles: hero.titles
+                    },
+                    guild: {
+                        members: guild.members,
+                        resources: guild.resources
                     },
                     timestamp: Date.now()
                 };
-                localStorage.setItem('grandFinaleProgress', JSON.stringify(saveData));
-                effects.showMessage('Progress saved!', 'success');
+                localStorage.setItem('heroAscensionSave', JSON.stringify(saveData));
+                ui.showNotification('Guild progress saved!', 'success');
             },
 
             load: function() {
-                const saved = localStorage.getItem('grandFinaleProgress');
+                const saved = localStorage.getItem('heroAscensionSave');
                 if (saved) {
                     const data = JSON.parse(saved);
-                    Object.assign(character, data.character);
-                    character.updateDisplay();
-                    effects.showMessage('Progress loaded!', 'success');
+
+                    // Restore hero data
+                    Object.assign(hero, data.hero);
+                    hero.updateDisplay();
+
+                    // Restore guild data
+                    guild.members = data.guild.members;
+                    guild.resources = data.guild.resources;
+                    guild.updateMemberDisplay();
+
+                    ui.showNotification('Guild progress loaded!', 'success');
+                    return true;
                 }
+                return false;
             }
         };
 
-        // Choice functions - demonstrating different endings
-        function chooseWisdom() {
-            effects.animateChoice(event.target);
+        // Choice functions - demonstrate object method calls and interactions
+        function organizeExpedition() {
+            ui.updateStory(`As a renowned guild leader, you review available expeditions. Each requires careful planning,
+                          member assignment, and resource allocation. Your leadership skills and the guild's coordination
+                          systems ensure successful missions across the realm.`);
 
-            document.getElementById('story').innerHTML =
-                `You choose to become the Keeper of Wisdom. The ancient knowledge flows into your mind,
-                 and you become the guardian of all magical learning. Adventurers from across the realm
-                 will seek your guidance. You have mastered not just magic and combat, but the greatest
-                 power of all - knowledge and wisdom. Your programming journey has taught you that the
-                 real magic lies in understanding how things work!`;
+            const expeditionChoices = expeditionSystem.expeditionTypes.map((exp, index) =>
+                `<button onclick="launchSpecificExpedition(${index})">
+                    🎯 ${exp.name} (${exp.difficulty}) - ${exp.reward.gold}g, ${exp.reward.renown} renown
+                </button>`
+            ).join('');
 
-            document.getElementById('choices').innerHTML =
-                '<button onclick="viewAccomplishments()">🏆 View Your Accomplishments</button>' +
-                '<button onclick="startNewJourney()">🔄 Begin a New Journey</button>';
-
-            character.gainGold(500);
-            effects.showMessage('Wisdom grants you 500 gold!', 'success');
-            saveSystem.save();
+            ui.updateChoices(expeditionChoices +
+                '<button onclick="returnToGuild()">🏰 Return to Guild Hall</button>');
         }
 
-        function choosePower() {
-            effects.animateChoice(event.target);
+        function launchSpecificExpedition(index) {
+            const expedition = expeditionSystem.expeditionTypes[index];
+            const success = expeditionSystem.launchExpedition(expedition);
 
-            if (character.spendMana(30)) {
-                document.getElementById('story').innerHTML =
-                    `You claim the Ultimate Power! Lightning courses through your veins as you become
-                     one of the most powerful beings in existence. With great power comes great responsibility,
-                     and you use your newfound abilities to protect the innocent and defend the realm.
-                     Your programming skills have taught you that true power comes from organizing complex
-                     systems and making them work together harmoniously.`;
+            if (success) {
+                ui.updateStory(`You have successfully organized "${expedition.name}"! Your guild members are
+                              departing with carefully planned strategies and proper equipment. The coordination
+                              systems you've implemented ensure smooth communication throughout the mission.`);
 
-                document.getElementById('choices').innerHTML =
-                    '<button onclick="viewAccomplishments()">🏆 View Your Accomplishments</button>' +
-                    '<button onclick="startNewJourney()">🔄 Begin a New Journey</button>';
-
-                character.level++;
-                character.updateDisplay();
-                effects.showMessage('You gained a level and ultimate power!', 'success');
-                saveSystem.save();
-            } else {
-                document.getElementById('story').innerHTML =
-                    `You reach for the Ultimate Power, but your mana is too low! The ancient magic
-                     rejects you. Sometimes the greatest power is knowing when you're not ready.
-                     The Nexus gives you a second chance...`;
-
-                effects.showMessage('Not enough mana! Choose wisely.', 'info');
+                ui.updateChoices('<button onclick="organizeExpedition()">🗺️ Plan Another Expedition</button>' +
+                               '<button onclick="returnToGuild()">🏰 Return to Guild Hall</button>');
             }
         }
 
-        function chooseBalance() {
-            effects.animateChoice(event.target);
+        function manageGuildResources() {
+            ui.updateStory(`Your guild's advanced resource management system tracks supplies, artifacts, and reputation.
+                          Through careful organization and strategic planning, you ensure the guild operates efficiently.
+                          Your leadership has transformed a simple group into a professional organization.`);
 
-            document.getElementById('story').innerHTML =
-                `You choose to restore the Balance. The chaotic energies stabilize, and harmony
-                 returns to the magical realm. You become the Guardian of Balance, ensuring that
-                 no single force becomes too powerful. Your programming knowledge has shown you
-                 that the best systems are balanced systems - where all parts work together in
-                 perfect harmony. You are awarded the highest honor in the land!`;
-
-            document.getElementById('choices').innerHTML =
-                '<button onclick="viewAccomplishments()">🏆 View Your Accomplishments</button>' +
-                '<button onclick="startNewJourney()">🔄 Begin a New Journey</button>';
-
-            character.heal(50);
-            character.gainGold(1000);
-            effects.showMessage('Balance restored! Full heal and 1000 gold!', 'success');
-            saveSystem.save();
+            ui.updateChoices(
+                '<button onclick="upgradeEquipment()">⚔️ Upgrade Equipment (200g)</button>' +
+                '<button onclick="recruitNewMember()">👥 Recruit New Member (150g)</button>' +
+                '<button onclick="increaseReputation()">📈 Boost Reputation (100g)</button>' +
+                '<button onclick="returnToGuild()">🏰 Return to Guild Hall</button>'
+            );
         }
 
-        function viewAccomplishments() {
-            effects.animateChoice(event.target);
+        function upgradeEquipment() {
+            if (hero.canAfford(200)) {
+                hero.modifyStats({ gold: -200, renown: 2 });
+                guild.resources.supplies += 20;
+                hero.earnTitle("Equipment Master");
 
-            document.getElementById('story').innerHTML =
-                `<strong>🎓 Your Programming Journey Accomplishments:</strong><br><br>
-                 ✅ <strong>Lesson 1:</strong> Mastered clean, readable code principles<br>
-                 ✅ <strong>Lesson 2:</strong> Learned variables and interactive storytelling<br>
-                 ✅ <strong>Lesson 3:</strong> Created reusable functions and logic<br>
-                 ✅ <strong>Lesson 4:</strong> Implemented conditional decision-making<br>
-                 ✅ <strong>Lesson 5:</strong> Organized data with arrays and loops<br>
-                 ✅ <strong>Lesson 6:</strong> Built professional systems with objects<br><br>
-                 <strong>🏆 Final Stats:</strong> Level ${character.level} Hero with ${character.gold} gold!<br><br>
-                 You've gone from a beginner to a skilled programmer who can build complete,
-                 professional-quality interactive applications. The skills you've learned will
-                 serve you well in any programming adventure!`;
-
-            document.getElementById('choices').innerHTML =
-                '<button onclick="exportProgress()">📤 Export Your Progress</button>' +
-                '<button onclick="startNewJourney()">🔄 Begin a New Journey</button>';
+                ui.updateStory(`You've successfully upgraded the guild's equipment! Advanced magical enhancements
+                              now protect your members during expeditions. Your investment in quality gear
+                              demonstrates the importance of proper resource management.`);
+            } else {
+                ui.showNotification('Insufficient resources for upgrade!', 'info');
+            }
         }
 
-        function exportProgress() {
-            effects.animateChoice(event.target);
+        function recruitNewMember() {
+            if (hero.canAfford(150)) {
+                hero.modifyStats({ gold: -150 });
 
-            const progressReport = {
-                completedLessons: 6,
-                finalLevel: character.level,
-                finalGold: character.gold,
+                const newMembers = [
+                    { name: "Mage Lyra", role: "Spellcaster", specialty: "Elemental Magic" },
+                    { name: "Rogue Finn", role: "Scout", specialty: "Stealth Operations" },
+                    { name: "Cleric Sarah", role: "Healer", specialty: "Support Magic" }
+                ];
+
+                const newMember = newMembers[Math.floor(Math.random() * newMembers.length)];
+                guild.recruitMember(newMember);
+                hero.earnTitle("Guild Recruiter");
+
+                ui.updateStory(`Welcome ${newMember.name} to the guild! Your recruitment system successfully
+                              identified a skilled ${newMember.role} specializing in ${newMember.specialty}.
+                              The guild's growing membership demonstrates your leadership effectiveness.`);
+            } else {
+                ui.showNotification('Insufficient gold for recruitment!', 'info');
+            }
+        }
+
+        function increaseReputation() {
+            if (hero.canAfford(100)) {
+                hero.modifyStats({ gold: -100, renown: 3 });
+                guild.resources.reputation += 15;
+
+                ui.updateStory(`Your public relations efforts have increased the guild's reputation! Word of your
+                              heroic deeds and professional organization spreads throughout the realm. Higher
+                              reputation attracts better expeditions and more skilled recruits.`);
+            } else {
+                ui.showNotification('Insufficient gold for reputation boost!', 'info');
+            }
+        }
+
+        function upgradeGuildSystems() {
+            ui.updateStory(`Your guild utilizes advanced magical systems for communication, coordination, and management.
+                          These systems demonstrate the power of organized code - each component has specific
+                          responsibilities and works together seamlessly to create something greater than the sum of its parts.`);
+
+            ui.updateChoices(
+                '<button onclick="upgradeNotificationSystem()">📢 Upgrade Communication System (300g)</button>' +
+                '<button onclick="implementAutoSave()">💾 Implement Auto-Save System (250g)</button>' +
+                '<button onclick="createBackupSystems()">🔄 Create Backup Systems (400g)</button>' +
+                '<button onclick="returnToGuild()">🏰 Return to Guild Hall</button>'
+            );
+        }
+
+        function upgradeNotificationSystem() {
+            if (hero.canAfford(300)) {
+                hero.modifyStats({ gold: -300, renown: 4 });
+                hero.earnTitle("Systems Architect");
+
+                ui.updateStory(`You've implemented an advanced notification system! Guild members now receive
+                              instant updates about expeditions, threats, and opportunities. This system demonstrates
+                              how well-organized code creates better user experiences and smoother operations.`);
+
+                // Demonstrate the upgraded system
+                setTimeout(() => ui.showNotification('System upgrade complete! Enhanced notifications active.', 'success'), 1000);
+            } else {
+                ui.showNotification('Insufficient resources for system upgrade!', 'info');
+            }
+        }
+
+        function implementAutoSave() {
+            if (hero.canAfford(250)) {
+                hero.modifyStats({ gold: -250, renown: 3 });
+                hero.earnTitle("Data Guardian");
+
+                ui.updateStory(`You've implemented an automatic save system! Guild progress is now continuously
+                              preserved, ensuring no achievements or member progress is ever lost. This demonstrates
+                              the importance of data persistence in professional applications.`);
+
+                // Enable auto-save
+                setInterval(() => saveSystem.save(), 30000); // Auto-save every 30 seconds
+                ui.showNotification('Auto-save system activated!', 'success');
+            } else {
+                ui.showNotification('Insufficient resources for auto-save implementation!', 'info');
+            }
+        }
+
+        function createBackupSystems() {
+            if (hero.canAfford(400)) {
+                hero.modifyStats({ gold: -400, renown: 5 });
+                hero.earnTitle("Legendary Guild Master");
+
+                ui.updateStory(`You've created comprehensive backup systems for the guild! Multiple redundant
+                              magical networks ensure the guild's operations continue smoothly even during crises.
+                              Your mastery of organizational systems makes you a legendary guild leader.
+
+                              🎉 Congratulations! You've completed your programming journey from village newcomer
+                              to legendary guild master, mastering every aspect of code organization and professional
+                              system design!`);
+
+                ui.updateChoices(
+                    '<button onclick="viewFinalAccomplishments()">🏆 View Final Accomplishments</button>' +
+                    '<button onclick="exportGuildData()">📤 Export Guild Data</button>' +
+                    '<button onclick="startNewLegacy()">🔄 Start New Legacy</button>'
+                );
+            } else {
+                ui.showNotification('Insufficient resources for backup systems!', 'info');
+            }
+        }
+
+        function viewFinalAccomplishments() {
+            ui.updateStory(`<strong>🎓 Your Complete Programming Journey:</strong><br><br>
+                         ✅ <strong>Lesson 3:</strong> Village Hero - Mastered conditional logic and decision-making<br>
+                         ✅ <strong>Lesson 4:</strong> Tower Master - Created reusable magical helpers (functions)<br>
+                         ✅ <strong>Lesson 5:</strong> Dragon Slayer - Organized complex data with arrays and loops<br>
+                         ✅ <strong>Lesson 6:</strong> Guild Master - Built professional systems with objects<br><br>
+                         <strong>🏰 Final Guild Stats:</strong><br>
+                         Guild Members: ${guild.members.length} | Renown: ${hero.renown} | Titles: ${hero.titles.length}<br><br>
+                         From a simple village newcomer to a legendary guild master, you've mastered every
+                         fundamental programming concept. Your code is now organized, professional, and ready
+                         for any challenge the realm might face!`);
+
+            ui.updateChoices(
+                '<button onclick="exportGuildData()">📤 Export Guild Legacy</button>' +
+                '<button onclick="startNewLegacy()">🔄 Start New Legacy</button>'
+            );
+        }
+
+        function exportGuildData() {
+            const guildReport = {
+                heroName: hero.name,
+                finalLevel: "Guild Master",
+                totalRenown: hero.renown,
+                titlesEarned: hero.titles,
+                guildMembers: guild.members.length,
+                guildReputation: guild.resources.reputation,
                 completionDate: new Date().toLocaleDateString(),
-                achievements: [
-                    "Clean Code Master",
-                    "Variable Virtuoso",
-                    "Function Expert",
-                    "Logic Specialist",
-                    "Array & Loop Champion",
-                    "Object-Oriented Hero"
+                programmingMastery: [
+                    "Conditional Logic & Decision Making",
+                    "Function Creation & Reusability",
+                    "Array Management & Loop Optimization",
+                    "Object Organization & System Architecture",
+                    "Professional Code Structure & Polish"
                 ]
             };
 
-            const dataStr = JSON.stringify(progressReport, null, 2);
+            const dataStr = JSON.stringify(guildReport, null, 2);
             const dataBlob = new Blob([dataStr], {type: 'application/json'});
             const url = URL.createObjectURL(dataBlob);
 
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'programming-journey-complete.json';
+            link.download = 'guild-master-legacy.json';
             link.click();
 
-            effects.showMessage('Progress exported successfully!', 'success');
+            ui.showNotification('Guild legacy exported successfully!', 'success');
         }
 
-        function startNewJourney() {
-            effects.animateChoice(event.target);
-
-            if (confirm('Are you ready to begin a new programming adventure? This will reset your progress.')) {
-                localStorage.removeItem('grandFinaleProgress');
+        function startNewLegacy() {
+            if (confirm('Are you ready to begin a new hero\'s journey? This will reset all progress.')) {
+                localStorage.removeItem('heroAscensionSave');
                 location.reload();
             }
         }
 
+        function returnToGuild() {
+            ui.updateStory(`You return to the guild hall, where your fellow heroes greet you with respect and admiration.
+                          The advanced systems you've implemented run smoothly in the background, demonstrating the
+                          power of well-organized code. Your guild has become a model of efficiency and coordination.`);
+
+            ui.updateChoices(
+                '<button onclick="organizeExpedition()">🗺️ Organize New Expedition</button>' +
+                '<button onclick="manageGuildResources()">📦 Manage Guild Resources</button>' +
+                '<button onclick="upgradeGuildSystems()">⚙️ Upgrade Guild Systems</button>' +
+                '<button onclick="saveSystem.save()">💾 Save Guild Progress</button>'
+            );
+        }
+
         // Initialize the game
         function initializeGame() {
-            character.updateDisplay();
+            hero.updateDisplay();
+            guild.updateMemberDisplay();
             saveSystem.load();
-
-            // Add CSS animation for popups
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideIn {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-            `;
-            document.head.appendChild(style);
         }
 
         // Start the game when page loads
