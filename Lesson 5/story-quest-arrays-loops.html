@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Dragon's Ancient Hoard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            min-height: 100vh;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .status-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .story-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .story-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #2c3e50;
+        }
+
+        .location-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .choices-section {
+            margin: 20px 0;
+        }
+
+        .choice-button {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin: 10px 0;
+            font-size: 16px;
+            background: white;
+            color: #333;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .choice-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .choice-button:disabled {
+            background: #f8f9fa;
+            color: #999;
+            border-color: #ddd;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .inventory-section {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .inventory-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #3498db;
+            font-size: 14px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .inventory-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .inventory-item.equipped {
+            background: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        .quest-section {
+            background: #fef9e7;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+        }
+
+        .quest-list {
+            margin-top: 15px;
+        }
+
+        .quest-item {
+            background: white;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #f39c12;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quest-item.completed {
+            border-left-color: #27ae60;
+            opacity: 0.7;
+            text-decoration: line-through;
+        }
+
+        .enemy-section {
+            background: #fdf2f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .enemy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .enemy-card {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #e74c3c;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .enemy-card:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .enemy-card.defeated {
+            opacity: 0.5;
+            background: #95a5a6;
+            border-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .enemy-card.defeated:hover {
+            background: #95a5a6;
+            color: #666;
+        }
+
+        .combat-stats {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🐉 The Dragon's Ancient Hoard 🐉</h1>
+
+        <div class="status-panel">
+            <div class="stat-card">
+                <div class="stat-label">Health</div>
+                <div class="stat-value" id="health">100/100</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Gold</div>
+                <div class="stat-value" id="gold">100</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Attack</div>
+                <div class="stat-value" id="attack">15</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Defense</div>
+                <div class="stat-value" id="defense">5</div>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="location-tag" id="location">Dragon's Lair Entrance</div>
+            <div class="story-text" id="story">
+                After mastering the wizard's tower, you've discovered the entrance to an ancient dragon's lair!
+                The dragon has awakened and threatens the nearby kingdom. You must venture deep into the lair,
+                gather powerful equipment, and face multiple guardians before confronting the mighty beast.
+                Your quest: collect legendary gear, defeat the dragon's minions, and save the realm!
+            </div>
+        </div>
+
+        <div class="choices-section" id="choices">
+            <button class="choice-button" onclick="exploreArmory()">
+                ⚔️ Explore the Ancient Armory
+            </button>
+            <button class="choice-button" onclick="enterDungeons()">
+                🏛️ Enter the Guardian Dungeons
+            </button>
+            <button class="choice-button" onclick="visitShop()">
+                🛒 Visit the Merchant's Post
+            </button>
+            <button class="choice-button" onclick="checkStats()">
+                📊 Check Character Stats
+            </button>
+        </div>
+
+        <div class="inventory-section">
+            <strong>⚔️ Equipment & Inventory:</strong>
+            <div class="inventory-grid" id="inventory">
+                <div class="inventory-item equipped">Rusty Sword</div>
+                <div class="inventory-item equipped">Leather Armor</div>
+                <div class="inventory-item">Health Potion</div>
+            </div>
+        </div>
+
+        <div class="quest-section">
+            <strong>📜 Active Quests:</strong>
+            <div class="quest-list" id="quests">
+                <div class="quest-item">
+                    <span>Defeat the Ancient Dragon</span>
+                    <span id="dragonQuest">Incomplete</span>
+                </div>
+                <div class="quest-item">
+                    <span>Defeat 8 Guardian Minions</span>
+                    <span id="monsterQuest">0/8</span>
+                </div>
+                <div class="quest-item">
+                    <span>Find Legendary Equipment</span>
+                    <span id="equipmentQuest">2/4</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LESSON 5 DEMONSTRATION: Arrays and Loops in RPG Combat!
+
+        // Player Equipment Arrays
+        let inventory = ["Rusty Sword", "Leather Armor", "Health Potion"];
+        let equippedItems = ["Rusty Sword", "Leather Armor"];
+        let defeatedEnemies = [];
+        let locationsVisited = ["Dragon's Lair Entrance"];
+
+        // Available weapons and armor arrays
+        let availableWeapons = [
+            { name: "Rusty Sword", attack: 10, price: 0 },
+            { name: "Iron Sword", attack: 20, price: 100 },
+            { name: "Steel Blade", attack: 35, price: 250 },
+            { name: "Dragon Slayer", attack: 50, price: 500 }
+        ];
+
+        let availableArmor = [
+            { name: "Leather Armor", defense: 5, price: 0 },
+            { name: "Chain Mail", defense: 12, price: 80 },
+            { name: "Plate Armor", defense: 20, price: 200 },
+            { name: "Dragon Scale Mail", defense: 30, price: 400 }
+        ];
+
+        // Enemy arrays for different areas
+        let armoryEnemies = [
+            { name: "Skeletal Warrior", health: 40, maxHealth: 40, attack: 15, gold: 25, alive: true },
+            { name: "Iron Golem", health: 60, maxHealth: 60, attack: 12, gold: 35, alive: true },
+            { name: "Armory Guardian", health: 80, maxHealth: 80, attack: 18, gold: 50, alive: true }
+        ];
+
+        let dungeonEnemies = [
+            { name: "Shadow Assassin", health: 35, maxHealth: 35, attack: 20, gold: 30, alive: true },
+            { name: "Fire Elemental", health: 50, maxHealth: 50, attack: 25, gold: 40, alive: true },
+            { name: "Ancient Lich", health: 70, maxHealth: 70, attack: 22, gold: 60, alive: true },
+            { name: "Dragon Whelp", health: 45, maxHealth: 45, attack: 18, gold: 35, alive: true }
+        ];
+
+        // Final boss
+        let dragonBoss = { name: "Ancient Dragon", health: 150, maxHealth: 150, attack: 35, gold: 200, alive: true };
+
+        // Player stats
+        let playerHealth = 100;
+        let playerMaxHealth = 100;
+        let playerGold = 100;
+        let playerLevel = 1;
+        let playerExperience = 0;
+        let currentLocation = "Dragon's Lair Entrance";
+
+        // Quest tracking
+        let questProgress = {
+            monstersDefeated: 0,
+            legendaryItems: 2, // Start with 2 for starting gear
+            dragonDefeated: false
+        };
+
+        // Shop items array
+        let shopItems = [
+            { name: "Health Potion", price: 20, description: "Restores 40 health" },
+            { name: "Iron Sword", price: 100, description: "Sturdy blade (+20 attack)" },
+            { name: "Chain Mail", price: 80, description: "Flexible protection (+12 defense)" },
+            { name: "Steel Blade", price: 250, description: "Sharp weapon (+35 attack)" },
+            { name: "Plate Armor", price: 200, description: "Heavy protection (+20 defense)" }
+        ];
+
+        // LESSON 5: RPG Equipment System using Arrays
+        function addToInventory(item) {
+            inventory.push(item);
+            updateInventoryDisplay();
+        }
+
+        function removeFromInventory(item) {
+            let index = inventory.indexOf(item);
+            if (index > -1) {
+                inventory.splice(index, 1);
+                updateInventoryDisplay();
+            }
+        }
+
+        function hasItem(item) {
+            return inventory.includes(item);
+        }
+
+        function equipItem(itemName) {
+            if (hasItem(itemName)) {
+                // Unequip previous item of same type
+                if (isWeapon(itemName)) {
+                    // Use loop to find and remove equipped weapon
+                    for (let i = equippedItems.length - 1; i >= 0; i--) {
+                        if (isWeapon(equippedItems[i])) {
+                            equippedItems.splice(i, 1);
+                        }
+                    }
+                } else if (isArmor(itemName)) {
+                    // Use loop to find and remove equipped armor
+                    for (let i = equippedItems.length - 1; i >= 0; i--) {
+                        if (isArmor(equippedItems[i])) {
+                            equippedItems.splice(i, 1);
+                        }
+                    }
+                }
+
+                equippedItems.push(itemName);
+                updateInventoryDisplay();
+                updateAllDisplays();
+                return true;
+            }
+            return false;
+        }
+
+        function isWeapon(itemName) {
+            // Loop through weapon array to check if item is a weapon
+            for (let weapon of availableWeapons) {
+                if (weapon.name === itemName) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function isArmor(itemName) {
+            // Loop through armor array to check if item is armor
+            for (let armor of availableArmor) {
+                if (armor.name === itemName) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function calculatePlayerAttack() {
+            let totalAttack = 5; // Base attack
+
+            // Loop through equipped items to calculate attack bonus
+            for (let equippedItem of equippedItems) {
+                for (let weapon of availableWeapons) {
+                    if (weapon.name === equippedItem) {
+                        totalAttack += weapon.attack;
+                    }
+                }
+            }
+            return totalAttack;
+        }
+
+        function calculatePlayerDefense() {
+            let totalDefense = 0;
+
+            // Loop through equipped items to calculate defense bonus
+            for (let equippedItem of equippedItems) {
+                for (let armor of availableArmor) {
+                    if (armor.name === equippedItem) {
+                        totalDefense += armor.defense;
+                    }
+                }
+            }
+            return totalDefense;
+        }
+
+        // LESSON 5: Display functions using loops
+        function updateInventoryDisplay() {
+            let inventoryHTML = "";
+
+            // Using FOR loop to display inventory with equipment status
+            for (let i = 0; i < inventory.length; i++) {
+                let item = inventory[i];
+                let isEquipped = equippedItems.includes(item);
+                let itemClass = isEquipped ? "inventory-item equipped" : "inventory-item";
+
+                inventoryHTML += `<div class="${itemClass}" onclick="useItem('${item}')">${item}</div>`;
+            }
+
+            if (inventory.length === 0) {
+                inventoryHTML = '<div class="inventory-item">Empty</div>';
+            }
+
+            document.getElementById('inventory').innerHTML = inventoryHTML;
+        }
+
+        function updateAllDisplays() {
+            document.getElementById('health').innerHTML = `${playerHealth}/${playerMaxHealth}`;
+            document.getElementById('gold').innerHTML = playerGold;
+            document.getElementById('attack').innerHTML = calculatePlayerAttack();
+            document.getElementById('defense').innerHTML = calculatePlayerDefense();
+
+            updateQuestDisplay();
+        }
+
+        function updateQuestDisplay() {
+            document.getElementById('dragonQuest').innerHTML = questProgress.dragonDefeated ? "Complete!" : "Incomplete";
+            document.getElementById('monsterQuest').innerHTML = `${questProgress.monstersDefeated}/8`;
+            document.getElementById('equipmentQuest').innerHTML = `${questProgress.legendaryItems}/4`;
+
+            // Check for completed quests using array methods
+            checkQuestCompletion();
+        }
+
+        function checkQuestCompletion() {
+            let questItems = document.querySelectorAll('.quest-item');
+
+            if (questProgress.dragonDefeated) {
+                questItems[0].classList.add('completed');
+            }
+            if (questProgress.monstersDefeated >= 8) {
+                questItems[1].classList.add('completed');
+            }
+            if (questProgress.legendaryItems >= 4) {
+                questItems[2].classList.add('completed');
+            }
+        }
+
+        function useItem(itemName) {
+            if (itemName === "Health Potion") {
+                if (playerHealth < playerMaxHealth) {
+                    playerHealth = Math.min(playerHealth + 40, playerMaxHealth);
+                    removeFromInventory(itemName);
+                    updateAllDisplays();
+                    updateStory("Used Health Potion: Restored 40 health!");
+                }
+            } else if (isWeapon(itemName) || isArmor(itemName)) {
+                if (equipItem(itemName)) {
+                    updateStory(`Equipped ${itemName}! Your combat stats have improved.`);
+                }
+            }
+        }
+
+        function updateStory(text) {
+            document.getElementById('story').innerHTML = text;
+        }
+
+        // Location functions
+        function exploreArmory() {
+            currentLocation = "Ancient Armory";
+            document.getElementById('location').innerHTML = currentLocation;
+
+            if (!locationsVisited.includes(currentLocation)) {
+                locationsVisited.push(currentLocation);
+            }
+
+            let storyText = "You enter the ancient armory, filled with legendary weapons and armor. ";
+
+            // Check if there are living enemies using loops
+            let livingEnemies = [];
+            for (let enemy of armoryEnemies) {
+                if (enemy.alive) {
+                    livingEnemies.push(enemy);
+                }
+            }
+
+            if (livingEnemies.length > 0) {
+                storyText += `${livingEnemies.length} guardians block your path to the equipment! `;
+                storyText += `You must defeat them to claim the legendary gear.`;
+
+                showEnemyBattle(armoryEnemies, "armory");
+            } else {
+                storyText += "The armory is clear! You can search for powerful equipment.";
+                showArmoryLoot();
+            }
+
+            updateStory(storyText);
+            updateAllDisplays();
+        }
+
+        function enterDungeons() {
+            currentLocation = "Guardian Dungeons";
+            document.getElementById('location').innerHTML = currentLocation;
+
+            if (!locationsVisited.includes(currentLocation)) {
+                locationsVisited.push(currentLocation);
+            }
+
+            let storyText = "You descend into the dark dungeons where the dragon's most powerful minions dwell. ";
+
+            // Check if there are living enemies using loops
+            let livingEnemies = [];
+            for (let enemy of dungeonEnemies) {
+                if (enemy.alive) {
+                    livingEnemies.push(enemy);
+                }
+            }
+
+            if (livingEnemies.length > 0) {
+                storyText += `${livingEnemies.length} dangerous enemies lurk in the shadows! `;
+                storyText += `Defeat them to prove your worth before facing the dragon.`;
+
+                showEnemyBattle(dungeonEnemies, "dungeon");
+            } else {
+                storyText += "The dungeons are cleared! You're ready to face the Ancient Dragon!";
+                showDragonFight();
+            }
+
+            updateStory(storyText);
+            updateAllDisplays();
+        }
+
+        function showEnemyBattle(enemyArray, location) {
+            let choicesHTML = '<div class="enemy-section"><strong>⚔️ Choose your target:</strong><div class="enemy-grid">';
+
+            // Use loop to create enemy buttons
+            for (let i = 0; i < enemyArray.length; i++) {
+                let enemy = enemyArray[i];
+                let buttonClass = enemy.alive ? "enemy-card" : "enemy-card defeated";
+                let clickAction = enemy.alive ? `onclick="attackEnemy(${i}, '${location}')"` : "";
+
+                choicesHTML += `
+                    <div class="${buttonClass}" ${clickAction}>
+                        <strong>${enemy.name}</strong><br>
+                        Health: ${enemy.alive ? enemy.health : 0}/${enemy.maxHealth}<br>
+                        Attack: ${enemy.attack}
+                    </div>
+                `;
+            }
+
+            choicesHTML += '</div></div>';
+            choicesHTML += `
+                <div class="combat-stats">
+                    Your Attack: ${calculatePlayerAttack()} | Your Defense: ${calculatePlayerDefense()}
+                </div>
+            `;
+            choicesHTML += '<button class="choice-button" onclick="returnToEntrance()">🏃 Retreat to Entrance</button>';
+
+            document.getElementById('choices').innerHTML = choicesHTML;
+        }
+
+        function attackEnemy(enemyIndex, location) {
+            let enemyArray = location === "armory" ? armoryEnemies : dungeonEnemies;
+            let enemy = enemyArray[enemyIndex];
+
+            if (!enemy.alive) return;
+
+            let playerAttack = calculatePlayerAttack();
+            let damage = Math.max(1, playerAttack - Math.floor(enemy.attack / 3)); // Simple damage calculation
+
+            enemy.health -= damage;
+
+            let battleText = `You attack the ${enemy.name} for ${damage} damage! `;
+
+            if (enemy.health <= 0) {
+                enemy.alive = false;
+                defeatedEnemies.push(enemy.name);
+                questProgress.monstersDefeated++;
+                playerGold += enemy.gold;
+
+                battleText += `The ${enemy.name} is defeated! You gain ${enemy.gold} gold.`;
+
+                // Check if all enemies are defeated using loop
+                let allDefeated = true;
+                for (let e of enemyArray) {
+                    if (e.alive) {
+                        allDefeated = false;
+                        break;
+                    }
+                }
+
+                if (allDefeated) {
+                    if (location === "armory") {
+                        battleText += " The armory is cleared! You can now search for equipment.";
+                        setTimeout(() => showArmoryLoot(), 1500);
+                    } else {
+                        battleText += " The dungeons are cleared! You're ready to face the dragon!";
+                        setTimeout(() => showDragonFight(), 1500);
+                    }
+                }
+            } else {
+                // Enemy attacks back
+                let enemyDamage = Math.max(1, enemy.attack - calculatePlayerDefense());
+                playerHealth -= enemyDamage;
+                battleText += `The ${enemy.name} attacks you for ${enemyDamage} damage!`;
+
+                if (playerHealth <= 0) {
+                    playerHealth = 0;
+                    battleText += " You have been defeated!";
+                    setTimeout(() => gameOver(), 1500);
+                }
+            }
+
+            updateStory(battleText);
+            updateAllDisplays();
+
+            if (enemy.alive && playerHealth > 0) {
+                showEnemyBattle(enemyArray, location);
+            }
+        }
+
+        function showArmoryLoot() {
+            updateStory("You search through the armory and find legendary equipment!");
+
+            let choices = `
+                <button class="choice-button" onclick="findEquipment('Steel Blade')">⚔️ Take Steel Blade (+35 Attack)</button>
+                <button class="choice-button" onclick="findEquipment('Plate Armor')">🛡️ Take Plate Armor (+20 Defense)</button>
+                <button class="choice-button" onclick="returnToEntrance()">🚪 Return to Entrance</button>
+            `;
+
+            document.getElementById('choices').innerHTML = choices;
+        }
+
+        function findEquipment(itemName) {
+            addToInventory(itemName);
+            questProgress.legendaryItems++;
+            updateStory(`You found ${itemName}! It has been added to your inventory.`);
+            updateAllDisplays();
+
+            document.getElementById('choices').innerHTML = `
+                <button class="choice-button" onclick="returnToEntrance()">🚪 Return to Entrance</button>
+            `;
+        }
+
+        function showDragonFight() {
+            if (!dragonBoss.alive) {
+                updateStory("The Ancient Dragon has already been defeated! You are the champion of the realm!");
+                returnToEntrance();
+                return;
+            }
+
+            updateStory(`The massive Ancient Dragon emerges from the depths! Health: ${dragonBoss.health}/${dragonBoss.maxHealth}. This is your final battle!`);
+
+            let choices = `
+                <div class="enemy-section">
+                    <div class="enemy-grid">
+                        <div class="enemy-card" onclick="attackDragon()">
+                            <strong>${dragonBoss.name}</strong><br>
+                            Health: ${dragonBoss.health}/${dragonBoss.maxHealth}<br>
+                            Attack: ${dragonBoss.attack}
+                        </div>
+                    </div>
+                </div>
+                <div class="combat-stats">
+                    Your Attack: ${calculatePlayerAttack()} | Your Defense: ${calculatePlayerDefense()}
+                </div>
+                <button class="choice-button" onclick="useDragonPotion()">🧪 Use Health Potion</button>
+                <button class="choice-button" onclick="returnToEntrance()">🏃 Retreat</button>
+            `;
+
+            document.getElementById('choices').innerHTML = choices;
+        }
+
+        function attackDragon() {
+            if (!dragonBoss.alive) return;
+
+            let playerAttack = calculatePlayerAttack();
+            let damage = Math.max(1, playerAttack - 10); // Dragon has high defense
+
+            dragonBoss.health -= damage;
+
+            let battleText = `You attack the Ancient Dragon for ${damage} damage! `;
+
+            if (dragonBoss.health <= 0) {
+                dragonBoss.alive = false;
+                questProgress.dragonDefeated = true;
+                playerGold += dragonBoss.gold;
+
+                battleText += `The Ancient Dragon is defeated! You have saved the kingdom! You gain ${dragonBoss.gold} gold and become a legendary hero!`;
+                updateStory(battleText);
+                updateAllDisplays();
+
+                document.getElementById('choices').innerHTML = `
+                    <button class="choice-button" onclick="returnToEntrance()">🏆 Return as Champion</button>
+                `;
+                return;
+            }
+
+            // Dragon attacks back
+            let dragonDamage = Math.max(5, dragonBoss.attack - calculatePlayerDefense());
+            playerHealth -= dragonDamage;
+            battleText += `The Ancient Dragon breathes fire, dealing ${dragonDamage} damage!`;
+
+            if (playerHealth <= 0) {
+                playerHealth = 0;
+                battleText += " You have been defeated by the mighty dragon!";
+                updateStory(battleText);
+                updateAllDisplays();
+                setTimeout(() => gameOver(), 1500);
+                return;
+            }
+
+            updateStory(battleText);
+            updateAllDisplays();
+            showDragonFight();
+        }
+
+        function useDragonPotion() {
+            if (hasItem("Health Potion") && playerHealth < playerMaxHealth) {
+                playerHealth = Math.min(playerHealth + 40, playerMaxHealth);
+                removeFromInventory("Health Potion");
+                updateStory("Used Health Potion during dragon battle! Restored 40 health.");
+                updateAllDisplays();
+                showDragonFight();
+            } else if (!hasItem("Health Potion")) {
+                updateStory("You don't have any Health Potions!");
+                showDragonFight();
+            } else {
+                updateStory("Your health is already full!");
+                showDragonFight();
+            }
+        }
+
+        function visitShop() {
+            document.getElementById('location').innerHTML = "Merchant's Post";
+
+            let storyText = "Welcome to the Merchant's Post! Here you can buy equipment to aid your quest.";
+            updateStory(storyText);
+
+            let choicesHTML = '<strong>🛒 Shop Items:</strong><br>';
+
+            // Use loop to display shop items
+            for (let i = 0; i < shopItems.length; i++) {
+                let item = shopItems[i];
+                let canAfford = playerGold >= item.price;
+                let buttonClass = canAfford ? "choice-button" : "choice-button";
+                let disabled = canAfford ? "" : "disabled";
+
+                choicesHTML += `
+                    <button class="${buttonClass}" ${disabled} onclick="buyItem(${i})">
+                        ${item.name} - ${item.price} gold<br>
+                        <small>${item.description}</small>
+                    </button>
+                `;
+            }
+
+            choicesHTML += '<button class="choice-button" onclick="returnToEntrance()">🚪 Leave Shop</button>';
+
+            document.getElementById('choices').innerHTML = choicesHTML;
+        }
+
+        function buyItem(itemIndex) {
+            let item = shopItems[itemIndex];
+
+            if (playerGold >= item.price) {
+                playerGold -= item.price;
+                addToInventory(item.name);
+                updateStory(`You purchased ${item.name} for ${item.price} gold! ${item.description}`);
+                updateAllDisplays();
+                visitShop(); // Refresh shop
+            }
+        }
+
+        function checkStats() {
+            document.getElementById('location').innerHTML = "Character Stats";
+
+            let statsText = "📊 <strong>Character Statistics:</strong><br><br>";
+
+            // Use loops to analyze equipment
+            let weaponCount = 0;
+            let armorCount = 0;
+            let potionCount = 0;
+
+            for (let item of inventory) {
+                if (isWeapon(item)) {
+                    weaponCount++;
+                } else if (isArmor(item)) {
+                    armorCount++;
+                } else if (item.includes("Potion")) {
+                    potionCount++;
+                }
+            }
+
+            statsText += `Health: ${playerHealth}/${playerMaxHealth}<br>`;
+            statsText += `Gold: ${playerGold}<br>`;
+            statsText += `Attack Power: ${calculatePlayerAttack()}<br>`;
+            statsText += `Defense: ${calculatePlayerDefense()}<br><br>`;
+
+            statsText += `<strong>Equipment Analysis:</strong><br>`;
+            statsText += `Total Items: ${inventory.length}<br>`;
+            statsText += `Weapons: ${weaponCount}<br>`;
+            statsText += `Armor: ${armorCount}<br>`;
+            statsText += `Potions: ${potionCount}<br><br>`;
+
+            statsText += `<strong>Progress:</strong><br>`;
+            statsText += `Monsters Defeated: ${questProgress.monstersDefeated}<br>`;
+            statsText += `Legendary Items: ${questProgress.legendaryItems}<br>`;
+            statsText += `Dragon Status: ${questProgress.dragonDefeated ? "Defeated!" : "Still alive"}<br><br>`;
+
+            statsText += `<strong>Defeated Enemies:</strong><br>`;
+            statsText += `${defeatedEnemies.join(", ") || "None yet"}`;
+
+            updateStory(statsText);
+
+            document.getElementById('choices').innerHTML = `
+                <button class="choice-button" onclick="returnToEntrance()">🚪 Return to Entrance</button>
+            `;
+        }
+
+        function returnToEntrance() {
+            currentLocation = "Dragon's Lair Entrance";
+            document.getElementById('location').innerHTML = currentLocation;
+
+            let storyText = "You return to the lair entrance. The ancient dragon carvings watch over you as you plan your next move.";
+
+            if (questProgress.dragonDefeated) {
+                storyText = "You stand victorious at the lair entrance, having defeated the Ancient Dragon and saved the kingdom! You are now a legendary hero!";
+            }
+
+            updateStory(storyText);
+
+            document.getElementById('choices').innerHTML = `
+                <button class="choice-button" onclick="exploreArmory()">⚔️ Explore the Ancient Armory</button>
+                <button class="choice-button" onclick="enterDungeons()">🏛️ Enter the Guardian Dungeons</button>
+                <button class="choice-button" onclick="visitShop()">🛒 Visit the Merchant's Post</button>
+                <button class="choice-button" onclick="checkStats()">📊 Check Character Stats</button>
+            `;
+
+            updateAllDisplays();
+        }
+
+        function gameOver() {
+            updateStory(`
+                <h3>Game Over</h3>
+                <p>You have been defeated in the dragon's lair!</p>
+                <p>Monsters Defeated: ${questProgress.monstersDefeated}</p>
+                <p>Gold Collected: ${playerGold}</p>
+                <p>Equipment Found: ${questProgress.legendaryItems}</p>
+                <p>Don't give up! Try again with better equipment and strategy.</p>
+            `);
+
+            document.getElementById('choices').innerHTML = `
+                <button class="choice-button" onclick="restart()">🔄 Try Again</button>
+            `;
+        }
+
+        function restart() {
+            // Reset all arrays and stats
+            inventory = ["Rusty Sword", "Leather Armor", "Health Potion"];
+            equippedItems = ["Rusty Sword", "Leather Armor"];
+            defeatedEnemies = [];
+            locationsVisited = ["Dragon's Lair Entrance"];
+
+            playerHealth = 100;
+            playerMaxHealth = 100;
+            playerGold = 100;
+            playerLevel = 1;
+            playerExperience = 0;
+
+            questProgress = {
+                monstersDefeated: 0,
+                legendaryItems: 2,
+                dragonDefeated: false
+            };
+
+            // Reset all enemies
+            for (let enemy of armoryEnemies) {
+                enemy.health = enemy.maxHealth;
+                enemy.alive = true;
+            }
+            for (let enemy of dungeonEnemies) {
+                enemy.health = enemy.maxHealth;
+                enemy.alive = true;
+            }
+            dragonBoss.health = dragonBoss.maxHealth;
+            dragonBoss.alive = true;
+
+            updateInventoryDisplay();
+            updateAllDisplays();
+            returnToEntrance();
+        }
+
+        // Initialize the game
+        updateInventoryDisplay();
+        updateAllDisplays();
+    </script>
+</body>
+</html>

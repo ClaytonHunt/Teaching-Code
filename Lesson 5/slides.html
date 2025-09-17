@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrays and Loops - Interactive Programming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .slide-container {
+            display: flex;
+            width: 1400vw;
+            height: 100vh;
+            transition: transform 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .slide-content {
+            transform-origin: center center;
+            width: 1200px;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: #fff;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin: 1rem 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            color: #fff;
+        }
+
+        h3 {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+            color: #f0f0f0;
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            line-height: 1.6;
+            max-width: 1000px;
+            color: #f0f0f0;
+        }
+
+        ul, ol {
+            font-size: 1.5rem;
+            text-align: left;
+            margin: 1rem 0;
+            max-width: 1000px;
+        }
+
+        li {
+            margin: 0.8rem 0;
+            line-height: 1.4;
+        }
+
+        .big-emoji {
+            font-size: 8rem;
+            margin: 1rem 0;
+            filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.3));
+        }
+
+        .code-box {
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #ffd700;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .code-box pre {
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .code-box .comment {
+            color: #cccccc;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .code-box .keyword {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .code-box .string {
+            color: #44ff88;
+        }
+
+        .code-box .number {
+            color: #ffff44;
+        }
+
+        .code-box .function {
+            color: #ff88ff;
+        }
+
+        .code-box .property {
+            color: #44ddff;
+        }
+
+        .analogy-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .analogy-box h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            pointer-events: auto;
+        }
+
+        .controls button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .slide-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) !important;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+        /* Force navigation visibility for lower resolutions */
+        @media (max-width: 1440px) {
+            .controls {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                display: block !important;
+                visibility: visible !important;
+            }
+
+            .controls button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .slide-content {
+                width: 100%;
+                padding: 1rem;
+                transform: scale(0.8);
+            }
+
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            h3 { font-size: 1.5rem; }
+            p, ul, ol { font-size: 1.2rem; }
+            .big-emoji { font-size: 4rem; }
+            .code-box pre { font-size: 1rem; }
+
+            .navigation {
+                font-size: 1.5rem;
+                padding: 0.7rem;
+            }
+
+            .nav-prev { left: 1rem; }
+            .nav-next { right: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .slide-content {
+                transform: scale(0.7);
+            }
+
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            p, ul, ol { font-size: 1rem; }
+            .big-emoji { font-size: 3rem; }
+        }
+
+        /* Touch feedback */
+        .slide-container {
+            touch-action: pan-y;
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .navigation:active {
+                transform: translateY(-50%) scale(0.95);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container" id="slideContainer">
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-emoji">📊</div>
+                <h1>Arrays and Loops</h1>
+                <h3>Managing Collections of Data</h3>
+                <p>Learn to work with lists of information and repeat actions efficiently</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: What We'll Learn Today -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What We'll Learn Today</h2>
+                <div class="big-emoji">📚</div>
+                <ul>
+                    <li>📦 <strong>Arrays:</strong> Collections of data (lists)</li>
+                    <li>🔄 <strong>For Loops:</strong> Repeating actions automatically</li>
+                    <li>🔍 <strong>Array Methods:</strong> push, pop, includes, filter</li>
+                    <li>🎮 <strong>Game Systems:</strong> Inventory, enemies, quests</li>
+                    <li>🧠 <strong>Smart Combinations:</strong> Arrays + loops + functions</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: Building on Previous Lessons -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Building on Previous Lessons</h2>
+                <div class="big-emoji">🏗️</div>
+                <p><strong>We've already mastered:</strong></p>
+                <ul>
+                    <li>✅ <strong>Variables:</strong> Storing single pieces of data</li>
+                    <li>✅ <strong>Conditionals:</strong> Making smart decisions</li>
+                    <li>✅ <strong>Functions:</strong> Reusable code packages</li>
+                </ul>
+                <p><strong>Now:</strong> Handle LOTS of data efficiently!</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: The Problem with Many Variables -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>The Many Variables Problem</h2>
+                <div class="big-emoji">😵</div>
+                <div class="code-box">
+                    <pre><span class="comment">// BAD: Managing player inventory with individual variables</span>
+<span class="keyword">let</span> item1 = <span class="string">"Sword"</span>;
+<span class="keyword">let</span> item2 = <span class="string">"Shield"</span>;
+<span class="keyword">let</span> item3 = <span class="string">"Potion"</span>;
+<span class="keyword">let</span> item4 = <span class="string">"Key"</span>;
+<span class="comment">// What if player finds 100 items?</span>
+<span class="keyword">let</span> item5 = <span class="string">"Another Sword"</span>;
+<span class="keyword">let</span> item6 = <span class="string">"Another Potion"</span>;
+<span class="comment">// This gets impossible to manage!</span></pre>
+                </div>
+                <p><strong>There must be a better way...</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Arrays - The Solution -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Arrays: The Smart Solution</h2>
+                <div class="big-emoji">📦</div>
+                <div class="code-box">
+                    <pre><span class="comment">// GOOD: One array handles unlimited items</span>
+<span class="keyword">let</span> inventory = [<span class="string">"Sword"</span>, <span class="string">"Shield"</span>, <span class="string">"Potion"</span>, <span class="string">"Key"</span>];
+
+<span class="comment">// Arrays start counting at 0!</span>
+inventory[<span class="number">0</span>]  <span class="comment">// "Sword" (first item)</span>
+inventory[<span class="number">1</span>]  <span class="comment">// "Shield" (second item)</span>
+inventory[<span class="number">2</span>]  <span class="comment">// "Potion" (third item)</span></pre>
+                </div>
+                <div class="analogy-box">
+                    <h3>🗃️ Arrays are like numbered filing cabinets</h3>
+                    <p>Each slot has a number (index) and can hold one piece of data</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Array Methods -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Essential Array Methods</h2>
+                <div class="big-emoji">🛠️</div>
+                <div class="code-box">
+                    <pre><span class="keyword">let</span> items = [<span class="string">"Apple"</span>, <span class="string">"Bread"</span>];
+
+<span class="comment">// Add to end</span>
+items.<span class="function">push</span>(<span class="string">"Cheese"</span>);    <span class="comment">// ["Apple", "Bread", "Cheese"]</span>
+
+<span class="comment">// Remove from end</span>
+<span class="keyword">let</span> lastItem = items.<span class="function">pop</span>();  <span class="comment">// Removes "Cheese"</span>
+
+<span class="comment">// Check if item exists</span>
+<span class="keyword">let</span> hasApple = items.<span class="function">includes</span>(<span class="string">"Apple"</span>);  <span class="comment">// true</span>
+
+<span class="comment">// Get array size</span>
+<span class="keyword">let</span> count = items.<span class="property">length</span>;    <span class="comment">// 2</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: For Loops Introduction -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>For Loops: Automation Power</h2>
+                <div class="big-emoji">🔄</div>
+                <div class="code-box">
+                    <pre><span class="comment">// Without loops (BAD):</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"Count: 0"</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"Count: 1"</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"Count: 2"</span>);
+<span class="comment">// ... copy-paste nightmare!</span>
+
+<span class="comment">// With loops (GOOD):</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < <span class="number">3</span>; i++) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Count: "</span> + i);
+}
+<span class="comment">// Prints: 0, 1, 2</span></pre>
+                </div>
+                <p><strong>One loop replaces endless copy-paste!</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 8: For Loop Structure -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Understanding For Loop Parts</h2>
+                <div class="big-emoji">🔧</div>
+                <div class="code-box">
+                    <pre><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < <span class="number">5</span>; i++) {
+    <span class="comment">// Your code here</span>
+}</pre>
+                </div>
+                <div class="analogy-box">
+                    <h3>🎯 Breaking it down:</h3>
+                    <ul style="text-align: left;">
+                        <li><code>let i = 0</code> - Start counter at 0</li>
+                        <li><code>i &lt; 5</code> - Keep going while i is less than 5</li>
+                        <li><code>i++</code> - Add 1 to i each time</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Looping Through Arrays -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Arrays + Loops = Magic</h2>
+                <div class="big-emoji">✨</div>
+                <div class="code-box">
+                    <pre><span class="keyword">let</span> enemies = [<span class="string">"Goblin"</span>, <span class="string">"Orc"</span>, <span class="string">"Dragon"</span>];
+
+<span class="comment">// Process each enemy automatically</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < enemies.<span class="property">length</span>; i++) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Fight the "</span> + enemies[i]);
+}
+
+<span class="comment">// Simpler version (for...of loop)</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> enemy <span class="keyword">of</span> enemies) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Fight the "</span> + enemy);
+}</pre>
+                </div>
+                <p><strong>Process any number of items with one loop!</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Game System Example -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Building Game Systems</h2>
+                <div class="big-emoji">🎮</div>
+                <div class="code-box">
+                    <pre><span class="comment">// Inventory system with arrays and loops</span>
+<span class="keyword">function</span> <span class="function">countPotions</span>(inventory) {
+    <span class="keyword">let</span> potionCount = <span class="number">0</span>;
+    <span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">of</span> inventory) {
+        <span class="keyword">if</span> (item === <span class="string">"Potion"</span>) {
+            potionCount++;
+        }
+    }
+    <span class="keyword">return</span> potionCount;
+}
+
+<span class="keyword">let</span> bag = [<span class="string">"Sword"</span>, <span class="string">"Potion"</span>, <span class="string">"Potion"</span>, <span class="string">"Key"</span>];
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">countPotions</span>(bag));  <span class="comment">// 2</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Shop System Example -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Smart Shop System</h2>
+                <div class="big-emoji">🛍️</div>
+                <div class="code-box">
+                    <pre><span class="keyword">let</span> shopItems = [
+    { <span class="property">name</span>: <span class="string">"Sword"</span>, <span class="property">price</span>: <span class="number">100</span> },
+    { <span class="property">name</span>: <span class="string">"Shield"</span>, <span class="property">price</span>: <span class="number">75</span> },
+    { <span class="property">name</span>: <span class="string">"Potion"</span>, <span class="property">price</span>: <span class="number">25</span> }
+];
+
+<span class="comment">// Show affordable items</span>
+<span class="keyword">function</span> <span class="function">showAffordableItems</span>(playerGold) {
+    <span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">of</span> shopItems) {
+        <span class="keyword">if</span> (playerGold >= item.<span class="property">price</span>) {
+            <span class="function">console</span>.<span class="function">log</span>(<span class="string">"You can buy: "</span> + item.<span class="property">name</span>);
+        }
+    }
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: While Loops -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>While Loops: Unknown Repetition</h2>
+                <div class="big-emoji">❓</div>
+                <div class="code-box">
+                    <pre><span class="comment">// When you don't know how many times</span>
+<span class="keyword">let</span> health = <span class="number">100</span>;
+<span class="keyword">let</span> poisoned = <span class="keyword">true</span>;
+
+<span class="keyword">while</span> (poisoned && health > <span class="number">0</span>) {
+    health -= <span class="number">5</span>;
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Poison damage! Health: "</span> + health);
+
+    <span class="keyword">if</span> (<span class="property">Math</span>.<span class="function">random</span>() > <span class="number">0.7</span>) {
+        poisoned = <span class="keyword">false</span>;
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Poison wore off!"</span>);
+    }
+}</pre>
+                </div>
+                <p><strong>Perfect for game loops and uncertain conditions!</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Assignment -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Your Mission</h2>
+                <div class="big-emoji">🚀</div>
+                <p style="font-size: 2rem; margin-bottom: 2rem;">Build an Array-Powered Adventure!</p>
+                <ul>
+                    <li>📦 <strong>Dynamic Inventory:</strong> Arrays that grow and shrink</li>
+                    <li>⚔️ <strong>Multiple Enemies:</strong> Battle groups using loops</li>
+                    <li>📜 <strong>Quest System:</strong> Track progress with arrays</li>
+                    <li>🗺️ <strong>Location Discovery:</strong> Unlock new areas dynamically</li>
+                    <li>🎯 <strong>Smart Systems:</strong> Combine arrays, loops, and functions!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 14: Thank You -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-emoji">🎉</div>
+                <h1>Thank You!</h1>
+                <h3>Questions?</h3>
+                <p style="margin-top: 2rem;">Now go build something amazing!</p>
+                <p style="margin-top: 1rem; opacity: 0.8;">Start with story-quest-arrays-loops.html and create your data-driven adventure</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="controls">
+        <button onclick="previousSlide()">← Previous</button>
+        <button onclick="nextSlide()">Next →</button>
+    </div>
+
+    <!-- Slide Indicators -->
+    <div class="slide-indicator" id="slideIndicator">
+        <!-- Dots will be generated by JavaScript -->
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 14;
+
+        // Slide navigation
+        function updateSlidePosition() {
+            const container = document.getElementById('slideContainer');
+            container.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            updateIndicators();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlidePosition();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlidePosition();
+            }
+        }
+
+        function goToSlide(n) {
+            currentSlide = n;
+            updateSlidePosition();
+        }
+
+        function updateIndicators() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function createIndicators() {
+            const indicator = document.getElementById('slideIndicator');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                indicator.appendChild(dot);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                goToSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                goToSlide(totalSlides - 1);
+            }
+        });
+
+        // Touch/swipe support
+        let startX = 0;
+        let endX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = startX - endX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    previousSlide();
+                }
+            }
+        }
+
+        // Mouse wheel navigation
+        document.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaY) > 50) {
+                if (e.deltaY > 0) {
+                    nextSlide();
+                } else {
+                    previousSlide();
+                }
+            }
+        }, { passive: true });
+
+        // Initialize
+        createIndicators();
+        updateSlidePosition();
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            updateSlidePosition();
+        });
+    </script>
+</body>
+</html>

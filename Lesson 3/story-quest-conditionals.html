@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Kingdom of Choices</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            min-height: 100vh;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .status-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .story-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .story-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #2c3e50;
+        }
+
+        .location-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .choices-section {
+            margin: 20px 0;
+        }
+
+        .choice-button {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin: 10px 0;
+            font-size: 16px;
+            background: white;
+            color: #333;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .choice-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .choice-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #ccc;
+        }
+
+        .choice-button.disabled:hover {
+            background: white;
+            color: #999;
+            transform: none;
+        }
+
+        .requirement {
+            font-size: 12px;
+            color: #e74c3c;
+            font-style: italic;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .warning-message {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .danger-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .inventory-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .inventory-item {
+            background: white;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>⚔️ The Kingdom of Choices ⚔️</h1>
+
+        <div class="status-panel">
+            <div class="stat-card">
+                <div class="stat-label">Health</div>
+                <div class="stat-value" id="health">100</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Gold</div>
+                <div class="stat-value" id="gold">25</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Reputation</div>
+                <div class="stat-value" id="reputation">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="location-tag" id="location">Village Square</div>
+            <div class="story-text" id="story">
+                Welcome to the kingdom! You are a young adventurer who just arrived in the village.
+                The villagers speak of troubles: a dragon threatens nearby, bandits roam the roads,
+                and treasure lies hidden. Your choices will determine your destiny!
+            </div>
+        </div>
+
+        <div class="choices-section" id="choices">
+            <button class="choice-button" onclick="goToTavern()">
+                🍺 Visit the Tavern
+            </button>
+            <button class="choice-button" onclick="goToShop()">
+                🛍️ Visit the Shop
+            </button>
+            <button class="choice-button" onclick="exploreForest()">
+                🌲 Explore the Forest
+            </button>
+        </div>
+
+        <div class="inventory-section">
+            <strong>Inventory:</strong>
+            <div class="inventory-grid" id="inventory">
+                <div class="inventory-item">Basic Sword</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game Variables - Using simple variables, no advanced concepts
+        let playerHealth = 100;
+        let playerGold = 25;
+        let playerReputation = 0;
+        let playerLevel = 1;
+        let currentLocation = "Village Square";
+
+        // Simple boolean flags for game state
+        let hasSword = true;
+        let hasShield = false;
+        let hasMap = false;
+        let hasKey = false;
+        let hasPotion = false;
+        let hasArmor = false;
+
+        // Quest progress flags
+        let dragonDefeated = false;
+        let banditsDefeated = false;
+        let treasureFound = false;
+        let knowsAboutDragon = false;
+        let helpedVillager = false;
+
+        // Basic helper functions (no parameters - keep it simple!)
+        function updateDisplay() {
+            document.getElementById('health').innerHTML = playerHealth;
+            document.getElementById('gold').innerHTML = playerGold;
+            document.getElementById('reputation').innerHTML = playerReputation;
+            document.getElementById('level').innerHTML = playerLevel;
+            document.getElementById('location').innerHTML = currentLocation;
+
+            // Update inventory display based on what player has
+            let inventoryHTML = "";
+            if (hasSword) inventoryHTML += '<div class="inventory-item">Sword</div>';
+            if (hasShield) inventoryHTML += '<div class="inventory-item">Shield</div>';
+            if (hasMap) inventoryHTML += '<div class="inventory-item">Map</div>';
+            if (hasKey) inventoryHTML += '<div class="inventory-item">Key</div>';
+            if (hasPotion) inventoryHTML += '<div class="inventory-item">Health Potion</div>';
+            if (hasArmor) inventoryHTML += '<div class="inventory-item">Armor</div>';
+
+            if (inventoryHTML === "") {
+                inventoryHTML = '<div class="inventory-item">Empty</div>';
+            }
+
+            document.getElementById('inventory').innerHTML = inventoryHTML;
+        }
+
+        // Location functions using conditionals
+        function goToTavern() {
+            currentLocation = "Village Tavern";
+            let storyText = "You enter the warm, cozy tavern. ";
+
+            // Different outcomes based on reputation using IF statements
+            if (playerReputation >= 10) {
+                storyText += "Everyone cheers your name! You're a local hero!";
+                playerGold = playerGold + 5;
+                storyText += " Someone buys you a drink. (+5 Gold)";
+            } else if (playerReputation >= 5) {
+                storyText += "People nod respectfully at you.";
+            } else if (playerReputation <= -5) {
+                storyText += "People whisper and avoid eye contact with you.";
+            } else {
+                storyText += "The tavern keeper greets you warmly.";
+            }
+
+            // Learn about dragon on first visit
+            if (!knowsAboutDragon) {
+                storyText += " You overhear talk about a dragon in the mountains!";
+                knowsAboutDragon = true;
+            }
+
+            document.getElementById('story').innerHTML = storyText;
+
+            // Create choices based on current state using conditionals
+            let choicesHTML = "";
+
+            // Buy drink - conditional on having enough gold
+            if (playerGold >= 5) {
+                choicesHTML += '<button class="choice-button" onclick="buyDrink()">🍺 Buy Drink (5 gold)</button>';
+            } else {
+                choicesHTML += '<button class="choice-button disabled">🍺 Buy Drink (Need 5 gold)</button>';
+            }
+
+            // Get map - conditional on having gold and not having map
+            if (playerGold >= 15 && !hasMap) {
+                choicesHTML += '<button class="choice-button" onclick="buyMap()">🗺️ Buy Dragon Map (15 gold)</button>';
+            } else if (!hasMap) {
+                choicesHTML += '<button class="choice-button disabled">🗺️ Buy Dragon Map (Need 15 gold)</button>';
+            }
+
+            choicesHTML += '<button class="choice-button" onclick="returnToSquare()">🚶 Return to Square</button>';
+
+            document.getElementById('choices').innerHTML = choicesHTML;
+            updateDisplay();
+        }
+
+        function goToShop() {
+            currentLocation = "Village Shop";
+            let storyText = "You enter the village shop filled with equipment. ";
+
+            // Shop interaction depends on reputation
+            if (playerReputation >= 10) {
+                storyText += "The shopkeeper offers you a hero's discount!";
+            } else if (playerReputation <= -5) {
+                storyText += "The shopkeeper watches you suspiciously.";
+            } else {
+                storyText += "The shopkeeper shows you the available items.";
+            }
+
+            document.getElementById('story').innerHTML = storyText;
+
+            let choicesHTML = "";
+
+            // Shield purchase - conditional logic
+            if (!hasShield && playerGold >= 20) {
+                choicesHTML += '<button class="choice-button" onclick="buyShield()">🛡️ Buy Shield (20 gold)</button>';
+            } else if (!hasShield) {
+                choicesHTML += '<button class="choice-button disabled">🛡️ Buy Shield (Need 20 gold)</button>';
+            }
+
+            // Armor purchase with reputation discount
+            let armorPrice = 40;
+            if (playerReputation >= 10) {
+                armorPrice = 30; // Hero discount
+            }
+
+            if (!hasArmor && playerGold >= armorPrice) {
+                choicesHTML += '<button class="choice-button" onclick="buyArmor()">⚔️ Buy Armor (' + armorPrice + ' gold)</button>';
+            } else if (!hasArmor) {
+                choicesHTML += '<button class="choice-button disabled">⚔️ Buy Armor (Need ' + armorPrice + ' gold)</button>';
+            }
+
+            // Potion purchase
+            if (!hasPotion && playerGold >= 10) {
+                choicesHTML += '<button class="choice-button" onclick="buyPotion()">🧪 Buy Health Potion (10 gold)</button>';
+            } else if (!hasPotion) {
+                choicesHTML += '<button class="choice-button disabled">🧪 Buy Health Potion (Need 10 gold)</button>';
+            }
+
+            choicesHTML += '<button class="choice-button" onclick="returnToSquare()">🚶 Return to Square</button>';
+
+            document.getElementById('choices').innerHTML = choicesHTML;
+            updateDisplay();
+        }
+
+        function exploreForest() {
+            currentLocation = "Dark Forest";
+            let storyText = "You venture into the mysterious forest. ";
+
+            // Random encounters based on preparation
+            if (hasArmor && hasShield) {
+                storyText += "Well-equipped, you navigate safely and find treasure! (+20 Gold)";
+                playerGold = playerGold + 20;
+                playerReputation = playerReputation + 2;
+            } else if (hasSword) {
+                storyText += "You encounter bandits! With your sword, you fight them off. (+5 Reputation, -10 Health)";
+                playerReputation = playerReputation + 5;
+                playerHealth = playerHealth - 10;
+                banditsDefeated = true;
+            } else {
+                storyText += "Unprepared, you barely escape some wolves! (-20 Health)";
+                playerHealth = playerHealth - 20;
+            }
+
+            // Check for game over condition
+            if (playerHealth <= 0) {
+                playerHealth = 0;
+                storyText += " You collapse from your wounds...";
+                document.getElementById('story').innerHTML = storyText;
+                document.getElementById('choices').innerHTML =
+                    '<button class="choice-button" onclick="gameOver()">💀 Game Over</button>';
+                updateDisplay();
+                return;
+            }
+
+            document.getElementById('story').innerHTML = storyText;
+
+            let choicesHTML = "";
+
+            // Continue exploring if healthy enough
+            if (playerHealth > 30) {
+                choicesHTML += '<button class="choice-button" onclick="exploreDragonCave()">🐉 Search for Dragon Cave</button>';
+            } else {
+                choicesHTML += '<button class="choice-button disabled">🐉 Search for Dragon Cave (Need more health)</button>';
+            }
+
+            choicesHTML += '<button class="choice-button" onclick="returnToSquare()">🚶 Return to Village</button>';
+
+            document.getElementById('choices').innerHTML = choicesHTML;
+            updateDisplay();
+        }
+
+        function exploreDragonCave() {
+            currentLocation = "Dragon's Cave";
+            let storyText = "You discover a massive cave with a dragon inside! ";
+
+            // Dragon fight depends on equipment and map
+            if (!hasMap) {
+                storyText += "Without a map, you get lost and the dragon escapes! (-10 Health)";
+                playerHealth = playerHealth - 10;
+            } else if (!hasShield && !hasArmor) {
+                storyText += "The dragon's fire burns you badly! You retreat! (-30 Health)";
+                playerHealth = playerHealth - 30;
+            } else if (hasShield || hasArmor) {
+                storyText += "Your protection saves you from the dragon's fire! ";
+                if (hasSword) {
+                    storyText += "You defeat the dragon! (+50 Gold, +20 Reputation)";
+                    playerGold = playerGold + 50;
+                    playerReputation = playerReputation + 20;
+                    playerLevel = playerLevel + 1;
+                    dragonDefeated = true;
+                    treasureFound = true;
+                } else {
+                    storyText += "But without a weapon, you can't defeat it! (-15 Health)";
+                    playerHealth = playerHealth - 15;
+                }
+            }
+
+            // Check for victory or game over
+            if (playerHealth <= 0) {
+                playerHealth = 0;
+                storyText += " You fall unconscious...";
+                document.getElementById('story').innerHTML = storyText;
+                document.getElementById('choices').innerHTML =
+                    '<button class="choice-button" onclick="gameOver()">💀 Game Over</button>';
+                updateDisplay();
+                return;
+            }
+
+            if (dragonDefeated && banditsDefeated && treasureFound) {
+                storyText += " You have become the hero of the kingdom!";
+                document.getElementById('story').innerHTML = storyText;
+                document.getElementById('choices').innerHTML =
+                    '<button class="choice-button" onclick="victory()">🎉 Victory!</button>';
+                updateDisplay();
+                return;
+            }
+
+            document.getElementById('story').innerHTML = storyText;
+            document.getElementById('choices').innerHTML =
+                '<button class="choice-button" onclick="returnToSquare()">🚶 Return to Village</button>';
+            updateDisplay();
+        }
+
+        // Action functions using conditionals
+        function buyDrink() {
+            if (playerGold >= 5) {
+                playerGold = playerGold - 5;
+                playerHealth = playerHealth + 10;
+                playerReputation = playerReputation + 1;
+                if (playerHealth > 100) {
+                    playerHealth = 100;
+                }
+            }
+            goToTavern();
+        }
+
+        function buyMap() {
+            if (playerGold >= 15) {
+                playerGold = playerGold - 15;
+                hasMap = true;
+            }
+            goToTavern();
+        }
+
+        function buyShield() {
+            if (playerGold >= 20) {
+                playerGold = playerGold - 20;
+                hasShield = true;
+            }
+            goToShop();
+        }
+
+        function buyArmor() {
+            let armorPrice = 40;
+            if (playerReputation >= 10) {
+                armorPrice = 30;
+            }
+
+            if (playerGold >= armorPrice) {
+                playerGold = playerGold - armorPrice;
+                hasArmor = true;
+            }
+            goToShop();
+        }
+
+        function buyPotion() {
+            if (playerGold >= 10) {
+                playerGold = playerGold - 10;
+                hasPotion = true;
+            }
+            goToShop();
+        }
+
+        function returnToSquare() {
+            currentLocation = "Village Square";
+            let storyText = "You return to the village square. ";
+
+            // Different descriptions based on achievements
+            if (dragonDefeated && banditsDefeated) {
+                storyText += "Everyone celebrates you as the greatest hero!";
+            } else if (playerReputation >= 15) {
+                storyText += "People bow respectfully as you pass.";
+            } else if (playerReputation >= 5) {
+                storyText += "Villagers smile and wave at you.";
+            } else if (playerReputation <= -5) {
+                storyText += "People avoid you and whisper behind your back.";
+            } else {
+                storyText += "The villagers go about their daily business.";
+            }
+
+            document.getElementById('story').innerHTML = storyText;
+            document.getElementById('choices').innerHTML =
+                '<button class="choice-button" onclick="goToTavern()">🍺 Visit the Tavern</button>' +
+                '<button class="choice-button" onclick="goToShop()">🛍️ Visit the Shop</button>' +
+                '<button class="choice-button" onclick="exploreForest()">🌲 Explore the Forest</button>';
+            updateDisplay();
+        }
+
+        function gameOver() {
+            document.getElementById('story').innerHTML =
+                "Your adventure ends here... But every great hero learns from their mistakes!";
+            document.getElementById('choices').innerHTML =
+                '<button class="choice-button" onclick="restart()">🔄 Try Again</button>';
+        }
+
+        function victory() {
+            document.getElementById('story').innerHTML =
+                "Congratulations! You saved the kingdom and became a legendary hero! " +
+                "The villagers will tell stories of your brave deeds for generations!";
+            document.getElementById('choices').innerHTML =
+                '<button class="choice-button" onclick="restart()">🔄 Play Again</button>';
+        }
+
+        function restart() {
+            // Reset all variables to starting values
+            playerHealth = 100;
+            playerGold = 25;
+            playerReputation = 0;
+            playerLevel = 1;
+            currentLocation = "Village Square";
+
+            // Reset flags
+            hasSword = true;
+            hasShield = false;
+            hasMap = false;
+            hasKey = false;
+            hasPotion = false;
+            hasArmor = false;
+
+            dragonDefeated = false;
+            banditsDefeated = false;
+            treasureFound = false;
+            knowsAboutDragon = false;
+            helpedVillager = false;
+
+            returnToSquare();
+        }
+
+        // Start the game
+        updateDisplay();
+    </script>
+</body>
+</html>
