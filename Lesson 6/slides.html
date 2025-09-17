@@ -93,18 +93,47 @@
             border-radius: 10px;
             padding: 1.5rem;
             margin: 1rem 0;
-            font-family: 'Courier New', monospace;
-            font-size: 1.3rem;
-            line-height: 1.4;
-            text-align: left;
             border-left: 4px solid #ffd700;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            overflow-x: auto;
             max-width: 900px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
-        .code-box code {
-            color: #e6e6e6;
+        .code-box pre {
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .code-box .comment {
+            color: #cccccc;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .code-box .keyword {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .code-box .string {
+            color: #44ff88;
+        }
+
+        .code-box .number {
+            color: #ffff44;
+        }
+
+        .code-box .function {
+            color: #ff88ff;
+        }
+
+        .code-box .property {
+            color: #44ddff;
         }
 
         .highlight {
@@ -291,16 +320,16 @@
                 <h2>What Are Objects?</h2>
                 <p>Objects are <span class="highlight">smart containers</span> that hold both data AND functions!</p>
                 <div class="code-box">
-                    <code>// Simple object with properties
-let player = {
-    name: "Alex",
-    health: 100,
-    level: 1
+                    <pre><span class="comment">// Simple object with properties</span>
+<span class="keyword">let</span> player = {
+    <span class="property">name</span>: <span class="string">"Alex"</span>,
+    <span class="property">health</span>: <span class="number">100</span>,
+    <span class="property">level</span>: <span class="number">1</span>
 };
 
-// Access properties
-console.log(player.name);    // "Alex"
-player.health = 75;          // Change value</code>
+<span class="comment">// Access properties</span>
+console.<span class="function">log</span>(player.name);    <span class="comment">// "Alex"</span>
+player.health = <span class="number">75</span>;          <span class="comment">// Change value</span></pre>
                 </div>
                 <p>Think of objects as <strong>labeled boxes with built-in tools</strong></p>
             </div>
@@ -314,27 +343,27 @@ player.health = 75;          // Change value</code>
                     <div>
                         <h3 style="color: #ff6b6b;">❌ BAD: Messy</h3>
                         <div class="code-box">
-                            <code>let playerName = "Alex";
-let playerHealth = 100;
-let playerInventory = ["sword"];
+                            <pre><span class="keyword">let</span> playerName = <span class="string">"Alex"</span>;
+<span class="keyword">let</span> playerHealth = <span class="number">100</span>;
+<span class="keyword">let</span> playerInventory = [<span class="string">"sword"</span>];
 
-function playerTakeDamage(amount) {
+<span class="keyword">function</span> <span class="function">playerTakeDamage</span>(amount) {
     playerHealth -= amount;
-}</code>
+}</pre>
                         </div>
                     </div>
                     <div>
                         <h3 style="color: #51cf66;">✅ GOOD: Organized</h3>
                         <div class="code-box">
-                            <code>let player = {
-    name: "Alex",
-    health: 100,
-    inventory: ["sword"],
+                            <pre><span class="keyword">let</span> player = {
+    <span class="property">name</span>: <span class="string">"Alex"</span>,
+    <span class="property">health</span>: <span class="number">100</span>,
+    <span class="property">inventory</span>: [<span class="string">"sword"</span>],
 
-    takeDamage(amount) {
-        this.health -= amount;
+    <span class="function">takeDamage</span>(amount) {
+        <span class="keyword">this</span>.health -= amount;
     }
-};</code>
+};</pre>
                         </div>
                     </div>
                 </div>
@@ -347,22 +376,22 @@ function playerTakeDamage(amount) {
                 <h2>Objects with Methods</h2>
                 <p>Methods are <span class="highlight">functions that belong to objects</span></p>
                 <div class="code-box">
-                    <code>let character = {
-    name: "Hero",
-    health: 100,
+                    <pre><span class="keyword">let</span> character = {
+    <span class="property">name</span>: <span class="string">"Hero"</span>,
+    <span class="property">health</span>: <span class="number">100</span>,
 
-    takeDamage: function(amount) {
-        this.health -= amount;  // 'this' refers to the character
-        if (this.health <= 0) {
-            this.die();
+    <span class="property">takeDamage</span>: <span class="keyword">function</span>(amount) {
+        <span class="keyword">this</span>.health -= amount;  <span class="comment">// 'this' refers to the character</span>
+        <span class="keyword">if</span> (<span class="keyword">this</span>.health <= <span class="number">0</span>) {
+            <span class="keyword">this</span>.<span class="function">die</span>();
         }
     },
 
-    heal: function(amount) {
-        this.health += amount;
-        console.log(`Healed ${amount}! Health: ${this.health}`);
+    <span class="property">heal</span>: <span class="keyword">function</span>(amount) {
+        <span class="keyword">this</span>.health += amount;
+        console.<span class="function">log</span>(<span class="string">`Healed ${amount}! Health: ${</span><span class="keyword">this</span><span class="string">.health}`</span>);
     }
-};</code>
+};</pre>
                 </div>
             </div>
         </div>
@@ -373,17 +402,17 @@ function playerTakeDamage(amount) {
                 <h2>The Magic of 'this'</h2>
                 <p><span class="highlight">this</span> always refers to the object that owns the method</p>
                 <div class="code-box">
-                    <code>let wizard = {
-    name: "Gandalf",
-    mana: 100,
+                    <pre><span class="keyword">let</span> wizard = {
+    <span class="property">name</span>: <span class="string">"Gandalf"</span>,
+    <span class="property">mana</span>: <span class="number">100</span>,
 
-    castSpell: function(cost) {
-        this.mana -= cost;  // 'this' = wizard object
-        console.log(`${this.name} has ${this.mana} mana left`);
+    <span class="property">castSpell</span>: <span class="keyword">function</span>(cost) {
+        <span class="keyword">this</span>.mana -= cost;  <span class="comment">// 'this' = wizard object</span>
+        console.<span class="function">log</span>(<span class="string">`${</span><span class="keyword">this</span><span class="string">.name} has ${</span><span class="keyword">this</span><span class="string">.mana} mana left`</span>);
     }
 };
 
-wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
+wizard.<span class="function">castSpell</span>(<span class="number">20</span>);  <span class="comment">// "Gandalf has 80 mana left"</span></pre>
                 </div>
                 <p style="font-size: 1.5rem; margin-top: 1rem;">It's like the object talking about itself! 🪄</p>
             </div>
@@ -395,23 +424,23 @@ wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
                 <h2>Building Game Systems</h2>
                 <p>Objects help us organize complex game features into logical systems</p>
                 <div class="code-box">
-                    <code>let inventory = {
-    items: [],
-    maxSize: 10,
+                    <pre><span class="keyword">let</span> inventory = {
+    <span class="property">items</span>: [],
+    <span class="property">maxSize</span>: <span class="number">10</span>,
 
-    add(item) {
-        if (this.items.length < this.maxSize) {
-            this.items.push(item);
-            this.updateDisplay();
-            return true;
+    <span class="function">add</span>(item) {
+        <span class="keyword">if</span> (<span class="keyword">this</span>.items.length < <span class="keyword">this</span>.maxSize) {
+            <span class="keyword">this</span>.items.<span class="function">push</span>(item);
+            <span class="keyword">this</span>.<span class="function">updateDisplay</span>();
+            <span class="keyword">return</span> <span class="keyword">true</span>;
         }
-        return false;
+        <span class="keyword">return</span> <span class="keyword">false</span>;
     },
 
-    updateDisplay() {
-        // Update the UI to show current items
+    <span class="function">updateDisplay</span>() {
+        <span class="comment">// Update the UI to show current items</span>
     }
-};</code>
+};</pre>
                 </div>
             </div>
         </div>
@@ -421,25 +450,25 @@ wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
             <div class="slide-content">
                 <h2>Combat System Example</h2>
                 <div class="code-box">
-                    <code>let combat = {
-    currentEnemy: null,
+                    <pre><span class="keyword">let</span> combat = {
+    <span class="property">currentEnemy</span>: <span class="keyword">null</span>,
 
-    start(enemy) {
-        this.currentEnemy = { ...enemy };  // Create copy
-        console.log(`Combat started with ${enemy.name}!`);
+    <span class="function">start</span>(enemy) {
+        <span class="keyword">this</span>.currentEnemy = { ...enemy };  <span class="comment">// Create copy</span>
+        console.<span class="function">log</span>(<span class="string">`Combat started with ${enemy.name}!`</span>);
     },
 
-    playerAttack() {
-        let damage = player.attack + Math.floor(Math.random() * 5);
-        this.currentEnemy.health -= damage;
+    <span class="function">playerAttack</span>() {
+        <span class="keyword">let</span> damage = player.attack + Math.<span class="function">floor</span>(Math.<span class="function">random</span>() * <span class="number">5</span>);
+        <span class="keyword">this</span>.currentEnemy.health -= damage;
 
-        if (this.currentEnemy.health <= 0) {
-            this.victory();
-        } else {
-            this.enemyAttack();
+        <span class="keyword">if</span> (<span class="keyword">this</span>.currentEnemy.health <= <span class="number">0</span>) {
+            <span class="keyword">this</span>.<span class="function">victory</span>();
+        } <span class="keyword">else</span> {
+            <span class="keyword">this</span>.<span class="function">enemyAttack</span>();
         }
     }
-};</code>
+};</pre>
                 </div>
             </div>
         </div>
@@ -453,34 +482,34 @@ wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
                     <div>
                         <h3>📄 index.html</h3>
                         <div class="code-box" style="font-size: 1.1rem;">
-                            <code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;Epic Quest&lt;/title&gt;
-    &lt;link rel="stylesheet" href="styles.css"&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;div id="gameContainer"&gt;&lt;/div&gt;
-    &lt;script src="game.js"&gt;&lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code>
+                            <pre><span class="keyword">&lt;!DOCTYPE</span> <span class="property">html</span><span class="keyword">&gt;</span>
+<span class="keyword">&lt;html&gt;</span>
+<span class="keyword">&lt;head&gt;</span>
+    <span class="keyword">&lt;title&gt;</span>Epic Quest<span class="keyword">&lt;/title&gt;</span>
+    <span class="keyword">&lt;link</span> <span class="property">rel</span>=<span class="string">"stylesheet"</span> <span class="property">href</span>=<span class="string">"styles.css"</span><span class="keyword">&gt;</span>
+<span class="keyword">&lt;/head&gt;</span>
+<span class="keyword">&lt;body&gt;</span>
+    <span class="keyword">&lt;div</span> <span class="property">id</span>=<span class="string">"gameContainer"</span><span class="keyword">&gt;&lt;/div&gt;</span>
+    <span class="keyword">&lt;script</span> <span class="property">src</span>=<span class="string">"game.js"</span><span class="keyword">&gt;&lt;/script&gt;</span>
+<span class="keyword">&lt;/body&gt;</span>
+<span class="keyword">&lt;/html&gt;</span></pre>
                         </div>
                     </div>
                     <div>
                         <h3>🎨 styles.css</h3>
                         <div class="code-box" style="font-size: 1.1rem;">
-                            <code>body {
-    font-family: 'Segoe UI';
-    background: linear-gradient(
-        135deg, #667eea 0%, #764ba2 100%
+                            <pre><span class="property">body</span> {
+    <span class="property">font-family</span>: <span class="string">'Segoe UI'</span>;
+    <span class="property">background</span>: <span class="function">linear-gradient</span>(
+        <span class="number">135deg</span>, <span class="string">#667eea</span> <span class="number">0%</span>, <span class="string">#764ba2</span> <span class="number">100%</span>
     );
 }
 
-.game-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: white;
-}</code>
+<span class="property">.game-container</span> {
+    <span class="property">max-width</span>: <span class="number">1200px</span>;
+    <span class="property">margin</span>: <span class="number">0</span> <span class="keyword">auto</span>;
+    <span class="property">background</span>: <span class="string">white</span>;
+}</pre>
                         </div>
                     </div>
                 </div>
@@ -493,23 +522,23 @@ wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
                 <h2>Configuration Objects</h2>
                 <p>Keep all game settings in one organized place</p>
                 <div class="code-box">
-                    <code>const CONFIG = {
-    PLAYER_START_HEALTH: 100,
-    INVENTORY_MAX_SIZE: 20,
-    SAVE_INTERVAL: 30000,
+                    <pre><span class="keyword">const</span> CONFIG = {
+    <span class="property">PLAYER_START_HEALTH</span>: <span class="number">100</span>,
+    <span class="property">INVENTORY_MAX_SIZE</span>: <span class="number">20</span>,
+    <span class="property">SAVE_INTERVAL</span>: <span class="number">30000</span>,
 
-    ENEMY_TYPES: {
-        goblin: { health: 20, attack: 5, gold: 10 },
-        orc: { health: 40, attack: 10, gold: 25 },
-        dragon: { health: 200, attack: 30, gold: 500 }
+    <span class="property">ENEMY_TYPES</span>: {
+        <span class="property">goblin</span>: { <span class="property">health</span>: <span class="number">20</span>, <span class="property">attack</span>: <span class="number">5</span>, <span class="property">gold</span>: <span class="number">10</span> },
+        <span class="property">orc</span>: { <span class="property">health</span>: <span class="number">40</span>, <span class="property">attack</span>: <span class="number">10</span>, <span class="property">gold</span>: <span class="number">25</span> },
+        <span class="property">dragon</span>: { <span class="property">health</span>: <span class="number">200</span>, <span class="property">attack</span>: <span class="number">30</span>, <span class="property">gold</span>: <span class="number">500</span> }
     },
 
-    ITEM_RARITIES: {
-        common: { color: '#95a5a6', chance: 0.6 },
-        rare: { color: '#3498db', chance: 0.3 },
-        epic: { color: '#9b59b6', chance: 0.08 }
+    <span class="property">ITEM_RARITIES</span>: {
+        <span class="property">common</span>: { <span class="property">color</span>: <span class="string">'#95a5a6'</span>, <span class="property">chance</span>: <span class="number">0.6</span> },
+        <span class="property">rare</span>: { <span class="property">color</span>: <span class="string">'#3498db'</span>, <span class="property">chance</span>: <span class="number">0.3</span> },
+        <span class="property">epic</span>: { <span class="property">color</span>: <span class="string">'#9b59b6'</span>, <span class="property">chance</span>: <span class="number">0.08</span> }
     }
-};</code>
+};</pre>
                 </div>
             </div>
         </div>
@@ -520,21 +549,21 @@ wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
                 <h2>Adding Polish ✨</h2>
                 <p>Professional games have smooth animations, sound effects, and visual feedback</p>
                 <div class="code-box">
-                    <code>const effects = {
-    shake(element) {
-        element.classList.add('shake');
-        setTimeout(() => element.classList.remove('shake'), 500);
+                    <pre><span class="keyword">const</span> effects = {
+    <span class="function">shake</span>(element) {
+        element.classList.<span class="function">add</span>(<span class="string">'shake'</span>);
+        <span class="function">setTimeout</span>(() => element.classList.<span class="function">remove</span>(<span class="string">'shake'</span>), <span class="number">500</span>);
     },
 
-    popup(text, type = 'info') {
-        const popup = document.createElement('div');
-        popup.className = `popup ${type}`;
+    <span class="function">popup</span>(text, type = <span class="string">'info'</span>) {
+        <span class="keyword">const</span> popup = document.<span class="function">createElement</span>(<span class="string">'div'</span>);
+        popup.className = <span class="string">`popup ${type}`</span>;
         popup.innerHTML = text;
-        document.body.appendChild(popup);
+        document.body.<span class="function">appendChild</span>(popup);
 
-        setTimeout(() => popup.remove(), 2000);
+        <span class="function">setTimeout</span>(() => popup.<span class="function">remove</span>(), <span class="number">2000</span>);
     }
-};</code>
+};</pre>
                 </div>
             </div>
         </div>
@@ -545,23 +574,23 @@ wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
                 <h2>Save/Load System</h2>
                 <p>Let players save their progress and continue later</p>
                 <div class="code-box">
-                    <code>const saveSystem = {
-    save() {
-        const saveData = {
-            player: {
-                name: player.name,
-                level: player.level,
-                health: player.health,
-                gold: player.gold
+                    <pre><span class="keyword">const</span> saveSystem = {
+    <span class="function">save</span>() {
+        <span class="keyword">const</span> saveData = {
+            <span class="property">player</span>: {
+                <span class="property">name</span>: player.name,
+                <span class="property">level</span>: player.level,
+                <span class="property">health</span>: player.health,
+                <span class="property">gold</span>: player.gold
             },
-            inventory: inventory.items,
-            timestamp: Date.now()
+            <span class="property">inventory</span>: inventory.items,
+            <span class="property">timestamp</span>: Date.<span class="function">now</span>()
         };
 
-        localStorage.setItem('epicQuestSave', JSON.stringify(saveData));
-        effects.popup('Game saved!', 'success');
+        localStorage.<span class="function">setItem</span>(<span class="string">'epicQuestSave'</span>, JSON.<span class="function">stringify</span>(saveData));
+        effects.<span class="function">popup</span>(<span class="string">'Game saved!'</span>, <span class="string">'success'</span>);
     }
-};</code>
+};</pre>
                 </div>
             </div>
         </div>
