@@ -131,41 +131,66 @@
         .controls {
             position: fixed;
             bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
+            right: 2rem;
             z-index: 1000;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
+            transform: none !important;
         }
 
-        .nav-button {
+        .controls button {
             background: rgba(255,255,255,0.2);
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid white;
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
         }
 
-        .nav-button:hover:not(:disabled) {
-            background: rgba(255,255,255,0.3);
-            border-color: rgba(255,255,255,0.5);
-            transform: scale(1.05);
+        .controls button:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
         }
 
-        .nav-button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .slide-indicators {
+        .slide-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) !important;
             display: flex;
             gap: 0.5rem;
-            margin: 0 1rem;
+            z-index: 1000;
+        }
+
+        /* Force navigation visibility for lower resolutions */
+        @media (max-width: 1440px) {
+            .controls {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                display: block !important;
+                visibility: visible !important;
+            }
+
+            .controls button {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.95rem;
+                margin: 0 0.4rem;
+                display: inline-block !important;
+            }
+
+            .slide-indicator {
+                bottom: 1.5rem;
+                display: flex !important;
+                visibility: visible !important;
+            }
+
+            .dot {
+                width: 11px;
+                height: 11px;
+                display: block !important;
+            }
         }
 
         .dot {
@@ -178,7 +203,7 @@
         }
 
         .dot.active {
-            background: white;
+            background: #ffd700;
             transform: scale(1.2);
         }
 
@@ -563,10 +588,11 @@ wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
     </div>
 
     <div class="controls">
-        <button class="nav-button" id="prevBtn" onclick="previousSlide()">← Previous</button>
-        <div class="slide-indicators" id="indicators"></div>
-        <button class="nav-button" id="nextBtn" onclick="nextSlide()">Next →</button>
+        <button id="prevBtn" onclick="previousSlide()">← Previous</button>
+        <button id="nextBtn" onclick="nextSlide()">Next →</button>
     </div>
+
+    <div class="slide-indicator" id="indicators"></div>
 
     <script>
         let currentSlide = 0;
@@ -578,19 +604,23 @@ wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
             updateIndicators();
         }
 
-        function updateIndicators() {
+        function createIndicators() {
             const indicators = document.getElementById('indicators');
             indicators.innerHTML = '';
 
             for (let i = 0; i < totalSlides; i++) {
                 const dot = document.createElement('div');
                 dot.className = 'dot';
-                if (i === currentSlide) {
-                    dot.classList.add('active');
-                }
                 dot.onclick = () => goToSlide(i);
                 indicators.appendChild(dot);
             }
+        }
+
+        function updateIndicators() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
 
             document.getElementById('prevBtn').disabled = currentSlide === 0;
             document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
@@ -616,7 +646,9 @@ wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
         }
 
         // Initialize
-        updateIndicators();
+        createIndicators();
+        updateSlidePosition();
+        scaleSlides();
 
         // Keyboard navigation
         document.addEventListener('keydown', function(e) {
@@ -666,22 +698,38 @@ wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
             e.preventDefault();
         });
 
-        // Dynamic scaling for different screen sizes
-        function adjustScale() {
+        // Scaling functionality for desktop/laptop resolutions only
+        function scaleSlides() {
             const slides = document.querySelectorAll('.slide-content');
-            const vh = window.innerHeight;
-            const vw = window.innerWidth;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
 
-            let scale = Math.min(vw / 1200, vh / 800);
-            scale = Math.max(0.3, Math.min(1, scale));
+            // Base dimensions (what we designed for)
+            const baseWidth = 1200;
+            const baseHeight = 800;
+
+            // Standard margins for all supported resolutions
+            const marginX = 50;
+            const marginY = 50;
+
+            // Calculate scale factors
+            const scaleX = (windowWidth - marginX * 2) / baseWidth;
+            const scaleY = (windowHeight - marginY * 2) / baseHeight;
+
+            // Use the smaller scale to maintain aspect ratio
+            let scale = Math.min(scaleX, scaleY);
+
+            // Scale limits optimized for classroom/presentation environments
+            scale = Math.min(scale, 1.2); // Cap at 120% for readability
+            scale = Math.max(scale, 0.5); // Minimum scale for classroom visibility
 
             slides.forEach(slide => {
                 slide.style.transform = `scale(${scale})`;
             });
         }
 
-        window.addEventListener('resize', adjustScale);
-        adjustScale();
+        // Rescale on window resize
+        window.addEventListener('resize', scaleSlides);
     </script>
 </body>
 </html>
