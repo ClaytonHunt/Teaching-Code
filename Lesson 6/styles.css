@@ -1,0 +1,630 @@
+/* Epic Quest - Final Adventure Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Game Container */
+.game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.game-header {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 3px solid #f39c12;
+}
+
+.title {
+    font-size: 2.5em;
+    margin-bottom: 5px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.subtitle {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+/* Main Content */
+.game-main {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Character Panel */
+.character-panel {
+    width: 300px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    height: fit-content;
+}
+
+.character-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.character-avatar {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.character-name {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.character-class {
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+/* Stats */
+.stats-grid {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.stat-item label {
+    font-size: 0.8em;
+    color: #666;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.stat-bar {
+    background: #ecf0f1;
+    height: 20px;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.health-fill {
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
+}
+
+.mana-fill {
+    background: linear-gradient(90deg, #3498db, #2980b9);
+}
+
+.stat-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8em;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    font-weight: bold;
+}
+
+.stat-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Equipment */
+.equipment-slots {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.equipment-slot {
+    width: 60px;
+    height: 60px;
+    border: 2px dashed #bdc3c7;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    background: #ecf0f1;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.equipment-slot:hover {
+    border-color: #3498db;
+    transform: scale(1.05);
+}
+
+.equipment-slot.equipped {
+    border-color: #27ae60;
+    background: #d5f4e6;
+    border-style: solid;
+}
+
+/* Inventory */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.inventory-item {
+    background: white;
+    border: 2px solid #bdc3c7;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.inventory-item:hover {
+    border-color: #3498db;
+    transform: scale(1.05);
+}
+
+.inventory-item.rare {
+    border-color: #9b59b6;
+    background: #f4f1f8;
+}
+
+.inventory-item.epic {
+    border-color: #e67e22;
+    background: #fdf2e9;
+}
+
+.inventory-item.legendary {
+    border-color: #f1c40f;
+    background: #fffbf0;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+}
+
+/* Achievements */
+.achievements-section h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.achievements-list {
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.achievement {
+    background: white;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    border-left: 3px solid #f39c12;
+}
+
+.achievement.unlocked {
+    border-left-color: #27ae60;
+    background: #d5f4e6;
+}
+
+/* Story Area */
+.story-area {
+    flex: 1;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.location-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+.location-name {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.location-description {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.story-content {
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.story-text {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.story-image {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 4em;
+}
+
+/* Choices */
+.choices-grid {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.choice-button {
+    background: white;
+    border: 2px solid #3498db;
+    padding: 15px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1em;
+    text-align: left;
+    position: relative;
+}
+
+.choice-button:hover {
+    background: #3498db;
+    color: white;
+    transform: translateX(5px);
+}
+
+.choice-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #bdc3c7;
+}
+
+.choice-button:disabled:hover {
+    background: white;
+    color: #333;
+    transform: none;
+}
+
+.choice-requirement {
+    font-size: 0.8em;
+    color: #e74c3c;
+    font-style: italic;
+    display: block;
+    margin-top: 5px;
+}
+
+.choice-button.magic {
+    border-color: #9b59b6;
+}
+
+.choice-button.magic:hover {
+    background: #9b59b6;
+}
+
+.choice-button.combat {
+    border-color: #e74c3c;
+}
+
+.choice-button.combat:hover {
+    background: #e74c3c;
+}
+
+.choice-button.special {
+    border-color: #f39c12;
+    background: linear-gradient(45deg, #fff, #fef9e7);
+}
+
+.choice-button.special:hover {
+    background: #f39c12;
+}
+
+/* Game Log */
+.game-log {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 15px;
+    border-radius: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.log-entry {
+    margin-bottom: 5px;
+    padding: 2px 0;
+    border-bottom: 1px solid #34495e;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.log-entry.damage {
+    color: #e74c3c;
+}
+
+.log-entry.healing {
+    color: #27ae60;
+}
+
+.log-entry.magic {
+    color: #9b59b6;
+}
+
+.log-entry.info {
+    color: #3498db;
+}
+
+.log-entry.achievement {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+/* Footer */
+.game-footer {
+    background: #34495e;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    border-top: 3px solid #f39c12;
+}
+
+.menu-button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s;
+}
+
+.menu-button:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #999;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .game-main {
+        flex-direction: column;
+    }
+    
+    .character-panel {
+        width: 100%;
+        order: 2;
+    }
+    
+    .story-area {
+        order: 1;
+    }
+    
+    .title {
+        font-size: 2em;
+    }
+    
+    .choices-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.shake {
+    animation: shake 0.5s ease;
+}
+
+/* Special Effects */
+.critical-hit {
+    color: #f39c12;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(243, 156, 18, 0.8);
+}
+
+.level-up {
+    background: linear-gradient(45deg, #f39c12, #e67e22);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    text-align: center;
+    font-weight: bold;
+    animation: pulse 2s ease;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.5;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading::after {
+    content: "Loading...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+/* Tooltips */
+.tooltip {
+    position: relative;
+}
+
+.tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+.tooltip:hover::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.9);
+    margin-bottom: -5px;
+}
