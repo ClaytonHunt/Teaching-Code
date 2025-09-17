@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>The Hero's Ascension</title>
+    <title>The Legendary Spell Forge</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -100,7 +100,7 @@
             transform: none;
         }
 
-        .guild-info {
+        .spells-panel {
             background: #e8f4fd;
             border-radius: 10px;
             padding: 1rem;
@@ -108,7 +108,7 @@
             border-left: 5px solid #3498db;
         }
 
-        .guild-member {
+        .spell {
             display: inline-block;
             background: white;
             padding: 0.5rem 1rem;
@@ -116,6 +116,13 @@
             border-radius: 6px;
             border: 1px solid #ddd;
             font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .spell:hover {
+            background: #3498db;
+            color: white;
         }
 
         .system-info {
@@ -128,7 +135,17 @@
             color: #856404;
         }
 
-        .notification {
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .popup {
             position: fixed;
             top: 20px;
             right: 20px;
@@ -136,20 +153,42 @@
             border-radius: 8px;
             color: white;
             z-index: 1000;
-            animation: slideIn 0.3s ease;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
         }
 
-        .notification.success {
+        .popup.damage {
+            background: #e74c3c;
+        }
+
+        .popup.healing {
             background: #2ecc71;
         }
 
-        .notification.info {
+        .popup.info {
             background: #3498db;
+        }
+
+        .popup.achievement {
+            background: #f39c12;
         }
 
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 768px) {
@@ -170,538 +209,618 @@
 </head>
 <body>
     <div class="game-container">
-        <h1>🏰 The Hero's Ascension</h1>
+        <h1>🔮 The Legendary Spell Forge</h1>
 
         <div class="status-panel">
             <div class="stat-card">
                 <div class="stat-label">Health</div>
-                <div class="stat-value" id="health">100</div>
+                <div class="stat-value" id="health">120</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Mana</div>
-                <div class="stat-value" id="mana">80</div>
+                <div class="stat-value" id="mana">100</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Gold</div>
-                <div class="stat-value" id="gold">500</div>
+                <div class="stat-value" id="gold">850</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Renown</div>
-                <div class="stat-value" id="renown">10</div>
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="level">5</div>
             </div>
         </div>
 
-        <div class="guild-info">
-            <strong>🏛️ Royal Guild Members:</strong>
-            <div id="guildMembers">
-                <span class="guild-member">👑 Captain Marcus (Leader)</span>
-                <span class="guild-member">🏹 Archer Elena</span>
-                <span class="guild-member">🛡️ Guardian Thor</span>
+        <div class="spells-panel">
+            <strong>🌟 Known Spells:</strong>
+            <div id="spellList">
+                <span class="spell" onclick="castSpell('fireball')">🔥 Fireball</span>
+                <span class="spell" onclick="castSpell('heal')">💚 Heal</span>
+                <span class="spell" onclick="castSpell('shield')">🛡️ Magic Shield</span>
             </div>
         </div>
 
         <div id="story" class="story-text">
-            After defeating the ancient dragon, you have become a legendary hero! The Royal Guild has invited you to join their ranks and help establish a new order of protection for the realm. As a guild member, you'll lead expeditions, manage resources, and coordinate with other heroes using advanced magical systems.
+            After slaying the ancient dragon, you have gained legendary status and learned the location of the mythical Spell Forge! This ancient magical workshop contains the power to create ultimate spells and enchantments. But first, you must prove your mastery by completing three trials using your newfound object-oriented magical abilities.
         </div>
 
         <div id="choices" class="choices">
-            <button onclick="organizeExpedition()">🗺️ Organize New Expedition</button>
-            <button onclick="manageGuildResources()">📦 Manage Guild Resources</button>
-            <button onclick="upgradeGuildSystems()">⚙️ Upgrade Guild Systems</button>
+            <button onclick="enterTrialOfCombat()">⚔️ Enter Trial of Combat</button>
+            <button onclick="enterTrialOfCrafting()">🔨 Enter Trial of Crafting</button>
+            <button onclick="enterTrialOfWisdom()">📚 Enter Trial of Wisdom</button>
         </div>
 
         <div class="system-info">
             <strong>🎯 Programming Concepts Demonstrated:</strong>
-            This quest showcases objects and professional game systems:
-            <br>• Hero object with properties and methods for complex character management
-            <br>• Guild system object with member management and resource tracking
-            <br>• Expedition object with planning, preparation, and execution phases
-            <br>• Save/load system for persistent guild progress
+            This quest showcases professional object-oriented programming:
+            <br>• Character object with methods for complex stat management and spell casting
+            <br>• Combat system with shake animations and visual effects from the slides
+            <br>• Spell objects with properties, casting methods, and cooldown systems
+            <br>• Equipment system with automatic stat bonuses and enhancement methods
         </div>
     </div>
 
     <script>
-        // Hero object - demonstrates complex object with nested properties and methods
-        const hero = {
-            name: "Legendary Hero",
-            health: 100,
-            maxHealth: 100,
-            mana: 80,
-            maxMana: 80,
-            gold: 500,
-            renown: 10,
-            titles: ["Dragon Slayer", "Tower Master", "Village Savior"],
+        // Character object - demonstrates complex object with methods and properties
+        const character = {
+            name: "Legendary Mage",
+            health: 120,
+            maxHealth: 120,
+            mana: 100,
+            maxMana: 100,
+            gold: 850,
+            level: 5,
+            experience: 0,
+            experienceToNext: 1000,
 
-            // Method to modify stats safely
+            // Equipment system - nested objects
+            equipment: {
+                weapon: { name: "Dragon Staff", attack: 25, manaBonus: 20 },
+                armor: { name: "Archmage Robes", defense: 15, healthBonus: 20 },
+                accessory: { name: "Ring of Power", critChance: 0.15, manaRegen: 5 }
+            },
+
+            // Method to safely modify stats
             modifyStats: function(changes) {
                 if (changes.health !== undefined) {
+                    const oldHealth = this.health;
                     this.health = Math.max(0, Math.min(this.maxHealth, this.health + changes.health));
+
+                    if (changes.health < 0) {
+                        effects.shake(document.querySelector('.status-panel'));
+                        effects.popup(`-${Math.abs(changes.health)} HP`, 'damage');
+                    } else if (changes.health > 0) {
+                        effects.popup(`+${changes.health} HP`, 'healing');
+                    }
                 }
+
                 if (changes.mana !== undefined) {
                     this.mana = Math.max(0, Math.min(this.maxMana, this.mana + changes.mana));
+                    if (changes.mana < 0) {
+                        effects.popup(`-${Math.abs(changes.mana)} MP`, 'info');
+                    }
                 }
+
                 if (changes.gold !== undefined) {
                     this.gold = Math.max(0, this.gold + changes.gold);
+                    if (changes.gold > 0) {
+                        effects.popup(`+${changes.gold} Gold!`, 'achievement');
+                    }
                 }
-                if (changes.renown !== undefined) {
-                    this.renown = Math.max(0, this.renown + changes.renown);
-                }
+
                 this.updateDisplay();
             },
 
-            // Method to check if hero can afford something
-            canAfford: function(cost) {
-                return this.gold >= cost && this.mana >= (cost / 10);
-            },
+            // Method to cast spells
+            castSpell: function(spellName) {
+                const spell = spellSystem.spells[spellName];
+                if (!spell) return false;
 
-            // Method to gain a new title
-            earnTitle: function(newTitle) {
-                if (!this.titles.includes(newTitle)) {
-                    this.titles.push(newTitle);
-                    ui.showNotification(`New title earned: ${newTitle}!`, 'success');
-                }
-            },
-
-            // Method to update the display
-            updateDisplay: function() {
-                document.getElementById('health').textContent = this.health;
-                document.getElementById('mana').textContent = this.mana;
-                document.getElementById('gold').textContent = this.gold;
-                document.getElementById('renown').textContent = this.renown;
-            }
-        };
-
-        // Guild system object - demonstrates object organization for complex systems
-        const guild = {
-            name: "Royal Protectors",
-            members: [
-                { name: "Captain Marcus", role: "Leader", specialty: "Strategy", available: true },
-                { name: "Archer Elena", role: "Scout", specialty: "Reconnaissance", available: true },
-                { name: "Guardian Thor", role: "Tank", specialty: "Defense", available: true }
-            ],
-            resources: {
-                supplies: 100,
-                artifacts: 5,
-                reputation: 85
-            },
-
-            // Method to recruit new members
-            recruitMember: function(newMember) {
-                this.members.push({
-                    name: newMember.name,
-                    role: newMember.role,
-                    specialty: newMember.specialty,
-                    available: true
-                });
-                this.updateMemberDisplay();
-                ui.showNotification(`${newMember.name} joined the guild!`, 'success');
-            },
-
-            // Method to assign members to expeditions
-            assignMembers: function(expedition) {
-                const assignedMembers = [];
-                for (let member of this.members) {
-                    if (member.available && assignedMembers.length < expedition.requiredMembers) {
-                        member.available = false;
-                        assignedMembers.push(member);
-                    }
-                }
-                return assignedMembers;
-            },
-
-            // Method to complete expeditions and return members
-            completeExpedition: function(assignedMembers, success) {
-                for (let member of assignedMembers) {
-                    member.available = true;
-                    if (success) {
-                        // Members gain experience on successful expeditions
-                        if (!member.experience) member.experience = 0;
-                        member.experience += 10;
-                    }
-                }
-                this.updateMemberDisplay();
-            },
-
-            // Method to update member display
-            updateMemberDisplay: function() {
-                const container = document.getElementById('guildMembers');
-                container.innerHTML = '';
-                for (let member of this.members) {
-                    const statusIcon = member.available ? '✅' : '🚫';
-                    const memberSpan = document.createElement('span');
-                    memberSpan.className = 'guild-member';
-                    memberSpan.textContent = `${statusIcon} ${member.name} (${member.role})`;
-                    container.appendChild(memberSpan);
-                }
-            }
-        };
-
-        // Expedition system object - demonstrates complex object interactions
-        const expeditionSystem = {
-            activeExpeditions: [],
-            expeditionTypes: [
-                { name: "Ancient Ruins Exploration", difficulty: "Medium", reward: { gold: 200, renown: 3 }, requiredMembers: 2 },
-                { name: "Bandit Camp Clearance", difficulty: "Hard", reward: { gold: 300, renown: 5 }, requiredMembers: 3 },
-                { name: "Artifact Recovery Mission", difficulty: "Extreme", reward: { gold: 500, renown: 8 }, requiredMembers: 4 }
-            ],
-
-            // Method to create and launch expeditions
-            launchExpedition: function(expeditionType) {
-                if (hero.canAfford(50)) {
-                    const assignedMembers = guild.assignMembers(expeditionType);
-
-                    if (assignedMembers.length >= expeditionType.requiredMembers) {
-                        hero.modifyStats({ gold: -50, mana: -10 });
-
-                        const expedition = {
-                            type: expeditionType.name,
-                            members: assignedMembers,
-                            startTime: Date.now(),
-                            duration: 3000, // 3 seconds for demo
-                            reward: expeditionType.reward
-                        };
-
-                        this.activeExpeditions.push(expedition);
-                        ui.showNotification(`${expeditionType.name} launched!`, 'info');
-
-                        // Simulate expedition completion
-                        setTimeout(() => this.completeExpedition(expedition), expedition.duration);
-
-                        return true;
-                    } else {
-                        ui.showNotification('Not enough available guild members!', 'info');
-                        return false;
-                    }
+                if (this.mana >= spell.manaCost) {
+                    this.modifyStats({ mana: -spell.manaCost });
+                    spell.cast();
+                    effects.popup(`Cast ${spell.name}!`, 'info');
+                    return true;
                 } else {
-                    ui.showNotification('Not enough gold or mana!', 'info');
+                    effects.popup('Not enough mana!', 'damage');
                     return false;
                 }
             },
 
-            // Method to handle expedition completion
-            completeExpedition: function(expedition) {
-                const success = Math.random() > 0.3; // 70% success rate
+            // Method to gain experience and level up
+            gainExperience: function(amount) {
+                this.experience += amount;
+                effects.popup(`+${amount} XP`, 'achievement');
 
-                if (success) {
-                    hero.modifyStats(expedition.reward);
-                    hero.earnTitle("Expedition Leader");
-                    ui.showNotification(`${expedition.type} succeeded!`, 'success');
-                } else {
-                    ui.showNotification(`${expedition.type} failed, but members returned safely.`, 'info');
+                if (this.experience >= this.experienceToNext) {
+                    this.levelUp();
                 }
+            },
 
-                guild.completeExpedition(expedition.members, success);
+            // Method to level up
+            levelUp: function() {
+                this.level++;
+                this.experience -= this.experienceToNext;
+                this.experienceToNext = this.level * 1000;
 
-                // Remove completed expedition
-                const index = this.activeExpeditions.indexOf(expedition);
-                this.activeExpeditions.splice(index, 1);
+                this.maxHealth += 20;
+                this.maxMana += 15;
+                this.health = this.maxHealth; // Full heal on level up
+                this.mana = this.maxMana;
+
+                effects.popup(`Level Up! Now level ${this.level}!`, 'achievement');
+                this.updateDisplay();
+            },
+
+            // Method to update display
+            updateDisplay: function() {
+                document.getElementById('health').textContent = this.health;
+                document.getElementById('mana').textContent = this.mana;
+                document.getElementById('gold').textContent = this.gold;
+                document.getElementById('level').textContent = this.level;
             }
         };
 
-        // UI system object - demonstrates professional interface management
-        const ui = {
-            // Method to show notifications
-            showNotification: function(message, type = 'info') {
-                const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
-                notification.textContent = message;
-                document.body.appendChild(notification);
-
-                setTimeout(() => notification.remove(), 3000);
+        // Spell system object - demonstrates object organization and methods
+        const spellSystem = {
+            spells: {
+                fireball: {
+                    name: "Fireball",
+                    manaCost: 15,
+                    damage: 35,
+                    cast: function() {
+                        const damage = this.damage + Math.floor(Math.random() * 10);
+                        return damage;
+                    }
+                },
+                heal: {
+                    name: "Heal",
+                    manaCost: 20,
+                    healing: 40,
+                    cast: function() {
+                        const healing = this.healing + Math.floor(Math.random() * 15);
+                        character.modifyStats({ health: healing });
+                        return healing;
+                    }
+                },
+                shield: {
+                    name: "Magic Shield",
+                    manaCost: 25,
+                    protection: 25,
+                    cast: function() {
+                        character.shieldActive = this.protection;
+                        setTimeout(() => { character.shieldActive = 0; }, 30000);
+                        return this.protection;
+                    }
+                },
+                lightning: {
+                    name: "Lightning Bolt",
+                    manaCost: 30,
+                    damage: 50,
+                    cast: function() {
+                        const damage = this.damage + Math.floor(Math.random() * 20);
+                        return damage;
+                    }
+                }
             },
 
-            // Method to update story text with animation
+            // Method to learn new spells
+            learnSpell: function(spellName) {
+                if (this.spells[spellName]) {
+                    this.updateSpellDisplay();
+                    effects.popup(`Learned ${this.spells[spellName].name}!`, 'achievement');
+                }
+            },
+
+            // Method to update spell display
+            updateSpellDisplay: function() {
+                const container = document.getElementById('spellList');
+                container.innerHTML = '';
+
+                for (let spellKey in this.spells) {
+                    const spell = this.spells[spellKey];
+                    const spellElement = document.createElement('span');
+                    spellElement.className = 'spell';
+                    spellElement.onclick = () => castSpell(spellKey);
+
+                    let emoji = '🔮';
+                    if (spellKey === 'fireball') emoji = '🔥';
+                    if (spellKey === 'heal') emoji = '💚';
+                    if (spellKey === 'shield') emoji = '🛡️';
+                    if (spellKey === 'lightning') emoji = '⚡';
+
+                    spellElement.innerHTML = `${emoji} ${spell.name}`;
+                    container.appendChild(spellElement);
+                }
+            }
+        };
+
+        // Combat system object - demonstrates complex interactions
+        const combat = {
+            currentEnemy: null,
+            isInCombat: false,
+
+            // Method to start combat
+            startCombat: function(enemy) {
+                this.currentEnemy = { ...enemy }; // Create copy
+                this.isInCombat = true;
+                ui.updateStory(`A ${enemy.name} appears! It has ${enemy.health} health and looks dangerous. Choose your action wisely!`);
+
+                ui.updateChoices(
+                    '<button onclick="combat.playerAttack()">⚔️ Attack with Weapon</button>' +
+                    '<button onclick="combat.castOffensiveSpell()">🔥 Cast Offensive Spell</button>' +
+                    '<button onclick="combat.castDefensiveSpell()">🛡️ Cast Defensive Spell</button>' +
+                    '<button onclick="combat.attemptFlee()">🏃 Attempt to Flee</button>'
+                );
+            },
+
+            // Method for player weapon attack
+            playerAttack: function() {
+                if (!this.currentEnemy) return;
+
+                const weaponDamage = character.equipment.weapon.attack;
+                const totalDamage = weaponDamage + Math.floor(Math.random() * 10);
+
+                this.currentEnemy.health -= totalDamage;
+                effects.popup(`Dealt ${totalDamage} damage!`, 'achievement');
+
+                if (this.currentEnemy.health <= 0) {
+                    this.victory();
+                } else {
+                    this.enemyTurn();
+                }
+            },
+
+            // Method for casting offensive spells
+            castOffensiveSpell: function() {
+                ui.updateStory(`Choose an offensive spell to cast:`);
+                ui.updateChoices(
+                    '<button onclick="combat.castSpecificSpell(\'fireball\')">🔥 Fireball (15 MP)</button>' +
+                    '<button onclick="combat.castSpecificSpell(\'lightning\')">⚡ Lightning Bolt (30 MP)</button>' +
+                    '<button onclick="combat.backToMainCombat()">🔙 Back to Combat Menu</button>'
+                );
+            },
+
+            // Method for casting defensive spells
+            castDefensiveSpell: function() {
+                ui.updateStory(`Choose a defensive action:`);
+                ui.updateChoices(
+                    '<button onclick="combat.castSpecificSpell(\'heal\')">💚 Heal (20 MP)</button>' +
+                    '<button onclick="combat.castSpecificSpell(\'shield\')">🛡️ Magic Shield (25 MP)</button>' +
+                    '<button onclick="combat.backToMainCombat()">🔙 Back to Combat Menu</button>'
+                );
+            },
+
+            // Method to cast specific spell in combat
+            castSpecificSpell: function(spellName) {
+                const success = character.castSpell(spellName);
+
+                if (success && this.currentEnemy) {
+                    const spell = spellSystem.spells[spellName];
+
+                    if (spell.damage) {
+                        this.currentEnemy.health -= spell.damage;
+                        if (this.currentEnemy.health <= 0) {
+                            this.victory();
+                            return;
+                        }
+                    }
+
+                    this.enemyTurn();
+                } else if (success) {
+                    // Defensive spell cast successfully
+                    this.backToMainCombat();
+                }
+            },
+
+            // Method for enemy turn
+            enemyTurn: function() {
+                if (!this.currentEnemy) return;
+
+                const damage = this.currentEnemy.attack - (character.shieldActive || 0);
+                const actualDamage = Math.max(1, damage);
+
+                character.modifyStats({ health: -actualDamage });
+
+                ui.updateStory(`The ${this.currentEnemy.name} attacks for ${actualDamage} damage! ` +
+                              `${character.shieldActive ? 'Your shield absorbed some damage!' : ''} ` +
+                              `Your health: ${character.health}/${character.maxHealth}`);
+
+                if (character.health <= 0) {
+                    this.defeat();
+                } else {
+                    this.backToMainCombat();
+                }
+            },
+
+            // Method to return to main combat menu
+            backToMainCombat: function() {
+                ui.updateStory(`Continue fighting the ${this.currentEnemy.name}! Health: ${this.currentEnemy.health}`);
+                ui.updateChoices(
+                    '<button onclick="combat.playerAttack()">⚔️ Attack with Weapon</button>' +
+                    '<button onclick="combat.castOffensiveSpell()">🔥 Cast Offensive Spell</button>' +
+                    '<button onclick="combat.castDefensiveSpell()">🛡️ Cast Defensive Spell</button>' +
+                    '<button onclick="combat.attemptFlee()">🏃 Attempt to Flee</button>'
+                );
+            },
+
+            // Method for fleeing
+            attemptFlee: function() {
+                if (Math.random() > 0.3) {
+                    this.endCombat();
+                    ui.updateStory("You successfully flee from combat!");
+                    returnToForge();
+                } else {
+                    effects.popup("Can't escape!", 'damage');
+                    this.enemyTurn();
+                }
+            },
+
+            // Method for victory
+            victory: function() {
+                const goldReward = this.currentEnemy.goldReward || 0;
+                const xpReward = this.currentEnemy.xpReward || 0;
+
+                character.modifyStats({ gold: goldReward });
+                character.gainExperience(xpReward);
+
+                effects.popup(`Victory! +${goldReward} gold, +${xpReward} XP`, 'achievement');
+
+                ui.updateStory(`You defeated the ${this.currentEnemy.name}! You gained ${goldReward} gold and ${xpReward} experience. Your mastery of combat magic grows stronger.`);
+
+                this.endCombat();
+
+                ui.updateChoices('<button onclick="returnToForge()">🔮 Return to Spell Forge</button>');
+            },
+
+            // Method for defeat
+            defeat: function() {
+                ui.updateStory("You have been defeated! But your magical knowledge allows you to resurrect at the Spell Forge with half health.");
+                character.health = Math.floor(character.maxHealth / 2);
+                character.updateDisplay();
+                this.endCombat();
+
+                ui.updateChoices('<button onclick="returnToForge()">🔮 Return to Spell Forge</button>');
+            },
+
+            // Method to end combat
+            endCombat: function() {
+                this.currentEnemy = null;
+                this.isInCombat = false;
+                character.shieldActive = 0;
+            }
+        };
+
+        // Effects system object - demonstrates visual polish from slides
+        const effects = {
+            // Shake effect from slides
+            shake: function(element) {
+                element.classList.add('shake');
+                setTimeout(() => element.classList.remove('shake'), 500);
+            },
+
+            // Popup notifications with different types
+            popup: function(text, type = 'info') {
+                const popup = document.createElement('div');
+                popup.className = `popup ${type}`;
+                popup.textContent = text;
+                document.body.appendChild(popup);
+
+                setTimeout(() => popup.remove(), 3000);
+            },
+
+            // Fade in animation
+            fadeIn: function(element) {
+                element.classList.add('fade-in');
+                setTimeout(() => element.classList.remove('fade-in'), 500);
+            },
+
+            // Typewriter effect for dramatic moments
+            typewrite: function(element, text, speed = 50) {
+                element.innerHTML = '';
+                let index = 0;
+
+                const timer = setInterval(() => {
+                    element.innerHTML += text[index];
+                    index++;
+
+                    if (index >= text.length) {
+                        clearInterval(timer);
+                    }
+                }, speed);
+            }
+        };
+
+        // UI system object - professional interface management
+        const ui = {
             updateStory: function(newText) {
                 const storyElement = document.getElementById('story');
-                storyElement.style.opacity = '0.5';
-
-                setTimeout(() => {
-                    storyElement.innerHTML = newText;
-                    storyElement.style.opacity = '1';
-                }, 200);
+                effects.fadeIn(storyElement);
+                storyElement.innerHTML = newText;
             },
 
-            // Method to update choices
             updateChoices: function(choicesHtml) {
-                document.getElementById('choices').innerHTML = choicesHtml;
+                const choicesElement = document.getElementById('choices');
+                choicesElement.innerHTML = choicesHtml;
+                effects.fadeIn(choicesElement);
             }
         };
 
-        // Save system object - demonstrates data persistence
+        // Save system object - data persistence
         const saveSystem = {
             save: function() {
                 const saveData = {
-                    hero: {
-                        health: hero.health,
-                        mana: hero.mana,
-                        gold: hero.gold,
-                        renown: hero.renown,
-                        titles: hero.titles
-                    },
-                    guild: {
-                        members: guild.members,
-                        resources: guild.resources
+                    character: {
+                        health: character.health,
+                        mana: character.mana,
+                        gold: character.gold,
+                        level: character.level,
+                        experience: character.experience
                     },
                     timestamp: Date.now()
                 };
-                localStorage.setItem('heroAscensionSave', JSON.stringify(saveData));
-                ui.showNotification('Guild progress saved!', 'success');
+                localStorage.setItem('spellForgeSave', JSON.stringify(saveData));
+                effects.popup('Progress saved!', 'achievement');
             },
 
             load: function() {
-                const saved = localStorage.getItem('heroAscensionSave');
+                const saved = localStorage.getItem('spellForgeSave');
                 if (saved) {
                     const data = JSON.parse(saved);
-
-                    // Restore hero data
-                    Object.assign(hero, data.hero);
-                    hero.updateDisplay();
-
-                    // Restore guild data
-                    guild.members = data.guild.members;
-                    guild.resources = data.guild.resources;
-                    guild.updateMemberDisplay();
-
-                    ui.showNotification('Guild progress loaded!', 'success');
-                    return true;
+                    Object.assign(character, data.character);
+                    character.updateDisplay();
+                    effects.popup('Progress loaded!', 'info');
                 }
-                return false;
             }
         };
 
-        // Choice functions - demonstrate object method calls and interactions
-        function organizeExpedition() {
-            ui.updateStory(`As a renowned guild leader, you review available expeditions. Each requires careful planning,
-                          member assignment, and resource allocation. Your leadership skills and the guild's coordination
-                          systems ensure successful missions across the realm.`);
+        // Trial functions - demonstrate different aspects of object-oriented programming
+        function enterTrialOfCombat() {
+            ui.updateStory(`You enter the Trial of Combat! Ancient magical guardians await to test your battle prowess. Defeat them using your weapon skills and spell casting abilities.`);
 
-            const expeditionChoices = expeditionSystem.expeditionTypes.map((exp, index) =>
-                `<button onclick="launchSpecificExpedition(${index})">
-                    🎯 ${exp.name} (${exp.difficulty}) - ${exp.reward.gold}g, ${exp.reward.renown} renown
+            const enemies = [
+                { name: "Flame Guardian", health: 60, attack: 18, goldReward: 150, xpReward: 200 },
+                { name: "Ice Sentinel", health: 80, attack: 22, goldReward: 200, xpReward: 250 },
+                { name: "Storm Elemental", health: 100, attack: 25, goldReward: 300, xpReward: 350 }
+            ];
+
+            const choicesHtml = enemies.map((enemy, index) =>
+                `<button onclick="combat.startCombat(${JSON.stringify(enemy).replace(/"/g, '&quot;')})">
+                    ⚔️ Fight ${enemy.name} (${enemy.health} HP)
                 </button>`
             ).join('');
 
-            ui.updateChoices(expeditionChoices +
-                '<button onclick="returnToGuild()">🏰 Return to Guild Hall</button>');
+            ui.updateChoices(choicesHtml + '<button onclick="returnToForge()">🔮 Return to Spell Forge</button>');
         }
 
-        function launchSpecificExpedition(index) {
-            const expedition = expeditionSystem.expeditionTypes[index];
-            const success = expeditionSystem.launchExpedition(expedition);
-
-            if (success) {
-                ui.updateStory(`You have successfully organized "${expedition.name}"! Your guild members are
-                              departing with carefully planned strategies and proper equipment. The coordination
-                              systems you've implemented ensure smooth communication throughout the mission.`);
-
-                ui.updateChoices('<button onclick="organizeExpedition()">🗺️ Plan Another Expedition</button>' +
-                               '<button onclick="returnToGuild()">🏰 Return to Guild Hall</button>');
-            }
-        }
-
-        function manageGuildResources() {
-            ui.updateStory(`Your guild's advanced resource management system tracks supplies, artifacts, and reputation.
-                          Through careful organization and strategic planning, you ensure the guild operates efficiently.
-                          Your leadership has transformed a simple group into a professional organization.`);
+        function enterTrialOfCrafting() {
+            ui.updateStory(`You enter the Trial of Crafting! Here you can enhance your equipment, craft new spells, and improve your magical abilities using the forge's power.`);
 
             ui.updateChoices(
-                '<button onclick="upgradeEquipment()">⚔️ Upgrade Equipment (200g)</button>' +
-                '<button onclick="recruitNewMember()">👥 Recruit New Member (150g)</button>' +
-                '<button onclick="increaseReputation()">📈 Boost Reputation (100g)</button>' +
-                '<button onclick="returnToGuild()">🏰 Return to Guild Hall</button>'
+                '<button onclick="upgradeWeapon()">⚔️ Upgrade Weapon (300g)</button>' +
+                '<button onclick="enhanceArmor()">🛡️ Enhance Armor (250g)</button>' +
+                '<button onclick="craftLightningSpell()">⚡ Craft Lightning Spell (400g)</button>' +
+                '<button onclick="returnToForge()">🔮 Return to Spell Forge</button>'
             );
         }
 
-        function upgradeEquipment() {
-            if (hero.canAfford(200)) {
-                hero.modifyStats({ gold: -200, renown: 2 });
-                guild.resources.supplies += 20;
-                hero.earnTitle("Equipment Master");
-
-                ui.updateStory(`You've successfully upgraded the guild's equipment! Advanced magical enhancements
-                              now protect your members during expeditions. Your investment in quality gear
-                              demonstrates the importance of proper resource management.`);
-            } else {
-                ui.showNotification('Insufficient resources for upgrade!', 'info');
-            }
-        }
-
-        function recruitNewMember() {
-            if (hero.canAfford(150)) {
-                hero.modifyStats({ gold: -150 });
-
-                const newMembers = [
-                    { name: "Mage Lyra", role: "Spellcaster", specialty: "Elemental Magic" },
-                    { name: "Rogue Finn", role: "Scout", specialty: "Stealth Operations" },
-                    { name: "Cleric Sarah", role: "Healer", specialty: "Support Magic" }
-                ];
-
-                const newMember = newMembers[Math.floor(Math.random() * newMembers.length)];
-                guild.recruitMember(newMember);
-                hero.earnTitle("Guild Recruiter");
-
-                ui.updateStory(`Welcome ${newMember.name} to the guild! Your recruitment system successfully
-                              identified a skilled ${newMember.role} specializing in ${newMember.specialty}.
-                              The guild's growing membership demonstrates your leadership effectiveness.`);
-            } else {
-                ui.showNotification('Insufficient gold for recruitment!', 'info');
-            }
-        }
-
-        function increaseReputation() {
-            if (hero.canAfford(100)) {
-                hero.modifyStats({ gold: -100, renown: 3 });
-                guild.resources.reputation += 15;
-
-                ui.updateStory(`Your public relations efforts have increased the guild's reputation! Word of your
-                              heroic deeds and professional organization spreads throughout the realm. Higher
-                              reputation attracts better expeditions and more skilled recruits.`);
-            } else {
-                ui.showNotification('Insufficient gold for reputation boost!', 'info');
-            }
-        }
-
-        function upgradeGuildSystems() {
-            ui.updateStory(`Your guild utilizes advanced magical systems for communication, coordination, and management.
-                          These systems demonstrate the power of organized code - each component has specific
-                          responsibilities and works together seamlessly to create something greater than the sum of its parts.`);
+        function enterTrialOfWisdom() {
+            ui.updateStory(`You enter the Trial of Wisdom! Test your knowledge of magic and demonstrate your understanding of spell combinations and magical theory.`);
 
             ui.updateChoices(
-                '<button onclick="upgradeNotificationSystem()">📢 Upgrade Communication System (300g)</button>' +
-                '<button onclick="implementAutoSave()">💾 Implement Auto-Save System (250g)</button>' +
-                '<button onclick="createBackupSystems()">🔄 Create Backup Systems (400g)</button>' +
-                '<button onclick="returnToGuild()">🏰 Return to Guild Hall</button>'
+                '<button onclick="studyAdvancedMagic()">📚 Study Advanced Magic (+50 Max Mana)</button>' +
+                '<button onclick="meditateForHealth()">🧘 Meditate for Vitality (+30 Max Health)</button>' +
+                '<button onclick="researchSpellEfficiency()">🔬 Research Efficiency (Reduce Mana Costs)</button>' +
+                '<button onclick="returnToForge()">🔮 Return to Spell Forge</button>'
             );
         }
 
-        function upgradeNotificationSystem() {
-            if (hero.canAfford(300)) {
-                hero.modifyStats({ gold: -300, renown: 4 });
-                hero.earnTitle("Systems Architect");
+        function upgradeWeapon() {
+            if (character.gold >= 300) {
+                character.modifyStats({ gold: -300 });
+                character.equipment.weapon.attack += 10;
+                character.equipment.weapon.name = "Enhanced " + character.equipment.weapon.name;
 
-                ui.updateStory(`You've implemented an advanced notification system! Guild members now receive
-                              instant updates about expeditions, threats, and opportunities. This system demonstrates
-                              how well-organized code creates better user experiences and smoother operations.`);
+                effects.shake(document.querySelector('.spells-panel'));
+                ui.updateStory(`Your weapon glows with new power! Attack increased by 10. Your ${character.equipment.weapon.name} is now much more potent.`);
 
-                // Demonstrate the upgraded system
-                setTimeout(() => ui.showNotification('System upgrade complete! Enhanced notifications active.', 'success'), 1000);
+                ui.updateChoices('<button onclick="enterTrialOfCrafting()">🔨 Continue Crafting</button>');
             } else {
-                ui.showNotification('Insufficient resources for system upgrade!', 'info');
+                effects.popup('Not enough gold!', 'damage');
             }
         }
 
-        function implementAutoSave() {
-            if (hero.canAfford(250)) {
-                hero.modifyStats({ gold: -250, renown: 3 });
-                hero.earnTitle("Data Guardian");
+        function enhanceArmor() {
+            if (character.gold >= 250) {
+                character.modifyStats({ gold: -250 });
+                character.equipment.armor.defense += 8;
+                character.maxHealth += 25;
+                character.health += 25;
+                character.equipment.armor.name = "Reinforced " + character.equipment.armor.name;
 
-                ui.updateStory(`You've implemented an automatic save system! Guild progress is now continuously
-                              preserved, ensuring no achievements or member progress is ever lost. This demonstrates
-                              the importance of data persistence in professional applications.`);
+                effects.shake(document.querySelector('.status-panel'));
+                character.updateDisplay();
+                ui.updateStory(`Your armor shimmers with protective enchantments! Defense increased and maximum health boosted. You feel much more resilient.`);
 
-                // Enable auto-save
-                setInterval(() => saveSystem.save(), 30000); // Auto-save every 30 seconds
-                ui.showNotification('Auto-save system activated!', 'success');
+                ui.updateChoices('<button onclick="enterTrialOfCrafting()">🔨 Continue Crafting</button>');
             } else {
-                ui.showNotification('Insufficient resources for auto-save implementation!', 'info');
+                effects.popup('Not enough gold!', 'damage');
             }
         }
 
-        function createBackupSystems() {
-            if (hero.canAfford(400)) {
-                hero.modifyStats({ gold: -400, renown: 5 });
-                hero.earnTitle("Legendary Guild Master");
+        function craftLightningSpell() {
+            if (character.gold >= 400) {
+                character.modifyStats({ gold: -400 });
+                spellSystem.learnSpell('lightning');
 
-                ui.updateStory(`You've created comprehensive backup systems for the guild! Multiple redundant
-                              magical networks ensure the guild's operations continue smoothly even during crises.
-                              Your mastery of organizational systems makes you a legendary guild leader.
+                effects.shake(document.querySelector('.spells-panel'));
+                ui.updateStory(`You successfully craft the Lightning Bolt spell! This powerful spell deals massive damage but costs more mana. The forge crackles with electrical energy as you master this advanced magic.`);
 
-                              🎉 Congratulations! You've completed your programming journey from village newcomer
-                              to legendary guild master, mastering every aspect of code organization and professional
-                              system design!`);
-
-                ui.updateChoices(
-                    '<button onclick="viewFinalAccomplishments()">🏆 View Final Accomplishments</button>' +
-                    '<button onclick="exportGuildData()">📤 Export Guild Data</button>' +
-                    '<button onclick="startNewLegacy()">🔄 Start New Legacy</button>'
-                );
+                ui.updateChoices('<button onclick="enterTrialOfCrafting()">🔨 Continue Crafting</button>');
             } else {
-                ui.showNotification('Insufficient resources for backup systems!', 'info');
+                effects.popup('Not enough gold!', 'damage');
             }
         }
 
-        function viewFinalAccomplishments() {
-            ui.updateStory(`<strong>🎓 Your Complete Programming Journey:</strong><br><br>
-                         ✅ <strong>Lesson 3:</strong> Village Hero - Mastered conditional logic and decision-making<br>
-                         ✅ <strong>Lesson 4:</strong> Tower Master - Created reusable magical helpers (functions)<br>
-                         ✅ <strong>Lesson 5:</strong> Dragon Slayer - Organized complex data with arrays and loops<br>
-                         ✅ <strong>Lesson 6:</strong> Guild Master - Built professional systems with objects<br><br>
-                         <strong>🏰 Final Guild Stats:</strong><br>
-                         Guild Members: ${guild.members.length} | Renown: ${hero.renown} | Titles: ${hero.titles.length}<br><br>
-                         From a simple village newcomer to a legendary guild master, you've mastered every
-                         fundamental programming concept. Your code is now organized, professional, and ready
-                         for any challenge the realm might face!`);
+        function studyAdvancedMagic() {
+            character.maxMana += 50;
+            character.mana += 50;
+            character.updateDisplay();
+            character.gainExperience(300);
+
+            effects.shake(document.querySelector('.status-panel'));
+            ui.updateStory(`Your studies bear fruit! Your understanding of magical theory deepens, increasing your maximum mana by 50 points. Ancient knowledge flows through your mind.`);
+
+            ui.updateChoices('<button onclick="enterTrialOfWisdom()">📚 Continue Studies</button>');
+        }
+
+        function meditateForHealth() {
+            character.maxHealth += 30;
+            character.health += 30;
+            character.updateDisplay();
+            character.gainExperience(250);
+
+            effects.shake(document.querySelector('.status-panel'));
+            ui.updateStory(`Through deep meditation, you strengthen your life force! Maximum health increased by 30. Your body feels more resilient and attuned to magical energies.`);
+
+            ui.updateChoices('<button onclick="enterTrialOfWisdom()">📚 Continue Studies</button>');
+        }
+
+        function researchSpellEfficiency() {
+            // Reduce all spell costs by 5
+            for (let spellKey in spellSystem.spells) {
+                spellSystem.spells[spellKey].manaCost = Math.max(5, spellSystem.spells[spellKey].manaCost - 5);
+            }
+
+            character.gainExperience(400);
+            effects.shake(document.querySelector('.spells-panel'));
+            ui.updateStory(`Your research into magical efficiency pays off! All spell mana costs are reduced by 5. You've learned to channel magic more effectively and with less waste.`);
+
+            ui.updateChoices('<button onclick="enterTrialOfWisdom()">📚 Continue Studies</button>');
+        }
+
+        function castSpell(spellName) {
+            if (combat.isInCombat) {
+                combat.castSpecificSpell(spellName);
+            } else {
+                character.castSpell(spellName);
+            }
+        }
+
+        function returnToForge() {
+            ui.updateStory(`You return to the central chamber of the Spell Forge. The magical energy here continues to pulse with ancient power. Three trials await your mastery - combat, crafting, and wisdom. Each will test different aspects of your magical abilities and grant powerful rewards.`);
 
             ui.updateChoices(
-                '<button onclick="exportGuildData()">📤 Export Guild Legacy</button>' +
-                '<button onclick="startNewLegacy()">🔄 Start New Legacy</button>'
-            );
-        }
-
-        function exportGuildData() {
-            const guildReport = {
-                heroName: hero.name,
-                finalLevel: "Guild Master",
-                totalRenown: hero.renown,
-                titlesEarned: hero.titles,
-                guildMembers: guild.members.length,
-                guildReputation: guild.resources.reputation,
-                completionDate: new Date().toLocaleDateString(),
-                programmingMastery: [
-                    "Conditional Logic & Decision Making",
-                    "Function Creation & Reusability",
-                    "Array Management & Loop Optimization",
-                    "Object Organization & System Architecture",
-                    "Professional Code Structure & Polish"
-                ]
-            };
-
-            const dataStr = JSON.stringify(guildReport, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'guild-master-legacy.json';
-            link.click();
-
-            ui.showNotification('Guild legacy exported successfully!', 'success');
-        }
-
-        function startNewLegacy() {
-            if (confirm('Are you ready to begin a new hero\'s journey? This will reset all progress.')) {
-                localStorage.removeItem('heroAscensionSave');
-                location.reload();
-            }
-        }
-
-        function returnToGuild() {
-            ui.updateStory(`You return to the guild hall, where your fellow heroes greet you with respect and admiration.
-                          The advanced systems you've implemented run smoothly in the background, demonstrating the
-                          power of well-organized code. Your guild has become a model of efficiency and coordination.`);
-
-            ui.updateChoices(
-                '<button onclick="organizeExpedition()">🗺️ Organize New Expedition</button>' +
-                '<button onclick="manageGuildResources()">📦 Manage Guild Resources</button>' +
-                '<button onclick="upgradeGuildSystems()">⚙️ Upgrade Guild Systems</button>' +
-                '<button onclick="saveSystem.save()">💾 Save Guild Progress</button>'
+                '<button onclick="enterTrialOfCombat()">⚔️ Enter Trial of Combat</button>' +
+                '<button onclick="enterTrialOfCrafting()">🔨 Enter Trial of Crafting</button>' +
+                '<button onclick="enterTrialOfWisdom()">📚 Enter Trial of Wisdom</button>' +
+                '<button onclick="saveSystem.save()">💾 Save Progress</button>'
             );
         }
 
         // Initialize the game
         function initializeGame() {
-            hero.updateDisplay();
-            guild.updateMemberDisplay();
+            character.updateDisplay();
+            spellSystem.updateSpellDisplay();
             saveSystem.load();
         }
 
