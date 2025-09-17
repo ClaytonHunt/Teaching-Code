@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objects and Polish - Interactive Programming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .slide-container {
+            display: flex;
+            width: 1400vw;
+            height: 100vh;
+            transition: transform 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .slide-content {
+            transform-origin: center center;
+            width: 1200px;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide p, .slide li {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .slide ul {
+            text-align: left;
+            max-width: 800px;
+        }
+
+        .slide li {
+            margin-bottom: 0.8rem;
+            padding-left: 1rem;
+        }
+
+        .code-box {
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            line-height: 1.4;
+            text-align: left;
+            border-left: 4px solid #ffd700;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            overflow-x: auto;
+            max-width: 900px;
+        }
+
+        .code-box code {
+            color: #e6e6e6;
+        }
+
+        .highlight {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .emoji {
+            font-size: 4rem;
+            margin: 1rem;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: scale(1.05);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-indicators {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0 1rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .slide-content {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .slide h1 { font-size: 2.5rem; }
+            .slide h2 { font-size: 2rem; }
+            .slide h3 { font-size: 1.8rem; }
+            .slide p, .slide li { font-size: 1.3rem; }
+            .code-box { font-size: 1rem; padding: 1rem; }
+            .two-column { grid-template-columns: 1fr; }
+            .nav-button { padding: 0.8rem 1.5rem; font-size: 1rem; }
+        }
+
+        @media (max-height: 600px) {
+            .slide { padding: 1rem; }
+            .slide h1 { font-size: 2.5rem; }
+            .slide h2 { font-size: 2rem; }
+            .slide p, .slide li { font-size: 1.4rem; }
+            .code-box { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container" id="slideContainer">
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="emoji">🎯</div>
+                <h1>Objects and Polish</h1>
+                <p>Creating Professional-Quality Games</p>
+                <p style="font-size: 1.4rem; margin-top: 2rem; opacity: 0.8;">Lesson 6 - Interactive Programming</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: What We'll Learn Today -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What We'll Learn Today</h2>
+                <ul>
+                    <li>📦 <strong>JavaScript Objects</strong> - Smart containers for data and functions</li>
+                    <li>🏗️ <strong>Game Systems</strong> - Organizing complex game features</li>
+                    <li>💼 <strong>Professional Code</strong> - File organization and structure</li>
+                    <li>✨ <strong>Polish & Effects</strong> - Animations, sound, and UI enhancements</li>
+                    <li>🎮 <strong>Complete Game</strong> - Building a polished, shareable project</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: Building on Our Journey -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Building on Our Journey</h2>
+                <div class="two-column">
+                    <div>
+                        <h3>What We've Learned:</h3>
+                        <ul style="font-size: 1.5rem;">
+                            <li>🧹 Clean, readable code</li>
+                            <li>📦 Variables and state</li>
+                            <li>🔧 Reusable functions</li>
+                            <li>🤔 Conditional logic</li>
+                            <li>📊 Arrays and loops</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Today We Add:</h3>
+                        <ul style="font-size: 1.5rem;">
+                            <li>🎯 Objects to organize everything</li>
+                            <li>💼 Professional file structure</li>
+                            <li>✨ Polish and visual effects</li>
+                            <li>🏆 Complete game project</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: What Are Objects? -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What Are Objects?</h2>
+                <p>Objects are <span class="highlight">smart containers</span> that hold both data AND functions!</p>
+                <div class="code-box">
+                    <code>// Simple object with properties
+let player = {
+    name: "Alex",
+    health: 100,
+    level: 1
+};
+
+// Access properties
+console.log(player.name);    // "Alex"
+player.health = 75;          // Change value</code>
+                </div>
+                <p>Think of objects as <strong>labeled boxes with built-in tools</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Objects vs Scattered Variables -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Objects Beat Scattered Variables</h2>
+                <div class="two-column">
+                    <div>
+                        <h3 style="color: #ff6b6b;">❌ BAD: Messy</h3>
+                        <div class="code-box">
+                            <code>let playerName = "Alex";
+let playerHealth = 100;
+let playerInventory = ["sword"];
+
+function playerTakeDamage(amount) {
+    playerHealth -= amount;
+}</code>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="color: #51cf66;">✅ GOOD: Organized</h3>
+                        <div class="code-box">
+                            <code>let player = {
+    name: "Alex",
+    health: 100,
+    inventory: ["sword"],
+
+    takeDamage(amount) {
+        this.health -= amount;
+    }
+};</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Objects with Methods -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Objects with Methods</h2>
+                <p>Methods are <span class="highlight">functions that belong to objects</span></p>
+                <div class="code-box">
+                    <code>let character = {
+    name: "Hero",
+    health: 100,
+
+    takeDamage: function(amount) {
+        this.health -= amount;  // 'this' refers to the character
+        if (this.health <= 0) {
+            this.die();
+        }
+    },
+
+    heal: function(amount) {
+        this.health += amount;
+        console.log(`Healed ${amount}! Health: ${this.health}`);
+    }
+};</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: The Magic of 'this' -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>The Magic of 'this'</h2>
+                <p><span class="highlight">this</span> always refers to the object that owns the method</p>
+                <div class="code-box">
+                    <code>let wizard = {
+    name: "Gandalf",
+    mana: 100,
+
+    castSpell: function(cost) {
+        this.mana -= cost;  // 'this' = wizard object
+        console.log(`${this.name} has ${this.mana} mana left`);
+    }
+};
+
+wizard.castSpell(20);  // "Gandalf has 80 mana left"</code>
+                </div>
+                <p style="font-size: 1.5rem; margin-top: 1rem;">It's like the object talking about itself! 🪄</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Building Game Systems -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Building Game Systems</h2>
+                <p>Objects help us organize complex game features into logical systems</p>
+                <div class="code-box">
+                    <code>let inventory = {
+    items: [],
+    maxSize: 10,
+
+    add(item) {
+        if (this.items.length < this.maxSize) {
+            this.items.push(item);
+            this.updateDisplay();
+            return true;
+        }
+        return false;
+    },
+
+    updateDisplay() {
+        // Update the UI to show current items
+    }
+};</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Combat System Example -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Combat System Example</h2>
+                <div class="code-box">
+                    <code>let combat = {
+    currentEnemy: null,
+
+    start(enemy) {
+        this.currentEnemy = { ...enemy };  // Create copy
+        console.log(`Combat started with ${enemy.name}!`);
+    },
+
+    playerAttack() {
+        let damage = player.attack + Math.floor(Math.random() * 5);
+        this.currentEnemy.health -= damage;
+
+        if (this.currentEnemy.health <= 0) {
+            this.victory();
+        } else {
+            this.enemyAttack();
+        }
+    }
+};</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Professional Code Organization -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Professional Code Organization</h2>
+                <p>Real games separate code into multiple files for better organization</p>
+                <div class="two-column">
+                    <div>
+                        <h3>📄 index.html</h3>
+                        <div class="code-box" style="font-size: 1.1rem;">
+                            <code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Epic Quest&lt;/title&gt;
+    &lt;link rel="stylesheet" href="styles.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="gameContainer"&gt;&lt;/div&gt;
+    &lt;script src="game.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🎨 styles.css</h3>
+                        <div class="code-box" style="font-size: 1.1rem;">
+                            <code>body {
+    font-family: 'Segoe UI';
+    background: linear-gradient(
+        135deg, #667eea 0%, #764ba2 100%
+    );
+}
+
+.game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+}</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Configuration Objects -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Configuration Objects</h2>
+                <p>Keep all game settings in one organized place</p>
+                <div class="code-box">
+                    <code>const CONFIG = {
+    PLAYER_START_HEALTH: 100,
+    INVENTORY_MAX_SIZE: 20,
+    SAVE_INTERVAL: 30000,
+
+    ENEMY_TYPES: {
+        goblin: { health: 20, attack: 5, gold: 10 },
+        orc: { health: 40, attack: 10, gold: 25 },
+        dragon: { health: 200, attack: 30, gold: 500 }
+    },
+
+    ITEM_RARITIES: {
+        common: { color: '#95a5a6', chance: 0.6 },
+        rare: { color: '#3498db', chance: 0.3 },
+        epic: { color: '#9b59b6', chance: 0.08 }
+    }
+};</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Adding Polish -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Adding Polish ✨</h2>
+                <p>Professional games have smooth animations, sound effects, and visual feedback</p>
+                <div class="code-box">
+                    <code>const effects = {
+    shake(element) {
+        element.classList.add('shake');
+        setTimeout(() => element.classList.remove('shake'), 500);
+    },
+
+    popup(text, type = 'info') {
+        const popup = document.createElement('div');
+        popup.className = `popup ${type}`;
+        popup.innerHTML = text;
+        document.body.appendChild(popup);
+
+        setTimeout(() => popup.remove(), 2000);
+    }
+};</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Save/Load System -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Save/Load System</h2>
+                <p>Let players save their progress and continue later</p>
+                <div class="code-box">
+                    <code>const saveSystem = {
+    save() {
+        const saveData = {
+            player: {
+                name: player.name,
+                level: player.level,
+                health: player.health,
+                gold: player.gold
+            },
+            inventory: inventory.items,
+            timestamp: Date.now()
+        };
+
+        localStorage.setItem('epicQuestSave', JSON.stringify(saveData));
+        effects.popup('Game saved!', 'success');
+    }
+};</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Thank You -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="emoji">🎮</div>
+                <h1>Congratulations!</h1>
+                <p style="font-size: 2rem; margin: 2rem 0;">You've completed your programming journey!</p>
+                <div style="font-size: 1.6rem; line-height: 1.8;">
+                    <p>✅ Master clean code principles</p>
+                    <p>✅ Understand variables and state</p>
+                    <p>✅ Create reusable functions</p>
+                    <p>✅ Use conditional logic</p>
+                    <p>✅ Work with arrays and loops</p>
+                    <p>✅ Organize code with objects</p>
+                </div>
+                <p style="font-size: 1.8rem; margin-top: 2rem; color: #ffd700;">
+                    Now go build amazing things! 🚀
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="nav-button" id="prevBtn" onclick="previousSlide()">← Previous</button>
+        <div class="slide-indicators" id="indicators"></div>
+        <button class="nav-button" id="nextBtn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 14;
+
+        function updateSlidePosition() {
+            const container = document.getElementById('slideContainer');
+            container.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            updateIndicators();
+        }
+
+        function updateIndicators() {
+            const indicators = document.getElementById('indicators');
+            indicators.innerHTML = '';
+
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (i === currentSlide) {
+                    dot.classList.add('active');
+                }
+                dot.onclick = () => goToSlide(i);
+                indicators.appendChild(dot);
+            }
+
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlidePosition();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlidePosition();
+            }
+        }
+
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateSlidePosition();
+        }
+
+        // Initialize
+        updateIndicators();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Touch/swipe support
+        let startX = 0;
+        let startY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            if (!startX || !startY) return;
+
+            let endX = e.changedTouches[0].clientX;
+            let endY = e.changedTouches[0].clientY;
+
+            let diffX = startX - endX;
+            let diffY = startY - endY;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (Math.abs(diffX) > 50) {
+                    if (diffX > 0) {
+                        nextSlide();
+                    } else {
+                        previousSlide();
+                    }
+                }
+            }
+
+            startX = 0;
+            startY = 0;
+        });
+
+        // Prevent zooming on mobile
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+
+        // Dynamic scaling for different screen sizes
+        function adjustScale() {
+            const slides = document.querySelectorAll('.slide-content');
+            const vh = window.innerHeight;
+            const vw = window.innerWidth;
+
+            let scale = Math.min(vw / 1200, vh / 800);
+            scale = Math.max(0.3, Math.min(1, scale));
+
+            slides.forEach(slide => {
+                slide.style.transform = `scale(${scale})`;
+            });
+        }
+
+        window.addEventListener('resize', adjustScale);
+        adjustScale();
+    </script>
+</body>
+</html>

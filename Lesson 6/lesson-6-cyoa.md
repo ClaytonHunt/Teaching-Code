@@ -1,3 +1,0 @@
-# Lesson 6: CYOA — Capstone (Polish, Persistence, and Publishing)
-
-Full content here...
