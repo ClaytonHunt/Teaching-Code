@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Adventure Story</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            min-height: 100vh;
+        }
+
+        .story-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .status-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .story-text {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid #667eea;
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #2c3e50;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .choices {
+            margin: 20px 0;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            margin: 10px 0;
+            font-size: 1rem;
+            background: white;
+            color: #333;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="story-container">
+        <h1>The Mysterious Door</h1>
+
+        <div class="status-panel">
+            <div class="stat-card">
+                <div class="stat-label">Health</div>
+                <div class="stat-value" id="health">100</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Gold</div>
+                <div class="stat-value" id="gold">0</div>
+            </div>
+        </div>
+
+        <div id="story" class="story-text">
+            You find yourself standing in front of an ancient wooden door...
+        </div>
+        
+        <div id="choices" class="choices">
+            <button onclick="openDoor()">Open the door</button>
+            <button onclick="walkAway()">Walk away</button>
+        </div>
+    </div>
+
+    <script>
+        function openDoor() {
+            document.getElementById('story').innerHTML = 
+                "The door creaks open revealing a glowing treasure chest!";
+            
+            document.getElementById('choices').innerHTML = 
+                '<button onclick="openChest()">Open the chest</button>' +
+                '<button onclick="leave()">Leave it alone</button>';
+        }
+        
+        function walkAway() {
+            document.getElementById('story').innerHTML = 
+                "You decide to walk away. As you turn, you hear the door creak open behind you...";
+            
+            document.getElementById('choices').innerHTML = 
+                '<button onclick="lookBack()">Look back</button>' +
+                '<button onclick="runAway()">Run away!</button>';
+        }
+        
+        function openChest() {
+            document.getElementById('story').innerHTML =
+                "You found the legendary Golden Keyboard and 50 gold coins! You win!";
+
+            // Update the gold counter
+            document.getElementById('gold').innerHTML = "50";
+
+            document.getElementById('choices').innerHTML =
+                '<button onclick="startOver()">Play Again</button>';
+        }
+        
+        function leave() {
+            document.getElementById('story').innerHTML = 
+                "You leave the chest alone. Wise choice - it was probably trapped!";
+            
+            document.getElementById('choices').innerHTML = 
+                '<button onclick="startOver()">Play Again</button>';
+        }
+        
+        function lookBack() {
+            document.getElementById('story').innerHTML = 
+                "A friendly ghost waves at you! 'Thanks for not disturbing my door,' it says.";
+            
+            document.getElementById('choices').innerHTML = 
+                '<button onclick="startOver()">Play Again</button>';
+        }
+        
+        function runAway() {
+            document.getElementById('story').innerHTML = 
+                "You run as fast as you can! You're safe, but you'll always wonder what was behind that door...";
+            
+            document.getElementById('choices').innerHTML = 
+                '<button onclick="startOver()">Play Again</button>';
+        }
+        
+        function startOver() {
+            document.getElementById('story').innerHTML =
+                "You find yourself standing in front of an ancient wooden door...";
+
+            // Reset stats
+            document.getElementById('health').innerHTML = "100";
+            document.getElementById('gold').innerHTML = "0";
+
+            document.getElementById('choices').innerHTML =
+                '<button onclick="openDoor()">Open the door</button>' +
+                '<button onclick="walkAway()">Walk away</button>';
+        }
+    </script>
+</body>
+</html>
