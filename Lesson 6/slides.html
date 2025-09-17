@@ -157,6 +157,32 @@
             max-width: 1000px;
         }
 
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1000px;
+            margin: 1rem 0;
+        }
+
+        .comparison-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #666;
+        }
+
+        .bad-code {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .good-code {
+            border-color: #51cf66;
+            background: rgba(81, 207, 102, 0.1);
+        }
+
         .controls {
             position: fixed;
             bottom: 2rem;
@@ -248,6 +274,7 @@
             .slide p, .slide li { font-size: 1.3rem; }
             .code-box { font-size: 1rem; padding: 1rem; }
             .two-column { grid-template-columns: 1fr; }
+            .comparison-grid { grid-template-columns: 1fr; }
             .nav-button { padding: 0.8rem 1.5rem; font-size: 1rem; }
         }
 
@@ -339,9 +366,9 @@ player.health = <span class="number">75</span>;          <span class="comment">/
         <div class="slide">
             <div class="slide-content">
                 <h2>Objects Beat Scattered Variables</h2>
-                <div class="two-column">
-                    <div>
-                        <h3 style="color: #ff6b6b;">❌ BAD: Messy</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-box bad-code">
+                        <h3>❌ Messy Variables</h3>
                         <div class="code-box">
                             <pre><span class="keyword">let</span> playerName = <span class="string">"Alex"</span>;
 <span class="keyword">let</span> playerHealth = <span class="number">100</span>;
@@ -352,8 +379,8 @@ player.health = <span class="number">75</span>;          <span class="comment">/
 }</pre>
                         </div>
                     </div>
-                    <div>
-                        <h3 style="color: #51cf66;">✅ GOOD: Organized</h3>
+                    <div class="comparison-box good-code">
+                        <h3>✅ Organized Objects</h3>
                         <div class="code-box">
                             <pre><span class="keyword">let</span> player = {
     <span class="property">name</span>: <span class="string">"Alex"</span>,
