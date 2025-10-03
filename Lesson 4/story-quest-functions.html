@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Wizard's Tower</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            min-height: 100vh;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .status-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .story-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .story-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #2c3e50;
+        }
+
+        .location-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .choices-section {
+            margin: 20px 0;
+        }
+
+        .choice-button {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin: 10px 0;
+            font-size: 16px;
+            background: white;
+            color: #333;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .choice-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .choice-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #ccc;
+        }
+
+        .choice-button.disabled:hover {
+            background: white;
+            color: #999;
+            transform: none;
+        }
+
+        .inventory-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .inventory-item {
+            background: white;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+
+        .function-demo {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+        }
+
+        .function-demo h4 {
+            color: #1976D2;
+            margin: 0 0 10px 0;
+        }
+
+        .function-demo code {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🧙‍♂️ The Wizard's Tower 🧙‍♂️</h1>
+
+        <div class="status-panel">
+            <div class="stat-card">
+                <div class="stat-label">Health</div>
+                <div class="stat-value" id="health">100</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Gold</div>
+                <div class="stat-value" id="gold">50</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Reputation</div>
+                <div class="stat-value" id="reputation">0</div>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="location-tag" id="location">Tower Entrance</div>
+            <div class="story-text" id="story">
+                You stand before an ancient wizard's tower, its stones humming with magical energy.
+                The tower is said to contain powerful spells and enchanted artifacts.
+                Rumor has it that the wizard created magical helpers to assist with various tasks!
+            </div>
+        </div>
+
+        <div class="choices-section" id="choices">
+            <button class="choice-button" onclick="enterLibrary()">
+                📚 Enter the Spell Library
+            </button>
+            <button class="choice-button" onclick="visitShop()">
+                🛍️ Visit the Enchanted Shop
+            </button>
+            <button class="choice-button" onclick="enterTrainingGrounds()">
+                ⚔️ Enter the Practice Chamber
+            </button>
+        </div>
+
+        <div class="inventory-section">
+            <strong>Inventory:</strong>
+            <div class="inventory-grid" id="inventory">
+                <div class="inventory-item">Apprentice Robes</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game Variables
+        let playerHealth = 100;
+        let playerGold = 50;
+        let playerLevel = 1;
+        let playerReputation = 0;
+        let currentLocation = "Tower Entrance";
+        // Individual item variables
+        let hasApprenticeRobes = true;
+        let hasEnchantedSword = false;
+        let hasMagicalShield = false;
+        let hasHealthPotion = false;
+        let hasAncientSpellTome = false;
+        let hasMasterWizardMedallion = false;
+        let hasSwordMasteryScroll = false;
+
+        // Quest Flags
+        let hasExploredLibrary = false;
+        let hasFoundAncientKnowledge = false;
+        let masterQuest = false;
+
+        // LESSON 4 DEMONSTRATION: Helper Functions with Parameters
+        function updateStory(text) {
+            document.getElementById('story').innerHTML = text;
+        }
+
+        function updateLocation(newLocation) {
+            currentLocation = newLocation;
+            document.getElementById('location').innerHTML = currentLocation;
+        }
+
+        function changeHealth(amount) {
+            playerHealth += amount;
+
+            // Using conditionals from Lesson 3!
+            if (playerHealth > 100) playerHealth = 100;
+            if (playerHealth < 0) playerHealth = 0;
+
+            updateDisplay();
+
+            if (playerHealth <= 0) {
+                updateStory("Your health reached zero! The academy healers revive you.");
+                playerHealth = 25;
+                updateDisplay();
+            }
+        }
+
+        function changeGold(amount) {
+            playerGold += amount;
+            if (playerGold < 0) playerGold = 0;
+            updateDisplay();
+        }
+
+        function changeReputation(amount) {
+            playerReputation += amount;
+            updateDisplay();
+        }
+
+        function hasItem(itemName) {
+            if (itemName === "Apprentice Robes") return hasApprenticeRobes;
+            if (itemName === "Enchanted Sword") return hasEnchantedSword;
+            if (itemName === "Magical Shield") return hasMagicalShield;
+            if (itemName === "Health Potion") return hasHealthPotion;
+            if (itemName === "Ancient Spell Tome") return hasAncientSpellTome;
+            if (itemName === "Master Wizard Medallion") return hasMasterWizardMedallion;
+            if (itemName === "Sword Mastery Scroll") return hasSwordMasteryScroll;
+            return false;
+        }
+
+        function addItem(itemName) {
+            if (itemName === "Apprentice Robes" && !hasApprenticeRobes) {
+                hasApprenticeRobes = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Enchanted Sword" && !hasEnchantedSword) {
+                hasEnchantedSword = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Magical Shield" && !hasMagicalShield) {
+                hasMagicalShield = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Health Potion" && !hasHealthPotion) {
+                hasHealthPotion = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Ancient Spell Tome" && !hasAncientSpellTome) {
+                hasAncientSpellTome = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Master Wizard Medallion" && !hasMasterWizardMedallion) {
+                hasMasterWizardMedallion = true;
+                updateDisplay();
+                return true;
+            }
+            if (itemName === "Sword Mastery Scroll" && !hasSwordMasteryScroll) {
+                hasSwordMasteryScroll = true;
+                updateDisplay();
+                return true;
+            }
+            return false;
+        }
+
+        function removeItem(itemName) {
+            if (itemName === "Apprentice Robes") hasApprenticeRobes = false;
+            if (itemName === "Enchanted Sword") hasEnchantedSword = false;
+            if (itemName === "Magical Shield") hasMagicalShield = false;
+            if (itemName === "Health Potion") hasHealthPotion = false;
+            if (itemName === "Ancient Spell Tome") hasAncientSpellTome = false;
+            if (itemName === "Master Wizard Medallion") hasMasterWizardMedallion = false;
+            if (itemName === "Sword Mastery Scroll") hasSwordMasteryScroll = false;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('health').innerHTML = playerHealth;
+            document.getElementById('gold').innerHTML = playerGold;
+            document.getElementById('level').innerHTML = playerLevel;
+            document.getElementById('reputation').innerHTML = playerReputation;
+
+            // Update inventory display
+            let inventoryHTML = "";
+            let hasAnyItems = false;
+
+            if (hasApprenticeRobes) {
+                inventoryHTML += '<div class="inventory-item">Apprentice Robes</div>';
+                hasAnyItems = true;
+            }
+            if (hasEnchantedSword) {
+                inventoryHTML += '<div class="inventory-item">Enchanted Sword</div>';
+                hasAnyItems = true;
+            }
+            if (hasMagicalShield) {
+                inventoryHTML += '<div class="inventory-item">Magical Shield</div>';
+                hasAnyItems = true;
+            }
+            if (hasHealthPotion) {
+                inventoryHTML += '<div class="inventory-item">Health Potion</div>';
+                hasAnyItems = true;
+            }
+            if (hasAncientSpellTome) {
+                inventoryHTML += '<div class="inventory-item">Ancient Spell Tome</div>';
+                hasAnyItems = true;
+            }
+            if (hasMasterWizardMedallion) {
+                inventoryHTML += '<div class="inventory-item">Master Wizard Medallion</div>';
+                hasAnyItems = true;
+            }
+            if (hasSwordMasteryScroll) {
+                inventoryHTML += '<div class="inventory-item">Sword Mastery Scroll</div>';
+                hasAnyItems = true;
+            }
+
+            if (!hasAnyItems) {
+                inventoryHTML = '<div class="inventory-item">Empty</div>';
+            }
+            document.getElementById('inventory').innerHTML = inventoryHTML;
+        }
+
+
+        // LESSON 4: Functions that use conditionals for smart behavior
+        function canAfford(price) {
+            if (playerGold >= price) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function buyItem(itemName, price, description) {
+
+            if (canAfford(price)) {
+                changeGold(-price);
+                addItem(itemName);
+                changeReputation(1);
+                updateStory("You bought " + itemName + "! " + description);
+                return true;
+            } else {
+                let goldNeeded = price - playerGold;
+                updateStory("You need " + goldNeeded + " more gold to buy " + itemName + ".");
+                return false;
+            }
+        }
+
+        function checkRequirements(requiredLevel, item1, item2, item3) {
+            // Check level first
+            if (playerLevel < requiredLevel) {
+                return "Need level " + requiredLevel;
+            }
+
+            // Check required items
+            if (item1 && !hasItem(item1)) {
+                return "Need " + item1;
+            }
+            if (item2 && !hasItem(item2)) {
+                return "Need " + item2;
+            }
+            if (item3 && !hasItem(item3)) {
+                return "Need " + item3;
+            }
+
+            return "requirements_met";
+        }
+
+        function giveReward(goldAmount, itemName, reputationAmount) {
+
+            changeGold(goldAmount);
+            if (itemName) addItem(itemName);
+            changeReputation(reputationAmount);
+
+            let message = "Reward received! ";
+            if (goldAmount > 0) message += "+" + goldAmount + " gold ";
+            if (itemName) message += "+ " + itemName + " ";
+            if (reputationAmount > 0) message += "+" + reputationAmount + " reputation";
+
+            updateStory(message);
+        }
+
+        // Location Functions
+        function enterLibrary() {
+            updateLocation("Spell Library");
+
+            let storyText = "You enter a vast library filled with ancient spell scrolls and magical tomes. ";
+
+            if (!hasExploredLibrary) {
+                storyText += "A wise librarian approaches: 'Welcome, young apprentice! These shelves contain the secrets of magical spell-craft.'";
+            } else if (playerReputation >= 10) {
+                storyText += "The librarian smiles warmly at you - a respected scholar of the magical arts!";
+                changeGold(5);
+            } else {
+                storyText += "Wizards quietly study advanced magical techniques in the reading chambers.";
+            }
+
+            updateStory(storyText);
+
+            let choices = "";
+
+            if (!hasExploredLibrary) {
+                choices += '<button class="choice-button" onclick="exploreAncientTexts()">📖 Study Ancient Spell Texts</button>';
+            }
+
+            if (hasExploredLibrary && !hasFoundAncientKnowledge) {
+                choices += '<button class="choice-button" onclick="discoverSecretKnowledge()">✨ Discover Hidden Knowledge</button>';
+            }
+
+            if (canAfford(20) && !hasItem("Ancient Spell Tome")) {
+                choices += '<button class="choice-button" onclick="buyAdvancedGuide()">📜 Buy Ancient Spell Tome (20 gold)</button>';
+            } else if (!hasItem("Ancient Spell Tome")) {
+                choices += '<button class="choice-button disabled">📜 Buy Ancient Spell Tome (Need 20 gold)</button>';
+            }
+
+            choices += '<button class="choice-button" onclick="returnToEntrance()">🚪 Return to Entrance</button>';
+
+            document.getElementById('choices').innerHTML = choices;
+        }
+
+        function visitShop() {
+            updateLocation("Enchanted Shop");
+
+            let storyText = "You enter an enchanted shop filled with magical artifacts and helpful enchantments! ";
+
+            // Shop behavior depends on reputation (conditionals from Lesson 3!)
+            if (playerReputation >= 15) {
+                storyText += "The enchanted shop recognizes you as a master wizard! You get special pricing.";
+            } else if (playerReputation >= 5) {
+                storyText += "The magical shop spirits appreciate your growing magical abilities.";
+            } else {
+                storyText += "The magical shop spirits treat you as a novice apprentice.";
+            }
+
+            updateStory(storyText);
+
+            let choices = "";
+
+            // Dynamic pricing based on reputation
+            let swordPrice = playerReputation >= 15 ? 25 : 35;
+            let shieldPrice = playerReputation >= 15 ? 20 : 30;
+            let potionPrice = playerReputation >= 5 ? 8 : 12;
+
+            if (!hasItem("Enchanted Sword")) {
+                if (canAfford(swordPrice)) {
+                    choices += '<button class="choice-button" onclick="buyCodeSword(' + swordPrice + ')">⚔️ Buy Enchanted Sword (' + swordPrice + ' gold)</button>';
+                } else {
+                    choices += '<button class="choice-button disabled">⚔️ Buy Enchanted Sword (Need ' + swordPrice + ' gold)</button>';
+                }
+            }
+
+            if (!hasItem("Magical Shield")) {
+                if (canAfford(shieldPrice)) {
+                    choices += '<button class="choice-button" onclick="buyLogicShield(' + shieldPrice + ')">🛡️ Buy Magical Shield (' + shieldPrice + ' gold)</button>';
+                } else {
+                    choices += '<button class="choice-button disabled">🛡️ Buy Magical Shield (Need ' + shieldPrice + ' gold)</button>';
+                }
+            }
+
+            if (canAfford(potionPrice)) {
+                choices += '<button class="choice-button" onclick="buyHealthPotion(' + potionPrice + ')">🧪 Buy Health Potion (' + potionPrice + ' gold)</button>';
+            } else {
+                choices += '<button class="choice-button disabled">🧪 Buy Health Potion (Need ' + potionPrice + ' gold)</button>';
+            }
+
+            choices += '<button class="choice-button" onclick="returnToEntrance()">🚪 Return to Entrance</button>';
+
+            document.getElementById('choices').innerHTML = choices;
+        }
+
+        function enterTrainingGrounds() {
+            updateLocation("Practice Chamber");
+
+            let storyText = "You arrive at the practice chamber where magical spells and ancient wisdom combine! ";
+
+            // Check if player is ready for different challenges
+            if (hasItem("Enchanted Sword") && hasItem("Magical Shield")) {
+                storyText += "Fully equipped, you're ready for any challenge!";
+            } else if (playerLevel >= 2) {
+                storyText += "Your experience shows, but better equipment would help.";
+            } else {
+                storyText += "This looks challenging. You might want to prepare more.";
+            }
+
+            updateStory(storyText);
+
+            let choices = "";
+
+            // Basic training - always available
+            choices += '<button class="choice-button" onclick="basicTraining()">🥋 Basic Spell Training</button>';
+
+            // Intermediate training - need level 2
+            if (playerLevel >= 2) {
+                choices += '<button class="choice-button" onclick="intermediateTraining()">⚡ Intermediate Challenge</button>';
+            } else {
+                choices += '<button class="choice-button disabled">⚡ Intermediate Challenge (Need Level 2)</button>';
+            }
+
+            // Master quest - need equipment and knowledge
+            let masterRequirements = checkRequirements(3, "Enchanted Sword", "Magical Shield", "Ancient Spell Tome");
+            if (masterRequirements === "requirements_met" && !masterQuest) {
+                choices += '<button class="choice-button" onclick="masterChallenge()">👑 Master\'s Challenge</button>';
+            } else if (!masterQuest) {
+                choices += '<button class="choice-button disabled">👑 Master\'s Challenge (' + masterRequirements + ')</button>';
+            }
+
+            choices += '<button class="choice-button" onclick="returnToEntrance()">🚪 Return to Entrance</button>';
+
+            document.getElementById('choices').innerHTML = choices;
+        }
+
+        // Action Functions
+        function exploreAncientTexts() {
+            hasExploredLibrary = true;
+            changeReputation(3);
+            updateStory("You study the ancient spell texts and learn about magical incantations that can be customized with different components!");
+            enterLibrary();
+        }
+
+        function discoverSecretKnowledge() {
+            hasFoundAncientKnowledge = true;
+            changeReputation(3);
+            playerLevel = 2;
+            updateStory("You discover hidden knowledge about advanced spellcasting! The magic flows stronger through you. Level up! You're now Level 2!");
+            enterLibrary();
+        }
+
+        function buyAdvancedGuide() {
+            if (buyItem("Ancient Spell Tome", 20, "This powerful tome contains the secrets of advanced magical techniques!")) {
+                playerLevel = 3;
+                updateStory(document.getElementById('story').innerHTML + " Level up! You're now Level 3!");
+            }
+            enterLibrary();
+        }
+
+        function buyCodeSword(price) {
+            buyItem("Enchanted Sword", price, "A weapon that channels the power of well-written functions!");
+            visitShop();
+        }
+
+        function buyLogicShield(price) {
+            buyItem("Magical Shield", price, "Protection powered by conditional logic from Lesson 3!");
+            visitShop();
+        }
+
+        function buyHealthPotion(price) {
+            if (buyItem("Health Potion", price, "Restores 30 health points!")) {
+                // Immediately use the potion
+                removeItem("Health Potion");
+                changeHealth(30);
+                updateStory(document.getElementById('story').innerHTML + " You immediately drink it and feel refreshed!");
+            }
+            visitShop();
+        }
+
+        function basicTraining() {
+            changeHealth(-5);
+            changeReputation(2);
+            giveReward(15, null, 0);
+            updateStory("You complete basic magical training! You practiced casting helpful spells and earned 15 gold. Magic flows through you more easily now!");
+            enterTrainingGrounds();
+        }
+
+        function intermediateTraining() {
+            if (hasItem("Enchanted Sword")) {
+                changeHealth(-10);
+                giveReward(25, "Sword Mastery Scroll", 5);
+                updateStory("With your Enchanted Sword, you excel at the intermediate challenge! Your blade dances with magical precision.");
+            } else {
+                changeHealth(-20);
+                giveReward(10, null, 2);
+                updateStory("Without proper equipment, the challenge is tough, but you learn from the experience.");
+            }
+            enterTrainingGrounds();
+        }
+
+        function masterChallenge() {
+            masterQuest = true;
+            changeHealth(-15);
+            giveReward(100, "Master Wizard Medallion", 25);
+            updateStory("Incredible! You completed the Master's Challenge! You demonstrated mastery of ancient magical arts and powerful spellcasting techniques. You are now a Master Wizard!");
+            enterTrainingGrounds();
+        }
+
+        function returnToEntrance() {
+            updateLocation("Tower Entrance");
+
+            let storyText = "You return to the tower entrance. ";
+
+            if (masterQuest) {
+                storyText += "Everyone recognizes you as a Master Wizard! Your magical journey has reached its pinnacle.";
+            } else if (playerLevel >= 3) {
+                storyText += "Fellow apprentices look up to you as an advanced spell-weaver.";
+            } else if (playerReputation >= 10) {
+                storyText += "Other apprentices nod respectfully - you're making good progress!";
+            } else {
+                storyText += "You're learning the basics of magic. Keep practicing your spells!";
+            }
+
+            updateStory(storyText);
+
+            document.getElementById('choices').innerHTML =
+                '<button class="choice-button" onclick="enterLibrary()">📚 Enter the Spell Library</button>' +
+                '<button class="choice-button" onclick="visitShop()">🛍️ Visit the Enchanted Shop</button>' +
+                '<button class="choice-button" onclick="enterTrainingGrounds()">⚔️ Enter the Practice Chamber</button>' +
+                '<button class="choice-button" onclick="restart()">🔄 Start New Game</button>';
+        }
+
+        function restart() {
+            // Reset all variables
+            playerHealth = 100;
+            playerGold = 50;
+            playerLevel = 1;
+            playerReputation = 0;
+            currentLocation = "Tower Entrance";
+            // Reset individual item variables
+            hasApprenticeRobes = true;
+            hasEnchantedSword = false;
+            hasMagicalShield = false;
+            hasHealthPotion = false;
+            hasAncientSpellTome = false;
+            hasMasterWizardMedallion = false;
+            hasSwordMasteryScroll = false;
+
+            hasExploredLibrary = false;
+            hasFoundAncientKnowledge = false;
+            masterQuest = false;
+
+            updateStory("You stand before an ancient wizard's tower, its stones humming with magical energy. The tower is said to contain powerful spells and enchanted artifacts. Rumor has it that the wizard created magical helpers to assist with various tasks!");
+            returnToEntrance();
+        }
+
+        // Initialize the game
+        updateDisplay();
+    </script>
+</body>
+</html>
