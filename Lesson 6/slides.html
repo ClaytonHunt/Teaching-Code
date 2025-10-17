@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objects and Polish - Interactive Programming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .slide-container {
+            display: flex;
+            width: 1500vw;
+            height: 100vh;
+            transition: transform 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .slide-content {
+            transform-origin: center center;
+            width: 1200px;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide p, .slide li {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .slide ul {
+            text-align: left;
+            max-width: 800px;
+        }
+
+        .slide li {
+            margin-bottom: 0.8rem;
+            padding-left: 1rem;
+        }
+
+        .code-box {
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #ffd700;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .code-box pre {
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .code-box .comment {
+            color: #cccccc;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .code-box .keyword {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .code-box .string {
+            color: #44ff88;
+        }
+
+        .code-box .number {
+            color: #ffff44;
+        }
+
+        .code-box .function {
+            color: #ff88ff;
+        }
+
+        .code-box .property {
+            color: #44ddff;
+        }
+
+        .highlight {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .emoji {
+            font-size: 4rem;
+            margin: 1rem;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1000px;
+            margin: 1rem 0;
+        }
+
+        .comparison-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #666;
+        }
+
+        .bad-code {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .good-code {
+            border-color: #51cf66;
+            background: rgba(81, 207, 102, 0.1);
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            transform: none !important;
+        }
+
+        .controls button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .slide-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) !important;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+        /* Force navigation visibility for lower resolutions */
+        @media (max-width: 1440px) {
+            .controls {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                display: block !important;
+                visibility: visible !important;
+            }
+
+            .controls button {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.95rem;
+                margin: 0 0.4rem;
+                display: inline-block !important;
+            }
+
+            .slide-indicator {
+                bottom: 1.5rem;
+                display: flex !important;
+                visibility: visible !important;
+            }
+
+            .dot {
+                width: 11px;
+                height: 11px;
+                display: block !important;
+            }
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #ffd700;
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .slide-content {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .slide h1 { font-size: 2.5rem; }
+            .slide h2 { font-size: 2rem; }
+            .slide h3 { font-size: 1.8rem; }
+            .slide p, .slide li { font-size: 1.3rem; }
+            .code-box { font-size: 1rem; padding: 1rem; }
+            .two-column { grid-template-columns: 1fr; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .nav-button { padding: 0.8rem 1.5rem; font-size: 1rem; }
+        }
+
+        @media (max-height: 600px) {
+            .slide { padding: 1rem; }
+            .slide h1 { font-size: 2.5rem; }
+            .slide h2 { font-size: 2rem; }
+            .slide p, .slide li { font-size: 1.4rem; }
+            .code-box { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container" id="slideContainer">
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="emoji">🎯</div>
+                <h1>Objects and Polish</h1>
+                <p>Creating Professional-Quality Games</p>
+                <p style="font-size: 1.4rem; margin-top: 2rem; opacity: 0.8;">Lesson 6 - Interactive Programming</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: What We'll Learn Today -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What We'll Learn Today</h2>
+                <ul>
+                    <li>📦 <strong>JavaScript Objects</strong> - Smart containers for data and functions</li>
+                    <li>🏗️ <strong>Game Systems</strong> - Organizing complex game features</li>
+                    <li>💼 <strong>Professional Code</strong> - File organization and structure</li>
+                    <li>✨ <strong>Polish & Effects</strong> - Animations, sound, and UI enhancements</li>
+                    <li>🎮 <strong>Complete Game</strong> - Building a polished, shareable project</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: Building on Our Journey -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Building on Our Journey</h2>
+                <div class="two-column">
+                    <div>
+                        <h3>What We've Learned:</h3>
+                        <ul style="font-size: 1.5rem;">
+                            <li>🧹 Clean, readable code</li>
+                            <li>📦 Variables and state</li>
+                            <li>🔧 Reusable functions</li>
+                            <li>🤔 Conditional logic</li>
+                            <li>📊 Arrays and loops</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Today We Add:</h3>
+                        <ul style="font-size: 1.5rem;">
+                            <li>🎯 Objects to organize everything</li>
+                            <li>💼 Professional file structure</li>
+                            <li>✨ Polish and visual effects</li>
+                            <li>🏆 Complete game project</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: What Are Objects? -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What Are Objects?</h2>
+                <p>Objects are <span class="highlight">smart containers</span> that hold both data AND functions!</p>
+                <div class="code-box">
+                    <pre><span class="comment">// Simple object with properties</span>
+<span class="keyword">let</span> player = {
+    <span class="property">name</span>: <span class="string">"Alex"</span>,
+    <span class="property">health</span>: <span class="number">100</span>,
+    <span class="property">level</span>: <span class="number">1</span>
+};
+
+<span class="comment">// Access properties</span>
+console.<span class="function">log</span>(player.name);    <span class="comment">// "Alex"</span>
+player.health = <span class="number">75</span>;          <span class="comment">// Change value</span></pre>
+                </div>
+                <p>Think of objects as <strong>labeled boxes with built-in tools</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Objects vs Scattered Variables -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Objects Beat Scattered Variables</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-box bad-code">
+                        <h3>❌ Messy Variables</h3>
+                        <div class="code-box">
+                            <pre><span class="keyword">let</span> playerName = <span class="string">"Alex"</span>;
+<span class="keyword">let</span> playerHealth = <span class="number">100</span>;
+<span class="keyword">let</span> playerInventory = [<span class="string">"sword"</span>];
+
+<span class="keyword">function</span> <span class="function">playerTakeDamage</span>(amount) {
+    playerHealth -= amount;
+}</pre>
+                        </div>
+                    </div>
+                    <div class="comparison-box good-code">
+                        <h3>✅ Organized Objects</h3>
+                        <div class="code-box">
+                            <pre><span class="keyword">let</span> player = {
+    <span class="property">name</span>: <span class="string">"Alex"</span>,
+    <span class="property">health</span>: <span class="number">100</span>,
+    <span class="property">inventory</span>: [<span class="string">"sword"</span>],
+
+    <span class="function">takeDamage</span>(amount) {
+        <span class="keyword">this</span>.health -= amount;
+    }
+};</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Objects with Methods -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Objects with Methods</h2>
+                <p>Methods are <span class="highlight">functions that belong to objects</span></p>
+                <div class="code-box">
+                    <pre><span class="keyword">let</span> character = {
+    <span class="property">name</span>: <span class="string">"Hero"</span>,
+    <span class="property">health</span>: <span class="number">100</span>,
+
+    <span class="property">takeDamage</span>: <span class="keyword">function</span>(amount) {
+        <span class="keyword">this</span>.health -= amount;  <span class="comment">// 'this' refers to the character</span>
+        <span class="keyword">if</span> (<span class="keyword">this</span>.health <= <span class="number">0</span>) {
+            <span class="keyword">this</span>.<span class="function">die</span>();
+        }
+    },
+
+    <span class="property">heal</span>: <span class="keyword">function</span>(amount) {
+        <span class="keyword">this</span>.health += amount;
+        console.<span class="function">log</span>(<span class="string">`Healed ${amount}! Health: ${</span><span class="keyword">this</span><span class="string">.health}`</span>);
+    }
+};</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: The Magic of 'this' -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>The Magic of 'this'</h2>
+                <p><span class="highlight">this</span> refers to the object that called the method</p>
+                <div class="code-box">
+                    <pre><span class="keyword">let</span> wizard = {
+    <span class="property">name</span>: <span class="string">"Gandalf"</span>,
+    <span class="property">mana</span>: <span class="number">100</span>,
+
+    <span class="property">castSpell</span>: <span class="keyword">function</span>(cost) {
+        <span class="keyword">this</span>.mana -= cost;  <span class="comment">// 'this' = whatever called this method</span>
+        console.<span class="function">log</span>(<span class="string">`${</span><span class="keyword">this</span><span class="string">.name} has ${</span><span class="keyword">this</span><span class="string">.mana} mana left`</span>);
+    }
+};
+
+wizard.<span class="function">castSpell</span>(<span class="number">20</span>);  <span class="comment">// wizard called it, so 'this' = wizard</span></pre>
+                </div>
+                <p style="font-size: 1.4rem; margin-top: 1rem;">When you call <code>object.method()</code>, <span class="highlight">this</span> = <code>object</code> 🪄</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Building Game Systems -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Building Game Systems</h2>
+                <p>Objects help us organize complex game features into logical systems</p>
+                <div class="code-box">
+                    <pre><span class="keyword">let</span> inventory = {
+    <span class="property">items</span>: [],
+    <span class="property">maxSize</span>: <span class="number">10</span>,
+
+    <span class="function">add</span>(item) {
+        <span class="keyword">if</span> (<span class="keyword">this</span>.items.length < <span class="keyword">this</span>.maxSize) {
+            <span class="keyword">this</span>.items.<span class="function">push</span>(item);
+            <span class="keyword">this</span>.<span class="function">updateDisplay</span>();
+            <span class="keyword">return</span> <span class="keyword">true</span>;
+        }
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    },
+
+    <span class="function">updateDisplay</span>() {
+        <span class="comment">// Update the UI to show current items</span>
+    }
+};</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Combat System Example -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Combat System Example</h2>
+                <div class="code-box">
+                    <pre><span class="keyword">let</span> combat = {
+    <span class="property">currentEnemy</span>: <span class="keyword">null</span>,
+
+    <span class="function">start</span>(enemy) {
+        <span class="keyword">this</span>.currentEnemy = { ...enemy };  <span class="comment">// Create copy</span>
+        console.<span class="function">log</span>(<span class="string">`Combat started with ${enemy.name}!`</span>);
+    },
+
+    <span class="function">playerAttack</span>() {
+        <span class="keyword">let</span> damage = player.attack + Math.<span class="function">floor</span>(Math.<span class="function">random</span>() * <span class="number">5</span>);
+        <span class="keyword">this</span>.currentEnemy.health -= damage;
+
+        <span class="keyword">if</span> (<span class="keyword">this</span>.currentEnemy.health <= <span class="number">0</span>) {
+            <span class="keyword">this</span>.<span class="function">victory</span>();
+        } <span class="keyword">else</span> {
+            <span class="keyword">this</span>.<span class="function">enemyAttack</span>();
+        }
+    }
+};</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Professional Code Organization -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Professional Code Organization</h2>
+                <p>Real games separate code into multiple files for better organization</p>
+                <div class="two-column">
+                    <div>
+                        <h3>📄 index.html</h3>
+                        <div class="code-box" style="font-size: 1.1rem;">
+                            <pre><span class="keyword">&lt;!DOCTYPE</span> <span class="property">html</span><span class="keyword">&gt;</span>
+<span class="keyword">&lt;html&gt;</span>
+<span class="keyword">&lt;head&gt;</span>
+    <span class="keyword">&lt;title&gt;</span>Epic Quest<span class="keyword">&lt;/title&gt;</span>
+    <span class="keyword">&lt;link</span> <span class="property">rel</span>=<span class="string">"stylesheet"</span> <span class="property">href</span>=<span class="string">"styles.css"</span><span class="keyword">&gt;</span>
+<span class="keyword">&lt;/head&gt;</span>
+<span class="keyword">&lt;body&gt;</span>
+    <span class="keyword">&lt;div</span> <span class="property">id</span>=<span class="string">"gameContainer"</span><span class="keyword">&gt;&lt;/div&gt;</span>
+    <span class="keyword">&lt;script</span> <span class="property">src</span>=<span class="string">"game.js"</span><span class="keyword">&gt;&lt;/script&gt;</span>
+<span class="keyword">&lt;/body&gt;</span>
+<span class="keyword">&lt;/html&gt;</span></pre>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🎨 styles.css</h3>
+                        <div class="code-box" style="font-size: 1.1rem;">
+                            <pre><span class="property">body</span> {
+    <span class="property">font-family</span>: <span class="string">'Segoe UI'</span>;
+    <span class="property">background</span>: <span class="function">linear-gradient</span>(
+        <span class="number">135deg</span>, <span class="string">#667eea</span> <span class="number">0%</span>, <span class="string">#764ba2</span> <span class="number">100%</span>
+    );
+}
+
+<span class="property">.game-container</span> {
+    <span class="property">max-width</span>: <span class="number">1200px</span>;
+    <span class="property">margin</span>: <span class="number">0</span> <span class="keyword">auto</span>;
+    <span class="property">background</span>: <span class="string">white</span>;
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Configuration Objects -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Configuration Objects</h2>
+                <p>Keep all game settings in one organized place</p>
+                <div class="code-box">
+                    <pre><span class="keyword">const</span> CONFIG = {
+    <span class="property">PLAYER_START_HEALTH</span>: <span class="number">100</span>,
+    <span class="property">INVENTORY_MAX_SIZE</span>: <span class="number">20</span>,
+    <span class="property">SAVE_INTERVAL</span>: <span class="number">30000</span>,
+
+    <span class="property">ENEMY_TYPES</span>: {
+        <span class="property">goblin</span>: { <span class="property">health</span>: <span class="number">20</span>, <span class="property">attack</span>: <span class="number">5</span>, <span class="property">gold</span>: <span class="number">10</span> },
+        <span class="property">orc</span>: { <span class="property">health</span>: <span class="number">40</span>, <span class="property">attack</span>: <span class="number">10</span>, <span class="property">gold</span>: <span class="number">25</span> },
+        <span class="property">dragon</span>: { <span class="property">health</span>: <span class="number">200</span>, <span class="property">attack</span>: <span class="number">30</span>, <span class="property">gold</span>: <span class="number">500</span> }
+    },
+
+    <span class="property">ITEM_RARITIES</span>: {
+        <span class="property">common</span>: { <span class="property">color</span>: <span class="string">'#95a5a6'</span>, <span class="property">chance</span>: <span class="number">0.6</span> },
+        <span class="property">rare</span>: { <span class="property">color</span>: <span class="string">'#3498db'</span>, <span class="property">chance</span>: <span class="number">0.3</span> },
+        <span class="property">epic</span>: { <span class="property">color</span>: <span class="string">'#9b59b6'</span>, <span class="property">chance</span>: <span class="number">0.08</span> }
+    }
+};</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Adding Polish -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Adding Polish ✨</h2>
+                <p>Professional games have smooth animations, sound effects, and visual feedback</p>
+                <div class="code-box">
+                    <pre><span class="keyword">const</span> effects = {
+    <span class="function">shake</span>(element) {
+        element.classList.<span class="function">add</span>(<span class="string">'shake'</span>);
+        <span class="function">setTimeout</span>(() => element.classList.<span class="function">remove</span>(<span class="string">'shake'</span>), <span class="number">500</span>);
+    },
+
+    <span class="function">popup</span>(text, type = <span class="string">'info'</span>) {
+        <span class="keyword">const</span> popup = document.<span class="function">createElement</span>(<span class="string">'div'</span>);
+        popup.className = <span class="string">`popup ${type}`</span>;
+        popup.innerHTML = text;
+        document.body.<span class="function">appendChild</span>(popup);
+
+        <span class="function">setTimeout</span>(() => popup.<span class="function">remove</span>(), <span class="number">2000</span>);
+    }
+};</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Save/Load System -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Save/Load System</h2>
+                <p>Let players save their progress and continue later</p>
+                <div class="code-box">
+                    <pre><span class="keyword">const</span> saveSystem = {
+    <span class="function">save</span>() {
+        <span class="keyword">const</span> saveData = {
+            <span class="property">player</span>: {
+                <span class="property">name</span>: player.name,
+                <span class="property">level</span>: player.level,
+                <span class="property">health</span>: player.health,
+                <span class="property">gold</span>: player.gold
+            },
+            <span class="property">inventory</span>: inventory.items,
+            <span class="property">timestamp</span>: Date.<span class="function">now</span>()
+        };
+
+        localStorage.<span class="function">setItem</span>(<span class="string">'epicQuestSave'</span>, JSON.<span class="function">stringify</span>(saveData));
+        effects.<span class="function">popup</span>(<span class="string">'Game saved!'</span>, <span class="string">'success'</span>);
+    }
+};</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Optional Mission - Debug the Game -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="emoji">🔧</div>
+                <h1>Optional Mission: Debug the RPG Game</h1>
+                <p style="font-size: 1.4rem; margin-bottom: 1.5rem;">The story quest game has several bugs and missing features. Can you fix them?</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; text-align: left;">
+                    <div>
+                        <h3 style="color: #ff6b6b; margin-bottom: 1rem;">🐛 Known Bugs</h3>
+                        <ul style="font-size: 1.1rem; line-height: 1.6;">
+                            <li>• Can't equip weapons/armor from inventory</li>
+                            <li>• Shield spell works but no status shown</li>
+                            <li>• Reset game loses starting mana potion</li>
+                            <li>• Healing spells don't trigger enemy turns</li>
+                            <li>• No validation for invalid equipment slots</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 style="color: #4ecdc4; margin-bottom: 1rem;">✨ Missing Features</h3>
+                        <ul style="font-size: 1.1rem; line-height: 1.6;">
+                            <li>• No spell list display at Spell Forge</li>
+                            <li>• Inventory doesn't always update UI</li>
+                            <li>• No shield duration countdown</li>
+                            <li>• Quest completion tracking inconsistent</li>
+                            <li>• No maximum inventory size limit</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p style="font-size: 1.3rem; margin-top: 1.5rem; color: #ffd700;">
+                    🎯 <strong>Your Mission:</strong> Use your debugging skills to identify, understand, and fix these issues!
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Thank You -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="emoji">🎮</div>
+                <h1>Congratulations!</h1>
+                <p style="font-size: 2rem; margin: 2rem 0;">You've completed your programming journey!</p>
+                <div style="font-size: 1.6rem; line-height: 1.8;">
+                    <p>✅ Master clean code principles</p>
+                    <p>✅ Understand variables and state</p>
+                    <p>✅ Create reusable functions</p>
+                    <p>✅ Use conditional logic</p>
+                    <p>✅ Work with arrays and loops</p>
+                    <p>✅ Organize code with objects</p>
+                </div>
+                <p style="font-size: 1.8rem; margin-top: 2rem; color: #ffd700;">
+                    Now go build amazing things! 🚀
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="prevBtn" onclick="previousSlide()">← Previous</button>
+        <button id="nextBtn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <div class="slide-indicator" id="indicators"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 15;
+
+        function updateSlidePosition() {
+            const container = document.getElementById('slideContainer');
+            container.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            updateIndicators();
+        }
+
+        function createIndicators() {
+            const indicators = document.getElementById('indicators');
+            indicators.innerHTML = '';
+
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                indicators.appendChild(dot);
+            }
+        }
+
+        function updateIndicators() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlidePosition();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlidePosition();
+            }
+        }
+
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateSlidePosition();
+        }
+
+        // Initialize
+        createIndicators();
+        updateSlidePosition();
+        scaleSlides();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Touch/swipe support
+        let startX = 0;
+        let startY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            if (!startX || !startY) return;
+
+            let endX = e.changedTouches[0].clientX;
+            let endY = e.changedTouches[0].clientY;
+
+            let diffX = startX - endX;
+            let diffY = startY - endY;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (Math.abs(diffX) > 50) {
+                    if (diffX > 0) {
+                        nextSlide();
+                    } else {
+                        previousSlide();
+                    }
+                }
+            }
+
+            startX = 0;
+            startY = 0;
+        });
+
+        // Prevent zooming on mobile
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+
+        // Scaling functionality for desktop/laptop resolutions only
+        function scaleSlides() {
+            const slides = document.querySelectorAll('.slide-content');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // Base dimensions (what we designed for)
+            const baseWidth = 1200;
+            const baseHeight = 800;
+
+            // Standard margins for all supported resolutions
+            const marginX = 50;
+            const marginY = 50;
+
+            // Calculate scale factors
+            const scaleX = (windowWidth - marginX * 2) / baseWidth;
+            const scaleY = (windowHeight - marginY * 2) / baseHeight;
+
+            // Use the smaller scale to maintain aspect ratio
+            let scale = Math.min(scaleX, scaleY);
+
+            // Scale limits optimized for classroom/presentation environments
+            scale = Math.min(scale, 1.2); // Cap at 120% for readability
+            scale = Math.max(scale, 0.5); // Minimum scale for classroom visibility
+
+            slides.forEach(slide => {
+                slide.style.transform = `scale(${scale})`;
+            });
+        }
+
+        // Rescale on window resize
+        window.addEventListener('resize', scaleSlides);
+    </script>
+</body>
+</html>
